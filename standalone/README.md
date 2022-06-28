@@ -36,8 +36,7 @@ Confirm it works.
 ## Deploy Extra Compute Node
 On the new standalone VM run:
 
+- [git-init.sh ext](../inig/git-init.sh)
 - [pre-compute.sh](pre-compute.sh)
+- [export.sh](export.sh)
 - [compute.sh](compute.sh)
-
-The compute.sh script does not exist yet but should implement line
-60-75 of https://etherpad.opendev.org/p/tripleo-standalone-roles#L60

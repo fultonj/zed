@@ -3,10 +3,10 @@
 OTHER=1
 CEPH=0
 REPO=1
-INSTALL=0
-DNS=0
-EXTRAS=0
 TMATE=0
+CHRONY=1
+INSTALL=1
+ANSIBLE_CFG=1
 
 if [[ $OTHER -eq 1 ]]; then
     EXT_CONTROLLER="192.168.122.252"
@@ -39,27 +39,6 @@ if [[ $CEPH -eq 1 ]]; then
     sudo dnf install -y cephadm util-linux lvm2
 fi
 
-if [[ $INSTALL -eq 1 ]]; then
-    sudo dnf install -y ansible-collection-containers-podman python3-tenacity ansible-collection-community-general ansible-collection-ansible-posix
-fi
-
-if [[ $DNS -eq 1 ]]; then
-    GW=192.168.122.1
-    sudo sysctl -w net.ipv4.ping_group_range="0 1000"
-    ping -c 1 $GW > /dev/null
-    if [[ $? -ne 0 ]]; then
-        echo "Cannot ping $GW. Aborting."
-        exit 1
-    fi
-    if [[ $(grep $GW /etc/resolv.conf | wc -l) -eq 0 ]]; then
-        sudo sh -c "echo nameserver $GW > /etc/resolv.conf"
-    fi
-fi
-
-if [[ $EXTRAS -eq 1 ]]; then
-    sudo dnf install -y tmux emacs-nox vim
-fi
-
 if [[ $TMATE -eq 1 ]]; then
     TMATE_RELEASE=2.4.0
     curl -OL https://github.com/tmate-io/tmate/releases/download/$TMATE_RELEASE/tmate-$TMATE_RELEASE-static-linux-amd64.tar.xz
@@ -70,3 +49,18 @@ if [[ $TMATE -eq 1 ]]; then
     sudo chmod 755 /usr/local/bin/tmate
     popd
 fi
+
+if [[ $CHRONY -eq 1 ]]; then
+    if [[ ! -d ~/roles ]]; then mkdir ~/roles; fi
+    ln -s ~/ansible-role-chrony ~/roles/chrony;
+fi
+
+if [[ $INSTALL -eq 1 ]]; then
+    sudo dnf install -y ansible-collection-containers-podman python3-tenacity ansible-collection-community-general ansible-collection-ansible-posix
+fi
+
+if [[ $ANSIBLE_CFG -eq 1 ]]; then
+    echo '[defaults]' > ~/ansible.cfg
+    echo 'roles_path=~/roles:~/tripleo-ansible/tripleo_ansible/roles:~/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles' >> ~/ansible.cfg
+fi
+
