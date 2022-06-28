@@ -1,31 +1,21 @@
 #!/bin/bash
 
 OTHER=1
-POD=1
-REPO=1
 CEPH=0
-INSTALL=1
-CONTAINERS=1
-HOSTNAME=1
-DNS=1
+REPO=1
+INSTALL=0
+DNS=0
 EXTRAS=0
 TMATE=0
 
 if [[ $OTHER -eq 1 ]]; then
-    EXT_COMPUTE="192.168.122.251"
-    # confirm standalone can reach external compute
-    ssh $EXT_COMPUTE -l stack "uname -a"
+    EXT_CONTROLLER="192.168.122.252"
+    # confirm compute can reach standalone controller
+    ssh $EXT_CONTROLLER -l stack "uname -a"
     if [[ ! $? -eq 0 ]]; then
-        echo "Cannot ssh into $EXT_COMPUTE"
+        echo "Cannot ssh into $EXT_CONTROLLER"
         exit 1
     fi
-fi
-
-if [[ $POD -eq 1 ]]; then
-    if [[ $CENT8 -eq 1 ]]; then
-        sudo dnf module enable -y container-tools:3.0
-    fi
-    sudo dnf install -y podman 
 fi
 
 if [[ $REPO -eq 1 ]]; then
@@ -50,22 +40,7 @@ if [[ $CEPH -eq 1 ]]; then
 fi
 
 if [[ $INSTALL -eq 1 ]]; then
-    sudo yum install -y python3-tripleoclient
-fi
-
-if [[ $CONTAINERS -eq 1 ]]; then
-    openstack tripleo container image prepare default \
-      --output-env-file $HOME/containers-prepare-parameters.yaml
-fi
-
-if [[ $HOSTNAME -eq 1 ]]; then
-    sudo setenforce 0
-    sudo hostnamectl set-hostname standalone.localdomain
-    sudo hostnamectl set-hostname standalone.localdomain --transient
-    sudo setenforce 1
-    IP=$(ip a s eth1 | grep inet | grep 192 | awk {'print $2'} | sed s/\\/24//)
-    sudo sed -i "/$IP/d" /etc/hosts
-    sudo sh -c "echo $IP standalone.localdomain standalone>> /etc/hosts"
+    sudo dnf install -y ansible-collection-containers-podman python3-tenacity ansible-collection-community-general ansible-collection-ansible-posix
 fi
 
 if [[ $DNS -eq 1 ]]; then
