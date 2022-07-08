@@ -1,0 +1,10 @@
+[allowlist]
+  description = "Allowlist"
+  paths = [
+    '''ignore\.d''',
+    '''\.ignore\.txt$''',
+    '''^\.?gitleaks.toml$''',
+    '''^\.?export.sh$''',
+    '''^\.?standalone/export.sh$''',
+    '''^\.?standalone\/export.sh$''',
+  ]

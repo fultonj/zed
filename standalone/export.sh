@@ -34,15 +34,15 @@ OLD_COMPUTE_HOSTNAME=$(grep tripleo_nova_compute_DEFAULT_host \
                            | sed s/\"//g)
 NEW_COMPUTE_HOSTNAME=$(hostname)
 
-# tripleo_nova_compute_cinder_password="moysnNcwIQiX3iBiYr7LEM8Vt"
+# tripleo_nova_compute_cinder_password
 OLD_CINDER=$(grep tripleo_nova_compute_cinder_password \
                   $DEF \
                  | awk 'BEGIN { FS = "=" } ; { print $2 }' \
                  | sed s/\"//g)
 NEW_CINDER=$(ssh_run "grep -i cinder tripleo-standalone-passwords.yaml | awk {'print \$2'}")
 
-# tripleo_nova_compute_DEFAULT_transport_url="rabbit://guest:4Ne9VtCuQnrMXXUL9XvSZce3M@sm9.ctlplane.localdomain:5672/?ssl=0"
-# tripleo_nova_compute_oslo_messaging_notifications_transport_url="rabbit://guest:4Ne9VtCuQnrMXXUL9XvSZce3M@sm9.ctlplane.localdomain:5672/?ssl=0"
+# tripleo_nova_compute_DEFAULT_transport_url
+# tripleo_nova_compute_oslo_messaging_notifications_transport_url
 # (these also use NEW_CONTROLLER_HOSTNAME)
 OLD_RABBIT=$(grep tripleo_nova_compute_DEFAULT_transport_url \
                   $DEF \
