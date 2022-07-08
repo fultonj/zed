@@ -66,8 +66,8 @@ if [[ $INSTALL -eq 1 ]]; then
 fi
 
 if [[ $ANSIBLE_CFG -eq 1 ]]; then
-    echo '[defaults]' > ~/ansible.cfg
-    echo 'roles_path=~/roles:~/tripleo-ansible/tripleo_ansible/roles:~/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles' >> ~/ansible.cfg
+    cp ansible.cfg /home/stack/ansible.cfg
+    sudo cp ansible.cfg /root/ansible.cfg
 fi
 
 if [[ $EXPORT -eq 1 ]]; then
