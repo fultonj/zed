@@ -34,9 +34,9 @@ Confirm it works.
 ```
 
 ## Deploy Extra Compute Node
+
 On the new standalone VM run:
 
-- [git-init.sh ext](../inig/git-init.sh)
+- [git-init.sh ext](../init/git-init.sh)
 - [pre-compute.sh](pre-compute.sh)
-- [export.sh](export.sh)
 - [compute.sh](compute.sh)

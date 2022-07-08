@@ -1,19 +1,25 @@
 #!/bin/bash
 
-OTHER=1
+NET=1
 CEPH=0
 REPO=1
 TMATE=0
 CHRONY=1
 INSTALL=1
 ANSIBLE_CFG=1
+EXPORT=1
 
-if [[ $OTHER -eq 1 ]]; then
-    EXT_CONTROLLER="192.168.122.252"
-    # confirm compute can reach standalone controller
-    ssh $EXT_CONTROLLER -l stack "uname -a"
+CONTROLLER_IP=192.168.24.2
+COMPUTE_IP=192.168.24.100
+
+if [[ $NET -eq 1 ]]; then
+    sudo ip addr add $COMPUTE_IP/24 dev eth0
+    ip a s eth0
+    ping -c 1 $CONTROLLER_IP
+    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+        $CONTROLLER_IP -l stack "uname -a"
     if [[ ! $? -eq 0 ]]; then
-        echo "Cannot ssh into $EXT_CONTROLLER"
+        echo "Cannot ssh into $CONTROLLER_IP"
         exit 1
     fi
 fi
@@ -64,3 +70,6 @@ if [[ $ANSIBLE_CFG -eq 1 ]]; then
     echo 'roles_path=~/roles:~/tripleo-ansible/tripleo_ansible/roles:~/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles' >> ~/ansible.cfg
 fi
 
+if [[ $EXPORT -eq 1 ]]; then
+    bash export.sh
+fi
