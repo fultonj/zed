@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 UPLINK=1
+YAML_YML=1
 
 export CONTROLLER=192.168.122.252
 export INTERFACE=eth1
@@ -28,4 +29,32 @@ if [[ $UPLINK -eq 1 ]]; then
 	    exit 1
 	fi
     done
+fi
+
+function yml_yaml {
+    # symlink .yml files to .yaml files
+    echo "yml_yaml: $1"
+    pushd $1
+    for F1 in $(ls *.yml); do
+        F2=$(echo $F1 | sed -e s/yml/yaml/g)
+        sudo ln -vsf $F1 $F2
+    done
+    popd
+}
+
+function yaml_yml {
+    # symlink .yaml files to .yml files
+    echo "yaml_yml: $1"
+    pushd $1
+    for F1 in $(ls *.yaml); do
+        F2=$(echo $F1 | sed -e s/yaml/yml/g)
+        sudo ln -vsf $F1 $F2
+    done
+    popd
+}
+
+
+if [[ $YAML_YML -eq 1 ]]; then
+    yml_yaml /home/stack/tripleo-ansible/tripleo_ansible/roles/tripleo_nova_compute/tasks
+    yaml_yml /home/stack/tripleo-ansible/tripleo_ansible/roles/tripleo_nova_libvirt/tasks
 fi
