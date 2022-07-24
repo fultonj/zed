@@ -6,7 +6,6 @@ REPO=1
 TMATE=0
 CHRONY=1
 INSTALL=1
-ANSIBLE_CFG=1
 EXPORT=1
 
 CONTROLLER_IP=192.168.24.2
@@ -63,11 +62,6 @@ fi
 
 if [[ $INSTALL -eq 1 ]]; then
     sudo dnf install -y ansible-collection-containers-podman python3-tenacity ansible-collection-community-general ansible-collection-ansible-posix
-fi
-
-if [[ $ANSIBLE_CFG -eq 1 ]]; then
-    cp ansible.cfg /home/stack/ansible.cfg
-    sudo cp ansible.cfg /root/ansible.cfg
 fi
 
 if [[ $EXPORT -eq 1 ]]; then
