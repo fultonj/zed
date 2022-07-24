@@ -40,3 +40,28 @@ On the new standalone VM run:
 - [git-init.sh ext](../init/git-init.sh)
 - [pre-compute.sh](pre-compute.sh)
 - [compute.sh](compute.sh)
+
+If [compute.sh](compute.sh) fails, then run
+[compute-workarounds.sh](compute-workarounds.sh)
+and then re-run [compute.sh](compute.sh).
+
+So far I see the containers running:
+
+```
+[stack@centos standalone]$ sudo podman ps
+CONTAINER ID  IMAGE                                                                COMMAND      CREATED        STATUS                      PORTS       NAMES
+6e4e50574f07  quay.io/tripleomastercentos9/openstack-cron:current-tripleo          kolla_start  5 minutes ago  Up 5 minutes ago (healthy)              logrotate_crond
+1ea932ebe043  quay.io/tripleomastercentos9/openstack-iscsid:current-tripleo        kolla_start  5 minutes ago  Up 5 minutes ago                        iscsid
+afe55e027274  quay.io/tripleomastercentos9/openstack-nova-libvirt:current-tripleo  kolla_start  4 minutes ago  Up 4 minutes ago                        nova_virtlogd
+9dbdae93acab  quay.io/tripleomastercentos9/openstack-nova-libvirt:current-tripleo  kolla_start  4 minutes ago  Up 4 minutes ago                        nova_virtsecretd
+45438e3f4727  quay.io/tripleomastercentos9/openstack-nova-libvirt:current-tripleo  kolla_start  4 minutes ago  Up 4 minutes ago                        nova_virtnodedevd
+231c3be65acf  quay.io/tripleomastercentos9/openstack-nova-libvirt:current-tripleo  kolla_start  4 minutes ago  Up 4 minutes ago                        nova_virtstoraged
+1612c0c56061  quay.io/tripleomastercentos9/openstack-nova-libvirt:current-tripleo  kolla_start  4 minutes ago  Up 4 minutes ago                        nova_virtqemud
+d165f490f0a0  quay.io/tripleomastercentos9/openstack-nova-libvirt:current-tripleo  kolla_start  4 minutes ago  Up 4 minutes ago                        nova_virtproxyd
+254b15b1ba5b  quay.io/tripleomastercentos9/openstack-nova-compute:current-tripleo  kolla_start  4 minutes ago  Up 4 minutes ago                        nova_compute
+[stack@centos standalone]$ 
+```
+
+But `openstack compute service list` is not listing my new compute
+node. I will debug that next and possibly redeploy to catch up with
+updates.
