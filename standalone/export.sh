@@ -62,4 +62,5 @@ diff -u $SRC $DEF
 
 if [[ $WRITE -eq 1 ]]; then
     cp -v -f $DEF $SRC
+    echo 'tripleo_nova_libvirt_need_libvirt_secret=false' >> $SRC
 fi
