@@ -77,15 +77,18 @@ done
 popd
 # -------------------------------------------------------
 if [[ $1 == 'ext' ]]; then
+    if [[ ! -e /usr/bin/jq ]]; then
+        sudo dnf install jq -y
+    fi
     pushd /home/stack/ansible-role-chrony
     git review -d 842223
     popd
 
     pushd /home/stack/tripleo-ansible
-    git review -d 847594
-    git log  --graph --topo-order  --pretty='format:%h %ai %s%d (%an)' | head -20
+    # git review -d 847594
+    curl https://gist.githubusercontent.com/slagle/8fbb18c90d3930a8ca5c5414ee34e78e/raw/3a946f1aa5678687e10d30e330332e9069f682f6/gerrit-pull-changes.sh | bash
+    git log  --graph --topo-order  --pretty='format:%h %ai %s%d (%an)' | head -40
     popd
-
     # this seems to get the ~20 patches we need from tripleo-ansible
     # https://review.opendev.org/q/topic:standalone-roles+project:openstack/tripleo-ansible+status:open
 fi
