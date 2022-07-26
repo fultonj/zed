@@ -2,8 +2,8 @@
 
 OTHER=1
 REPO=1
+LP1982744=1
 POD=1
-LP1982744=0
 CEPH=0
 INSTALL=1
 CONTAINERS=1
@@ -39,19 +39,22 @@ if [[ $REPO -eq 1 ]]; then
     fi
 fi
 
-if [[ $POD -eq 1 ]]; then
-    sudo dnf install -y podman
-fi
-
 if [[ $LP1982744 -eq 1 ]]; then
+    # workaround https://bugs.launchpad.net/tripleo/+bug/1982744
     sudo rpm -qa | grep selinux | sort
-    sudo dnf install -y container-selinux openstack-selinux setools-console
+    sudo dnf install -y container-selinux
+    sudo dnf install -y openstack-selinux
+    sudo dnf install -y setools-console
     sudo seinfo --type | grep container
     sudo rpm -V openstack-selinux
     if [[ ! $? -eq 0 ]]; then
         echo "LP1982744 will block the deployment"
         exit 1
     fi
+fi
+
+if [[ $POD -eq 1 ]]; then
+    sudo dnf install -y podman
 fi
 
 if [[ $CEPH -eq 1 ]]; then

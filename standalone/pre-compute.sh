@@ -3,6 +3,7 @@
 NET=1
 CEPH=0
 REPO=1
+LP1982744=1
 TMATE=0
 CHRONY=1
 INSTALL=1
@@ -37,6 +38,20 @@ if [[ $REPO -eq 1 ]]; then
     else
 	echo "$rpm is missing. Aborting."
 	exit 1
+    fi
+fi
+
+if [[ $LP1982744 -eq 1 ]]; then
+    # workaround https://bugs.launchpad.net/tripleo/+bug/1982744
+    sudo rpm -qa | grep selinux | sort
+    sudo dnf install -y container-selinux
+    sudo dnf install -y openstack-selinux
+    sudo dnf install -y setools-console
+    sudo seinfo --type | grep container
+    sudo rpm -V openstack-selinux
+    if [[ ! $? -eq 0 ]]; then
+        echo "LP1982744 will block the deployment"
+        exit 1
     fi
 fi
 
