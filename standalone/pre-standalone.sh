@@ -1,8 +1,8 @@
 #!/bin/bash
 
 OTHER=1
-POD=1
 REPO=1
+POD=1
 LP1982744=0
 CEPH=0
 INSTALL=1
@@ -22,10 +22,6 @@ if [[ $OTHER -eq 1 ]]; then
     fi
 fi
 
-if [[ $POD -eq 1 ]]; then
-    sudo dnf install -y podman 
-fi
-
 if [[ $REPO -eq 1 ]]; then
     if [[ ! -d ~/rpms ]]; then mkdir ~/rpms; fi
     url=https://trunk.rdoproject.org/centos9/component/tripleo/current/
@@ -41,6 +37,10 @@ if [[ $REPO -eq 1 ]]; then
 	echo "$rpm is missing. Aborting."
 	exit 1
     fi
+fi
+
+if [[ $POD -eq 1 ]]; then
+    sudo dnf install -y podman
 fi
 
 if [[ $LP1982744 -eq 1 ]]; then
