@@ -41,9 +41,10 @@ On the new standalone VM run:
 - [pre-compute.sh](pre-compute.sh)
 - [compute.sh](compute.sh)
 
-If [compute.sh](compute.sh) fails, then run
-[compute-workarounds.sh](compute-workarounds.sh)
-and then re-run [compute.sh](compute.sh).
+Note that [pre-compute.sh](pre-compute.sh) calls [export.sh](export.sh)
+which exports information from the standalone deployment to
+[populate local Ansible variables](https://github.com/fultonj/zed/commit/3be4554ad67a7885c5feea15dda9b806b4681031)
+on the new compute node.
 
 So far I see the containers running:
 
