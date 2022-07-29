@@ -10,6 +10,7 @@ CHRONY=1
 INSTALL=1
 ETH0=1
 EXPORT=1
+YAML_YML=1
 
 CONTROLLER_IP=192.168.24.2
 COMPUTE_IP=192.168.24.100
@@ -94,4 +95,31 @@ fi
 
 if [[ $EXPORT -eq 1 ]]; then
     bash export.sh
+fi
+
+function yml_yaml {
+    # symlink .yml files to .yaml files
+    echo "yml_yaml: $1"
+    pushd $1
+    for F1 in $(ls *.yml); do
+        F2=$(echo $F1 | sed -e s/yml/yaml/g)
+        sudo ln -vsf $F1 $F2
+    done
+    popd
+}
+
+function yaml_yml {
+    # symlink .yaml files to .yml files
+    echo "yaml_yml: $1"
+    pushd $1
+    for F1 in $(ls *.yaml); do
+        F2=$(echo $F1 | sed -e s/yaml/yml/g)
+        sudo ln -vsf $F1 $F2
+    done
+    popd
+}
+
+if [[ $YAML_YML -eq 1 ]]; then
+    yml_yaml /home/stack/tripleo-ansible/tripleo_ansible/roles/tripleo_nova_compute/tasks
+    yaml_yml /home/stack/tripleo-ansible/tripleo_ansible/roles/tripleo_nova_libvirt/tasks
 fi
