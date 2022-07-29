@@ -6,7 +6,6 @@
 WRITE=1
 CONTROLLER_IP=192.168.24.2
 SRC=/home/stack/tripleo-ansible/tripleo_ansible/inventory/99-custom
-SRC2=/home/stack/tripleo-ansible/tripleo_ansible/inventory/02-computes
 DEF=/tmp/$(basename $SRC)
 cp -v -f $SRC $DEF
 
@@ -65,5 +64,3 @@ if [[ $WRITE -eq 1 ]]; then
     cp -v -f $DEF $SRC
     echo 'tripleo_nova_libvirt_need_libvirt_secret=false' >> $SRC
 fi
-
-sed -i $SRC2 -e s/eth1/eth0/g
