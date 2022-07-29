@@ -1,6 +1,7 @@
 #!/bin/bash
 
 NET=1
+HOSTS=1
 CEPH=0
 REPO=1
 LP1982744=1
@@ -22,6 +23,11 @@ if [[ $NET -eq 1 ]]; then
         echo "Cannot ssh into $CONTROLLER_IP"
         exit 1
     fi
+fi
+
+if [[ $HOSTS -eq 1 ]]; then
+    ENTRY="$CONTROLLER_IP standalone.localdomain standalone"
+    sudo sh -c "echo $ENTRY >> /etc/hosts"
 fi
 
 if [[ $REPO -eq 1 ]]; then
