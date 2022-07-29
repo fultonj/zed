@@ -28,8 +28,10 @@ if [[ $NET -eq 1 ]]; then
 fi
 
 if [[ $HOSTS -eq 1 ]]; then
-    ENTRY="$CONTROLLER_IP standalone.localdomain standalone"
-    sudo sh -c "echo $ENTRY >> /etc/hosts"
+    ENTRY1="$CONTROLLER_IP standalone.localdomain standalone"
+    ENTRY2="$CONTROLLER_IP standalone.ctlplane.localdomain standalone.ctlplane"
+    sudo sh -c "echo $ENTRY1 >> /etc/hosts"
+    sudo sh -c "echo $ENTRY2 >> /etc/hosts"
 fi
 
 if [[ $REPO -eq 1 ]]; then
