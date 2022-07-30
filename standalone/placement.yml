@@ -1,0 +1,29 @@
+---
+- name: Workaround missing items in placement section (like LP 1850691)
+  gather_facts: false
+  hosts: localhost ansible_connection=local
+  vars:
+    my_file: /home/stack/tripleo-ansible/tripleo_ansible/inventory/99-custom
+    auth_url: "{{ lookup('ini', 'tripleo_nova_compute_placement_auth_url section=Compute:vars file=' ~ my_file) }}"
+    password: "{{ lookup('ini', 'tripleo_nova_compute_placement_password section=Compute:vars file=' ~ my_file) }}"
+    my_ini: /var/lib/config-data/ansible-generated/nova_libvirt/etc/nova/nova.conf
+  tasks:
+    - name: Add missing placement key/values to nova.conf
+      become: true
+      ini_file:
+        path: "{{ my_ini }}"
+        create: false
+        backup: false
+        section: 'placement'
+        option: "{{ item.key }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: 'auth_type', value: 'password' }
+        - { key: 'project_name', value: 'service' }
+        - { key: 'project_domain_name', value: 'Default' }
+        - { key: 'username', value: 'placement' }
+        - { key: 'user_domain_name', value: 'Default' }
+        - { key: 'valid_interfaces', value: 'internal' }
+        - { key: 'region_name', value: 'regionOne' }
+        - { key: 'auth_url', value: "{{ auth_url }}" }
+        - { key: 'password', value: "{{ password }}" }

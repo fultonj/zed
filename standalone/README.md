@@ -46,8 +46,18 @@ which exports information from the standalone deployment to
 [populate local Ansible variables](https://github.com/fultonj/zed/commit/3be4554ad67a7885c5feea15dda9b806b4681031)
 on the new compute node.
 
-So far I see the containers running:
+Note that [compute.sh](compute.sh) calls [placement.yml](placement.yml)
+which contains a workaround to the symptoms of 
+[LP 1850691](https://bugs.launchpad.net/charm-nova-cell-controller/+bug/1850691).
+I don't know why the placement section of the nova.conf genereated
+by the new tripleo-ansible standalone compute roles has a missing
+placement section. This playbook just populates the missing placement
+section with two variables from [export.sh](export.sh) and seven
+other key/value pairs.
 
+## Did it work
+
+Observe the newly running containers on the extra compute node.
 ```
 [stack@centos standalone]$ sudo podman ps
 CONTAINER ID  IMAGE                                                                COMMAND      CREATED        STATUS                      PORTS       NAMES
@@ -63,6 +73,18 @@ d165f490f0a0  quay.io/tripleomastercentos9/openstack-nova-libvirt:current-triple
 [stack@centos standalone]$ 
 ```
 
-But `openstack compute service list` is not listing my new compute
-node. I will debug that next and possibly redeploy to catch up with
-updates.
+Observe that the compute node is now available to have instances
+scheduled on it.
+
+```
+[stack@standalone ~]$ openstack compute service list
++--------------------------------------+----------------+------------------------+----------+---------+-------+----------------------------+
+| ID                                   | Binary         | Host                   | Zone     | Status  | State | Updated At                 |
++--------------------------------------+----------------+------------------------+----------+---------+-------+----------------------------+
+| f15ce10c-2758-42bd-b0f8-2f029bd8e857 | nova-conductor | standalone.localdomain | internal | enabled | up    | 2022-07-30T20:01:38.000000 |
+| 379f119a-6ca1-45ca-b2bd-2b34a3c6ce52 | nova-scheduler | standalone.localdomain | internal | enabled | up    | 2022-07-30T20:01:38.000000 |
+| 11f15db2-2107-4422-afbb-b620095dd7cb | nova-compute   | standalone.localdomain | nova     | enabled | up    | 2022-07-30T20:01:38.000000 |
+| cc95edeb-68d4-419b-8e84-f22467aebd29 | nova-compute   | centos.example.com     | nova     | enabled | up    | 2022-07-30T20:01:34.000000 |
++--------------------------------------+----------------+------------------------+----------+---------+-------+----------------------------+
+[stack@standalone ~]$
+```
