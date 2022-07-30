@@ -1,4 +1,4 @@
-ctlplane_gateway_ip=192.168.24.1
+ctlplane_gateway_ip=192.168.122.1
 tripleo_nova_compute_DEFAULT_host="centos.example.com"
 tripleo_nova_compute_DEFAULT_my_ip="192.168.24.100"
 tripleo_nova_compute_libvirt_live_migration_inbound_addr="standalone.localdomain"
