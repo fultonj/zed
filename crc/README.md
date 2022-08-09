@@ -5,3 +5,4 @@
 - [maria.sh](maria.sh): Deploy MariaDB
 - [keystone.sh](keystone.sh): Deploy Keystone
 - [test_keystone.sh](test_keystone.sh): Test Keystone
+- [nfs.sh](nfs.sh): Set up NFS server for Cinder/Glance to use (for now)
