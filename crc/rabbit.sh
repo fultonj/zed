@@ -6,7 +6,7 @@ if [[ ! -d ~/install_yamls ]]; then
 fi
 
 eval $(crc oc-env)
-oc login -u developer https://api.crc.testing:6443
+oc login -u kubeadmin https://api.crc.testing:6443
 
 pushd ~/install_yamls
 
