@@ -4,3 +4,4 @@
 - [rabbit.sh](rabbit.sh): Deploy RabbitMQ
 - [maria.sh](maria.sh): Deploy MariaDB
 - [keystone.sh](keystone.sh): Deploy Keystone
+- [test_keystone.sh](test_keystone.sh): Test Keystone
