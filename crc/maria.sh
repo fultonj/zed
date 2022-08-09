@@ -15,3 +15,7 @@ sleep 60
 make mariadb_deploy
 
 popd
+
+oc get csv -l operators.coreos.com/mariadb-operator.openstack
+oc get pods -l app=mariadb
+oc exec -it  pod/mariadb-openstack -- mysql -uroot -p12345678 -e "show databases;"
