@@ -8,3 +8,9 @@
 - [nfs.sh](nfs.sh): Set up NFS server for Cinder/Glance to use (for now)
 - [cinder.sh](cinder.sh): Deploy Cinder
 - [test_cinder.sh](test_cinder.sh): Test Cinder
+- [clean.sh](clean.sh): Remove keystone, maria, cinder, crc
+
+## todo
+
+- deploy glance
+- deploy neutron and ovn
