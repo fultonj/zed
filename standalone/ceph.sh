@@ -24,8 +24,8 @@ if [ -z "$FSID" ]; then
          --allow-fqdn-hostname \
          --mon-ip $MON_IP \
          --single-host-defaults
+    FSID=$(sudo cephadm ls | jq '.[]' | jq 'select(.name | test("^mon*")).fsid');
 fi
-FSID=$(sudo cephadm ls | jq '.[]' | jq 'select(.name | test("^mon*")).fsid');
 echo $FSID
 
 echo "Create OSDs if necessary"
@@ -33,9 +33,12 @@ OSD_COUNT=$(sudo cephadm shell -- ceph status --format json 2> /dev/null | jq .o
 if [[ $OSD_COUNT -eq 0 ]]; then
     # you must have on free block device for this to work e.g. /dev/vdb
     sudo cephadm shell -- ceph orch apply osd --all-available-devices
-    sleep 5
+    echo "wating 30 seconds for OSDs to come up"
+    date
+    sleep 30
+    date
+    OSD_COUNT=$(sudo cephadm shell -- ceph status --format json 2> /dev/null | jq .osdmap.num_up_osds)
 fi
-OSD_COUNT=$(sudo cephadm shell -- ceph status --format json 2> /dev/null | jq .osdmap.num_up_osds)
 echo "OSD Count: $OSD_COUNT"
 sudo cephadm shell -- ceph -s 2> /dev/null
 
@@ -50,8 +53,8 @@ echo "Create cephx key for openstack client if necessary"
 CEPHX=$(sudo cephadm shell -- ceph auth get client.openstack 2> /dev/null | grep key | awk {'print $3'})
 if [ -z "$CEPHX" ]; then
     sudo cephadm shell -- ceph auth add client.openstack mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=vms, allow rwx pool=volumes, allow rwx pool=images'
+    CEPHX=$(sudo cephadm shell -- ceph auth get client.openstack 2> /dev/null | grep key | awk {'print $3'})
 fi
-CEPHX=$(sudo cephadm shell -- ceph auth get client.openstack 2> /dev/null | grep key | awk {'print $3'})
 echo $CEPHX
 
 echo "Create ceph_client.yaml file for external compute nodes"
@@ -61,15 +64,12 @@ tripleo_ceph_client_fsid: $FSID
 tripleo_ceph_client_cluster: ceph
 external_cluster_mon_ips: $MON_IP
 keys:
-       - name: openstack
-         key: $CEPHX
-         mon: 'allow r'
-         osd: 'allow class-read object_prefix rbd_children, allow rwx pool=vms, allow rwx pool=volumes, allow rwx pool=images'
+- name: openstack
+  key: $CEPHX
+  mon: 'allow r'
+  osd: 'allow class-read object_prefix rbd_children, allow rwx pool=vms, allow rwx pool=volumes, allow rwx pool=images'
 EOF
 ls -l ceph_client.yaml
-echo '"""'
-cat ceph_client.yaml
-echo '"""'
 
 echo "Create ceph_heat.yaml file for standalone installer"
 cat <<EOF > ceph_heat.yaml
@@ -80,6 +80,3 @@ parameter_defaults:
   CephExternalMonHost: $MON_IP
 EOF
 ls -l ceph_heat.yaml
-echo '"""'
-cat ceph_heat.yaml
-echo '"""'
