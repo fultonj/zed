@@ -7,7 +7,14 @@ My scripts to reproduce https://etherpad.opendev.org/p/tripleo-standalone-roles
 [Optional] I make my centos-stream9 VMs on a hypervisor by running
 - [./centos.sh](https://github.com/fultonj/tripleo-laptop/blob/master/centos.sh)
 - [./clone.sh standalone](https://github.com/fultonj/tripleo-laptop/blob/master/clone.sh)
-- [./clone.sh overcloud](https://github.com/fultonj/tripleo-laptop/blob/master/clone.sh)
+- [./clone.sh overcloud 2](https://github.com/fultonj/tripleo-laptop/blob/master/clone.sh)
+
+## Deploy Standalone Ceph
+
+On the overcloud1 VM (the 2nd node produced from running `./clone.sh
+overcloud 2`) run:
+
+- [ceph.sh](ceph.sh)
 
 ## Deploy Standalone OpenStack
 
@@ -35,7 +42,8 @@ Confirm it works.
 
 ## Deploy Extra Compute Node
 
-On the new standalone VM run:
+On the overcloud0 VM (the 1st node produced from running `./clone.sh
+overcloud 2`) run:
 
 - [git-init.sh ext](../init/git-init.sh)
 - [pre-compute.sh](pre-compute.sh)
