@@ -28,7 +28,58 @@ fi
 FSID=$(sudo cephadm ls | jq '.[]' | jq 'select(.name | test("^mon*")).fsid');
 echo $FSID
 
-echo "Ensure all available devices are OSDs"
-sudo cephadm shell -- ceph orch apply osd --all-available-devices
+echo "Create OSDs if necessary"
+OSD_COUNT=$(sudo cephadm shell -- ceph status --format json 2> /dev/null | jq .osdmap.num_up_osds)
+if [[ $OSD_COUNT -eq 0 ]]; then
+    # you must have on free block device for this to work e.g. /dev/vdb
+    sudo cephadm shell -- ceph orch apply osd --all-available-devices
+    sleep 5
+fi
+OSD_COUNT=$(sudo cephadm shell -- ceph status --format json 2> /dev/null | jq .osdmap.num_up_osds)
+echo "OSD Count: $OSD_COUNT"
+sudo cephadm shell -- ceph -s 2> /dev/null
 
-sudo cephadm shell -- ceph -s
+echo "Ensure pools for openstack exist"
+for POOL in vms volumes images; do
+    # pool creation is idempotent
+    sudo cephadm shell -- ceph osd pool create $POOL 2> /dev/null
+done
+sudo cephadm shell -- ceph df 2> /dev/null
+
+echo "Create cephx key for openstack client if necessary"
+CEPHX=$(sudo cephadm shell -- ceph auth get client.openstack 2> /dev/null | grep key | awk {'print $3'})
+if [ -z "$CEPHX" ]; then
+    sudo cephadm shell -- ceph auth add client.openstack mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=vms, allow rwx pool=volumes, allow rwx pool=images'
+fi
+CEPHX=$(sudo cephadm shell -- ceph auth get client.openstack 2> /dev/null | grep key | awk {'print $3'})
+echo $CEPHX
+
+echo "Create ceph_client.yaml file for external compute nodes"
+cat <<EOF > ceph_client.yaml
+---
+tripleo_ceph_client_fsid: $FSID
+tripleo_ceph_client_cluster: ceph
+external_cluster_mon_ips: $MON_IP
+keys:
+       - name: openstack
+         key: $CEPHX
+         mon: 'allow r'
+         osd: 'allow class-read object_prefix rbd_children, allow rwx pool=vms, allow rwx pool=volumes, allow rwx pool=images'
+EOF
+ls -l ceph_client.yaml
+echo '"""'
+cat ceph_client.yaml
+echo '"""'
+
+echo "Create ceph_heat.yaml file for standalone installer"
+cat <<EOF > ceph_heat.yaml
+---
+parameter_defaults:
+  CephClusterFSID: $FSID
+  CephClientKey: $CEPHX
+  CephExternalMonHost: $MON_IP
+EOF
+ls -l ceph_heat.yaml
+echo '"""'
+cat ceph_heat.yaml
+echo '"""'
