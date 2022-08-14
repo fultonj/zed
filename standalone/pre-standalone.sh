@@ -1,10 +1,10 @@
 #!/bin/bash
 
 OTHER=1
+CEPH=1
 REPO=1
 LP1982744=1
 POD=1
-CEPH=0
 INSTALL=1
 CONTAINERS=1
 HOSTNAME=1
@@ -12,14 +12,27 @@ DNS=1
 EXTRAS=0
 TMATE=0
 
+OPT='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+
 if [[ $OTHER -eq 1 ]]; then
     EXT_COMPUTE="192.168.122.251"
     # confirm standalone can reach external compute
-    ssh $EXT_COMPUTE -l stack "uname -a"
+    ssh $OPT $EXT_COMPUTE -l stack "uname -a"
     if [[ ! $? -eq 0 ]]; then
         echo "Cannot ssh into $EXT_COMPUTE"
         exit 1
     fi
+fi
+
+if [[ $CEPH -eq 1 ]]; then
+    EXT_CEPH="192.168.122.250"
+    ssh $OPT $EXT_CEPH -l stack "ls zed/standalone/ceph_heat.yaml"
+    if [[ ! $? -eq 0 ]]; then
+        echo "Cannot ssh into $EXT_CEPH"
+        exit 1
+    fi
+    scp $OPT stack@$EXT_CEPH:/home/stack/zed/standalone/ceph_heat.yaml ~/ceph_heat.yaml
+    ls -l ~/ceph_heat.yaml
 fi
 
 if [[ $REPO -eq 1 ]]; then
@@ -55,10 +68,6 @@ fi
 
 if [[ $POD -eq 1 ]]; then
     sudo dnf install -y podman
-fi
-
-if [[ $CEPH -eq 1 ]]; then
-    sudo dnf install -y cephadm util-linux lvm2
 fi
 
 if [[ $INSTALL -eq 1 ]]; then
