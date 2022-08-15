@@ -20,6 +20,12 @@ oc logs $OP
 # deploy glance
 make glance_deploy
 
+# modify glance to use use 1G PVs created by crc_storage
+GLANCE_CR=out/openstack/glance/cr/glance_v1beta1_glanceapi.yaml
+sed -i $GLANCE_CR -e s/10G/1G/g
+echo '  storageClass: local-storage' >> $GLANCE_CR
+oc apply -f $GLANCE_CR
+
 popd
 
 oc get pods -l service=glance

@@ -13,12 +13,14 @@ pushd ~/install_yamls
 # Clean CRs
 
 # make neutron_deploy_cleanup
+make glance_deploy_cleanup
 make keystone_deploy_cleanup
 make mariadb_deploy_cleanup
 make crc_storage_cleanup
 
 # Clean Operators
 # make neutron_cleanup
+make glance_cleanup
 make cinder_cleanup
 make keystone_cleanup
 make mariadb_cleanup

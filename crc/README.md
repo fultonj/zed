@@ -5,12 +5,9 @@
 - [maria.sh](maria.sh): Deploy MariaDB
 - [keystone.sh](keystone.sh): Deploy Keystone
 - [test_keystone.sh](test_keystone.sh): Test Keystone
-- [nfs.sh](nfs.sh): Set up NFS server for Cinder/Glance to use (for now)
+- [glance.sh](glance.sh): Deploy Glance
+- [test_glance.sh](test_glance.sh): Test Glance
+- [nfs.sh](nfs.sh): Set up NFS server for Cinder
 - [cinder.sh](cinder.sh): Deploy Cinder
 - [test_cinder.sh](test_cinder.sh): Test Cinder
 - [clean.sh](clean.sh): Remove keystone, maria, cinder, crc
-
-## todo
-
-- deploy glance
-- deploy neutron and ovn
