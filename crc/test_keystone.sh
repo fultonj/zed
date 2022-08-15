@@ -1,7 +1,7 @@
 #!/bin/bash
 
 eval $(crc oc-env)
-oc login -u kubeadmin https://api.crc.testing:6443
+oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
 
 oc get csv -l operators.coreos.com/keystone-operator.openstack
 oc get pods -l service=keystone
