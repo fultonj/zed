@@ -2,7 +2,7 @@
 
 NET=1
 HOSTS=1
-CEPH=0
+CEPH=1
 REPO=1
 LP1982744=1
 TMATE=0
@@ -10,7 +10,7 @@ CHRONY=1
 INSTALL=1
 ETH0=1
 EXPORT=1
-YAML_YML=1
+YAML_YML=0
 
 CONTROLLER_IP=192.168.24.2
 COMPUTE_IP=192.168.24.100
@@ -32,6 +32,17 @@ if [[ $HOSTS -eq 1 ]]; then
     ENTRY2="$CONTROLLER_IP standalone.ctlplane.localdomain standalone.ctlplane"
     sudo sh -c "echo $ENTRY1 >> /etc/hosts"
     sudo sh -c "echo $ENTRY2 >> /etc/hosts"
+fi
+
+if [[ $CEPH -eq 1 ]]; then
+    EXT_CEPH="192.168.122.250"
+    ssh $OPT $EXT_CEPH -l stack "ls zed/standalone/ceph_client.yaml"
+    if [[ ! $? -eq 0 ]]; then
+        echo "Cannot ssh into $EXT_CEPH"
+        exit 1
+    fi
+    scp $OPT stack@$EXT_CEPH:/home/stack/zed/standalone/ceph_client.yaml ~/ceph_client.yaml
+    ls -l ~/ceph_client.yaml
 fi
 
 if [[ $REPO -eq 1 ]]; then
@@ -63,10 +74,6 @@ if [[ $LP1982744 -eq 1 ]]; then
         echo "LP1982744 will block the deployment"
         exit 1
     fi
-fi
-
-if [[ $CEPH -eq 1 ]]; then
-    sudo dnf install -y cephadm util-linux lvm2
 fi
 
 if [[ $TMATE -eq 1 ]]; then
