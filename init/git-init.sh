@@ -2,6 +2,7 @@
 # Clones the repos that I am interested in.
 # -------------------------------------------------------
 if [[ $1 == 'ext' ]]; then
+    sudo rm -rf ~/ext
     declare -a repos=(
                       'openstack/tripleo-ansible' \
                       'openstack/ansible-role-chrony' \
