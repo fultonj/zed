@@ -6,8 +6,8 @@ CEPH=1
 REPO=1
 LP1982744=1
 TMATE=0
-CHRONY=1
 INSTALL=1
+CHRONY=1
 ETH0=1
 EXPORT=1
 
@@ -86,13 +86,13 @@ if [[ $TMATE -eq 1 ]]; then
     popd
 fi
 
+if [[ $INSTALL -eq 1 ]]; then
+    sudo dnf install -y ansible-collection-containers-podman python3-tenacity ansible-collection-community-general ansible-collection-ansible-posix
+fi
+
 if [[ $CHRONY -eq 1 ]]; then
     if [[ ! -d ~/roles ]]; then mkdir ~/roles; fi
     ln -s ~/ext/ansible-role-chrony ~/roles/chrony;
-fi
-
-if [[ $INSTALL -eq 1 ]]; then
-    sudo dnf install -y ansible-collection-containers-podman python3-tenacity ansible-collection-community-general ansible-collection-ansible-posix
 fi
 
 if [[ $ETH0 -eq 1 ]]; then
