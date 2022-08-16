@@ -25,7 +25,7 @@ if [[ $OTHER -eq 1 ]]; then
 fi
 
 if [[ $CEPH -eq 1 ]]; then
-    EXT_CEPH="192.168.122.250"
+    EXT_CEPH="192.168.122.253"
     ssh $OPT $EXT_CEPH -l stack "ls zed/standalone/ceph_heat.yaml"
     if [[ ! $? -eq 0 ]]; then
         echo "Cannot ssh into $EXT_CEPH"

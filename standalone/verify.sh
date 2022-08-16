@@ -14,7 +14,7 @@ HYPER=standalone.localdomain
 
 GITHUB=fultonj.keys
 OPT='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
-EXT_CEPH="192.168.122.250"
+EXT_CEPH="192.168.122.253"
 
 function ceph() {
     ssh $OPT $EXT_CEPH -l stack "sudo cephadm shell -- $1" 

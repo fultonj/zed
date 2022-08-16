@@ -1,7 +1,7 @@
 #!/bin/bash
 # Install standalone ceph with pools for openstack
 
-MON_IP=192.168.122.250
+MON_IP=192.168.122.253
 
 echo "Ensure all dependencies are installed"
 for PKG in container-selinux podman catatonit util-linux lvm2 jq; do
