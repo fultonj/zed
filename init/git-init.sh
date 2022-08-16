@@ -85,15 +85,23 @@ if [[ $1 == 'ext' ]]; then
     if [[ ! -e /usr/bin/jq ]]; then
         sudo dnf install jq -y
     fi
+
+    # Install and link chrony
     pushd /home/stack/ext/ansible-role-chrony
     git review -d 842223
     popd
+    if [[ ! -d ~/roles ]]; then mkdir ~/roles; fi
+    ln -s ~/ext/ansible-role-chrony ~/roles/chrony;
 
     pushd /home/stack/ext/tripleo-ansible
     # git review -d 847594
-    curl https://gist.githubusercontent.com/slagle/8fbb18c90d3930a8ca5c5414ee34e78e/raw/4cbe8356b093b152252ab27271d58b33ad421a10/gerrit-pull-changes.sh | bash
+    curl https://gist.githubusercontent.com/slagle/8fbb18c90d3930a8ca5c5414ee34e78e/raw/a45412851128e7ce06ba388a738680ed42941e5b/gerrit-pull-changes.sh | bash
     git log  --graph --topo-order  --pretty='format:%h %ai %s%d (%an)' | head -40
     popd
     # this seems to get the ~20 patches we need from tripleo-ansible
     # https://review.opendev.org/q/topic:standalone-roles+project:openstack/tripleo-ansible+status:open
+
+    # use eth0, not eth1, for br-ex bridge (neutron_public_interface_name)
+    sed -i /home/stack/ext/tripleo-ansible/tripleo_ansible/inventory/02-computes \
+        -e s/eth1/eth0/g
 fi
