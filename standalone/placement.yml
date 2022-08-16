@@ -3,7 +3,7 @@
   gather_facts: false
   hosts: localhost ansible_connection=local
   vars:
-    my_file: /home/stack/tripleo-ansible/tripleo_ansible/inventory/99-custom
+    my_file: /home/stack/ext/tripleo-ansible/tripleo_ansible/inventory/99-custom
     auth_url: "{{ lookup('ini', 'tripleo_nova_compute_placement_auth_url section=Compute:vars file=' ~ my_file) }}"
     password: "{{ lookup('ini', 'tripleo_nova_compute_placement_password section=Compute:vars file=' ~ my_file) }}"
     my_ini: /var/lib/config-data/ansible-generated/nova_libvirt/etc/nova/nova.conf
