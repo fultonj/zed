@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ ! -d ~/ext/tripleo-ansible/roles/tripleo_nova_libvirt ]]; then
+    echo "tripleo_nova_libvirt is missing from ~/ext/tripleo-ansible/roles"
+    exit 1
+fi
+
 INV=/home/stack/ext/tripleo-ansible/tripleo_ansible/inventory
 PLAY=/home/stack/ext/tripleo-ansible/tripleo_ansible/playbooks/deploy-overcloud-compute.yaml
 
