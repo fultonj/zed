@@ -39,12 +39,11 @@
         option: "{{ item.key }}"
         value: "{{ item.value }}"
       loop:
-        - { key: 'auth_type', value: 'password' }
+        - { key: 'auth_type', value: 'v3password' }
         - { key: 'project_name', value: 'service' }
-        - { key: 'project_domain_name', value: 'Default' }
-        - { key: 'username', value: 'placement' }
         - { key: 'user_domain_name', value: 'Default' }
-        - { key: 'valid_interfaces', value: 'internal' }
-        - { key: 'region_name', value: 'regionOne' }
+        - { key: 'project_domain_name', value: 'Default' }
+        - { key: 'os_region_name', value: 'region_one' }
+        - { key: 'username', value: 'neutron' }
         - { key: 'auth_url', value: "{{ neutron_auth_url }}" }
         - { key: 'password', value: "{{ neutron_password }}" }
