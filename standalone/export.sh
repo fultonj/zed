@@ -2,7 +2,7 @@
 
 CONTROLLER_IP=192.168.24.2
 SRC=/var/lib/config-data/puppet-generated/nova/etc/nova/nova.conf
-DST=/home/stack/tripleo-ansible/tripleo_ansible/inventory/99-custom
+DST=/home/stack/ext/tripleo-ansible/tripleo_ansible/inventory/99-custom
 OPT='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
 
 ssh $OPT $CONTROLLER_IP -l stack \

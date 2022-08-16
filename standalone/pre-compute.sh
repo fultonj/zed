@@ -97,7 +97,7 @@ fi
 
 if [[ $ETH0 -eq 1 ]]; then
     # use eth0, not eth1, for br-ex bridge (neutron_public_interface_name)
-    sed -i /home/stack/tripleo-ansible/tripleo_ansible/inventory/02-computes \
+    sed -i /home/stack/ext/tripleo-ansible/tripleo_ansible/inventory/02-computes \
         -e s/eth1/eth0/g
 fi
 
