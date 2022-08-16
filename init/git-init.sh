@@ -53,8 +53,13 @@ if [ $? -gt 0 ]; then
         python3 get-pip.py
     fi
     pip install git-review tox
-fi 
-pushd ~
+fi
+if [[ $1 == 'ext' ]]; then
+    mkdir -p ~/ext
+    pushd ~/ext
+else
+    pushd ~
+fi
 for repo in "${repos[@]}"; do
     dir=$(echo $repo | awk 'BEGIN { FS = "/" } ; { print $2 }')
     if [ ! -d $dir ]; then
@@ -80,11 +85,11 @@ if [[ $1 == 'ext' ]]; then
     if [[ ! -e /usr/bin/jq ]]; then
         sudo dnf install jq -y
     fi
-    pushd /home/stack/ansible-role-chrony
+    pushd /home/stack/ext/ansible-role-chrony
     git review -d 842223
     popd
 
-    pushd /home/stack/tripleo-ansible
+    pushd /home/stack/ext/tripleo-ansible
     # git review -d 847594
     curl https://gist.githubusercontent.com/slagle/8fbb18c90d3930a8ca5c5414ee34e78e/raw/4cbe8356b093b152252ab27271d58b33ad421a10/gerrit-pull-changes.sh | bash
     git log  --graph --topo-order  --pretty='format:%h %ai %s%d (%an)' | head -40
