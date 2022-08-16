@@ -62,6 +62,8 @@ placement section. This playbook just populates the missing placement
 section with two variables from [export.sh](export.sh) and seven
 other key/value pairs.
 
+On the standalone VM run [discover.sh](discover.sh).
+
 ## Did it work
 
 Observe the newly running containers on the extra compute node.
