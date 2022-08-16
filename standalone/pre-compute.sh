@@ -88,7 +88,7 @@ fi
 
 if [[ $CHRONY -eq 1 ]]; then
     if [[ ! -d ~/roles ]]; then mkdir ~/roles; fi
-    ln -s ~/ansible-role-chrony ~/roles/chrony;
+    ln -s ~/ext/ansible-role-chrony ~/roles/chrony;
 fi
 
 if [[ $INSTALL -eq 1 ]]; then
