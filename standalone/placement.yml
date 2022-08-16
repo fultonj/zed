@@ -1,5 +1,5 @@
 ---
-- name: Workaround missing items in sectoins for: placement keystone
+- name: Workaround missing items in sections for placement keystone
   gather_facts: false
   hosts: localhost ansible_connection=local
   vars:
