@@ -43,7 +43,8 @@
         - { key: 'project_name', value: 'service' }
         - { key: 'user_domain_name', value: 'Default' }
         - { key: 'project_domain_name', value: 'Default' }
-        - { key: 'os_region_name', value: 'region_one' }
+        - { key: 'region_name', value: 'regionOne' }
         - { key: 'username', value: 'neutron' }
+        - { key: 'valid_interfaces', value: 'internal' }
         - { key: 'auth_url', value: "{{ neutron_auth_url }}" }
         - { key: 'password', value: "{{ neutron_password }}" }
