@@ -47,11 +47,11 @@ sudo openstack tripleo deploy \
      --control-virtual-ip $VIP \
      -r ~/templates/roles/Standalone.yaml \
      -e ~/templates/environments/standalone/standalone-tripleo.yaml \
-     -e ~/templates/environments/external-ceph.yaml \
      -e ~/containers-prepare-parameters.yaml \
-     -e ~/ceph_heat.yaml \
      -e standalone_parameters.yaml \
      --output-dir $HOME \
      $@
 
-#  --keep-running \
+# deploy without ceph for now
+#     -e ~/templates/environments/external-ceph.yaml \
+#     -e ~/ceph_heat.yaml \
