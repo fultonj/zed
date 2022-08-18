@@ -55,16 +55,20 @@ on the new compute node.
 
 Note that [compute.sh](compute.sh) calls [placement.yml](placement.yml)
 which contains a workaround to the symptoms of 
-[LP 1850691](https://bugs.launchpad.net/charm-nova-cell-controller/+bug/1850691).
-I don't know why the placement section of the nova.conf genereated
-by the new tripleo-ansible standalone compute roles has a missing
-placement section. This playbook just populates the missing placement
-section with two variables from [export.sh](export.sh) and seven
-other key/value pairs.
+[LP 1850691](https://bugs.launchpad.net/charm-nova-cell-controller/+bug/1850691)
+for the palcement service as well as fill in the [neutron] section of
+the nova.conf. I don't know why the placement section of the nova.conf
+genereated by the new tripleo-ansible standalone compute roles has a
+missing placement section. This playbook just populates the missing
+placement section with four variables from [export.sh](export.sh) and
+other missing key/value pairs. I
+[shared](https://paste.opendev.org/show/816007) this with the
+author of the tripleo_nova_compute role.
 
-On the standalone VM run [discover.sh](discover.sh).
+On the standalone VM run [discover.sh](discover.sh) so that new
+exteranl compute node becomes available for scheduling.
 
-## Did it work
+## Did it work?
 
 Observe the newly running containers on the extra compute node.
 ```
@@ -98,4 +102,10 @@ scheduled on it.
 [stack@standalone ~]$
 ```
 
-Use [verify.sh](verify.sh) to test further.
+Use [verify.sh](verify.sh) to launch an instance on the new compute node.
+
+## Develop
+
+Use [git-init.sh](../init/git-init.sh) (without the 'ext' argument) to
+get a copy of tripleo-ansible in ~ (not in ~/ext) and write a patch
+there. Copy the changed files into ~/ext to test them.

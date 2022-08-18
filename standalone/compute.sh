@@ -17,3 +17,4 @@ popd
 
 # workaround
 ansible-playbook placement.yml
+sudo podman restart nova_compute

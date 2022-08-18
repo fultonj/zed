@@ -1,5 +1,6 @@
 ---
-- name: Workaround missing items in sections for placement keystone
+- name: Workaround missing items in sections for placement and neutron
+  # workaround for this https://paste.opendev.org/show/816007
   gather_facts: false
   hosts: localhost ansible_connection=local
   vars:
