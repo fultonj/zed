@@ -7,10 +7,10 @@ CEPH=0
 CLEAN=0
 GLANCE=0
 CINDER=0
-NOVA=0
+NOVA=1
 
-HYPER=standalone.localdomain
-# HYPER=centos.example.com
+# HYPER=standalone.localdomain
+HYPER=centos.example.com
 
 GITHUB=fultonj.keys
 OPT='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
@@ -69,10 +69,10 @@ if [[ $NOVA -eq 1 ]]; then
     export PUBLIC_NET_END=192.168.24.5
     export DNS_SERVER=1.1.1.1
     KEYS=1
-    SEC=1
-    NET=1
-    ROUTE=1
-    PRE=1
+    SEC=0
+    NET=0
+    ROUTE=0
+    FLAV=1
     VM=1
     SSH=0
     if [[ $CLEAN -eq 1 ]]; then
@@ -106,6 +106,7 @@ if [[ $NOVA -eq 1 ]]; then
         openstack subnet create private-net \
                   --subnet-range $PRIVATE_NETWORK_CIDR \
                   --network private
+        openstack floating ip create public
     fi
     if [[ $ROUTE -eq 1 ]]; then
         # create router
@@ -115,16 +116,18 @@ if [[ $NOVA -eq 1 ]]; then
         openstack router set vrouter --external-gateway public
         openstack router add subnet vrouter private-net
     fi
-    if [[ $PRE -eq 1 ]]; then
-        openstack floating ip create public
+    if [[ $FLAV -eq 1 ]]; then
         openstack flavor create --ram 512 --disk 1 --ephemeral 0 --vcpus 1 --public m1.tiny
     fi
     if [[ $VM -eq 1 ]]; then
         openstack server create \
+                  --nic none \
                   --os-compute-api-version 2.74 --hypervisor-hostname $HYPER \
                   --flavor m1.tiny --image cirros --key-name default \
-                  --network private --security-group basic \
                   myserver-$HYPER
+
+        # It is expected at this point that instance networking won't work
+        # --network private --security-group basic \
         openstack server list
         echo "Waiting for building server to boot..."
         while [[ $(openstack server list -c Status -f value) == "BUILD" ]]; do
