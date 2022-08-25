@@ -12,16 +12,7 @@ if [[ ! -e pull-secret.txt ]]; then
 fi
 
 make download_tools
-
-# Increase CPU/RAM
-curl https://raw.githubusercontent.com/fultonj/install_yamls/99cf2ff7dc8593e737b8f510e566a4b42e5cb6d7/devsetup/scripts/crc-setup.sh > scripts/crc-setup.sh
-sed \
-    -e s/CPUS=4/CPUS=56/g \
-    -e s/MEMORY=9216/MEMORY=262144/g \
-    -i scripts/crc-setup.sh
-git diff
-
-make crc
+make CPUS=56 MEMORY=262144 crc
 
 ssh -i ~/.crc/machines/crc/id_ecdsa core@192.168.130.11 "uname -a"
 ssh -i ~/.crc/machines/crc/id_ecdsa core@192.168.130.11 "cat /etc/redhat-release"
