@@ -6,7 +6,7 @@ if [[ ! -d ~/ext/tripleo-ansible/roles/tripleo_nova_libvirt ]]; then
 fi
 
 INV=/home/stack/ext/tripleo-ansible/tripleo_ansible/inventory
-PLAY=/home/stack/ext/tripleo-ansible/tripleo_ansible/playbooks/deploy-overcloud-compute.yaml
+PLAY=/home/stack/ext/tripleo-ansible/tripleo_ansible/playbooks/deploy-overcloud-compute.yml
 
 cp ansible.cfg /home/stack/ansible.cfg
 sudo cp ansible.cfg /root/ansible.cfg
