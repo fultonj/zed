@@ -1,15 +1,8 @@
-ctlplane_gateway_ip=192.168.122.1
-tripleo_nova_compute_DEFAULT_host="centos.example.com"
-tripleo_nova_compute_DEFAULT_my_ip="192.168.24.100"
-tripleo_nova_compute_libvirt_live_migration_inbound_addr="standalone.localdomain"
-tripleo_nova_compute_libvirt_live_migration_uri="qemu+ssh://nova_migration@%s:2022/system?keyfile=/etc/nova/migration/identity&proxy=netcat"
-tripleo_nova_compute_vncproxy_host="http://192.168.24.3:6080/vnc_auto.html"
-tripleo_nova_compute_vnc_server_listen="192.168.24.2"
-tripleo_nova_compute_vncserver_proxyclient_address="192.168.24.2"
-tripleo_nova_compute_DEFAULT_reserved_host_memory_mb='1024'
-tripleo_nova_compute_reserved_host_memory='1024'
-tripleo_nova_libvirt_need_libvirt_secret=false
-ctlplane_dns_nameservers="192.168.122.1"
-dns_search_domains=""
-tripleo_ovn_encap_ip="192.168.24.100"
-tenant_ip="192.168.24.100"
+    ctlplane_gateway_ip: "192.168.122.1"
+    tripleo_nova_compute_vncproxy_host: "http://192.168.24.3:6080/vnc_auto.html"
+    tripleo_nova_compute_vncserver_proxyclient_address: "192.168.24.2"
+    tripleo_nova_compute_DEFAULT_reserved_host_memory_mb: '1024'
+    tripleo_nova_compute_reserved_host_memory: '1024'
+    tripleo_nova_libvirt_need_libvirt_secret: false
+    tripleo_ovn_encap_ip: "192.168.24.100"
+    tenant_ip: "192.168.24.100"

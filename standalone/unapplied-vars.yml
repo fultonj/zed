@@ -4,13 +4,18 @@
   gather_facts: false
   hosts: localhost ansible_connection=local
   vars:
-    my_file: /home/stack/ext/tripleo-ansible/tripleo_ansible/inventory/99-custom
-    placement_auth_url: "{{ lookup('ini', 'tripleo_nova_compute_placement_auth_url section=Compute:vars file=' ~ my_file) }}"
-    placement_password: "{{ lookup('ini', 'tripleo_nova_compute_placement_password section=Compute:vars file=' ~ my_file) }}"
-    neutron_auth_url: "{{ lookup('ini', 'tripleo_nova_compute_neutron_auth_url section=Compute:vars file=' ~ my_file) }}"
-    neutron_password: "{{ lookup('ini', 'tripleo_nova_compute_neutron_password section=Compute:vars file=' ~ my_file) }}"
     my_ini: /var/lib/config-data/ansible-generated/nova_libvirt/etc/nova/nova.conf
   tasks:
+    - name: Register 99-standalone-vars YAML file content as a variable
+      shell: "cat 99-standalone-vars"
+      register: result
+    - set_fact:
+        std_vars: "{{ (result.stdout | from_yaml).Compute.vars }}"
+    - set_fact:
+        placement_auth_url: "{{ std_vars.tripleo_nova_compute_placement_auth_url }}"
+        placement_password: "{{ std_vars.tripleo_nova_compute_placement_password }}"
+        neutron_auth_url: "{{ std_vars.tripleo_nova_compute_neutron_auth_url }}"
+        neutron_password: "{{ std_vars.tripleo_nova_compute_neutron_password }}"
     - name: Add missing placement key/values to nova.conf (like LP 1850691)
       become: true
       ini_file:
