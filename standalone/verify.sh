@@ -2,12 +2,13 @@
 
 export OS_CLOUD=standalone
 
+DISCOVER=1
 OVERVIEW=1
 CEPH=0
 CLEAN=0
 GLANCE=0
 CINDER=0
-NOVA=1
+NOVA=0
 
 # HYPER=standalone.localdomain
 HYPER=centos.example.com
@@ -19,6 +20,10 @@ EXT_CEPH="192.168.122.253"
 function ceph() {
     ssh $OPT $EXT_CEPH -l stack "sudo cephadm shell -- $1" 
 }
+
+if [[ $DISCOVER -eq 1 ]]; then
+    bash discover.sh
+fi
 
 if [[ $OVERVIEW -eq 1 ]]; then
     openstack endpoint list
@@ -128,7 +133,7 @@ if [[ $NOVA -eq 1 ]]; then
 
         # It is expected at this point that instance networking won't work
         # --network private --security-group basic \
-        openstack server list
+        # openstack server list
         echo "Waiting for building server to boot..."
         while [[ $(openstack server list -c Status -f value) == "BUILD" ]]; do
             echo -n "."
