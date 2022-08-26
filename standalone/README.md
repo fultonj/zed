@@ -105,6 +105,26 @@ scheduled on it.
 
 Use [verify.sh](verify.sh) to launch an instance on the new compute node.
 
+## Create /etc/ceph
+
+Run [ceph_client.sh](ceph_client.sh).
+
+tripleo-ansible's [tripleo_ceph_client role](https://github.com/openstack/tripleo-ansible/tree/master/tripleo_ansible/roles/tripleo_ceph_client)
+does not need any modification to create and populate /etc/ceph on the
+standalone compute node.
+
+When [ceph.sh](ceph.sh) is run to create the external ceph server on a
+separate VM, it creates a ceph_client.yml file which 
+[pre-compute.sh](pre-compute.sh) copies to the standalone compute node.
+
+The [08-ceph](08-ceph) inventory file sets `tripleo_ceph_client_vars`
+to the path of this file and establishes the ceph_client inventory
+group which the tripleo_ceph_client role requires. The 
+[ceph_client.sh](ceph_client.sh) script copies [08-ceph](08-ceph)
+into the inventory directory and runs
+[ceph_client_playbook.yml](ceph_client_playbook.yml) which just 
+includes the tripleo_ceph_client role.
+
 ## Develop
 
 Use [git-init.sh](../init/git-init.sh) (without the 'ext' argument) to
