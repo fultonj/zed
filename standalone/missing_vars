@@ -6,3 +6,7 @@
     tripleo_nova_libvirt_need_libvirt_secret: false
     tripleo_ovn_encap_ip: "192.168.24.100"
     tenant_ip: "192.168.24.100"
+    tripleo_nova_compute_DEFAULT_my_ip: "192.168.24.100"
+    tripleo_nova_compute_libvirt_live_migration_inbound_addr: "standalone.localdomain"
+    tripleo_nova_compute_vnc_server_listen: "192.168.24.2"
+    tripleo_nova_compute_vnc_server_proxyclient_address: "192.168.24.2"

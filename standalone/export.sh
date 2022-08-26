@@ -18,4 +18,10 @@ if [[ ! -e 99-standalone-vars ]]; then
     echo "Unable to get a copy of 99-standalone-vars from $CONTROLLER_IP"
     exit 1
 fi
+
+# workaround service_net_map issues
+# https://review.opendev.org/c/openstack/tripleo-ansible/+/840509/36/scripts/tripleo-standalone-vars#95
+sed -i '/service_net_map/d' 99-standalone-vars
+
+
 cat 99-standalone-vars missing_vars > $DST
