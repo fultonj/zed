@@ -66,8 +66,9 @@ external_cluster_mon_ips: $MON_IP
 keys:
 - name: openstack
   key: $CEPHX
-  mon: 'allow r'
-  osd: 'allow class-read object_prefix rbd_children, allow rwx pool=vms, allow rwx pool=volumes, allow rwx pool=images'
+  caps:
+    mon: 'allow r'
+    osd: 'allow class-read object_prefix rbd_children, allow rwx pool=vms, allow rwx pool=volumes, allow rwx pool=images'
 EOF
 ls -l ceph_client.yaml
 
