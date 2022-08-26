@@ -61,7 +61,6 @@ echo "Create ceph_client.yaml file for external compute nodes"
 cat <<EOF > ceph_client.yaml
 ---
 tripleo_ceph_client_fsid: $FSID
-tripleo_ceph_client_cluster: ceph
 external_cluster_mon_ips: $MON_IP
 keys:
 - name: openstack
