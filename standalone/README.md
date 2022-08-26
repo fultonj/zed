@@ -53,7 +53,8 @@ which exports information from the standalone deployment to
 [populate local Ansible variables](https://github.com/fultonj/zed/commit/3be4554ad67a7885c5feea15dda9b806b4681031)
 on the new compute node.
 
-Note that [compute.sh](compute.sh) calls [placement.yml](placement.yml)
+Note that [compute.sh](compute.sh) calls 
+[unapplied-vars.yml.yml](unapplied-vars.yml.yml)
 which contains a workaround to the symptoms of 
 [LP 1850691](https://bugs.launchpad.net/charm-nova-cell-controller/+bug/1850691)
 for the palcement service as well as fill in the [neutron] section of

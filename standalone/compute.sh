@@ -16,5 +16,5 @@ sudo ansible-playbook -i $INV $PLAY
 popd
 
 # workaround
-ansible-playbook placement.yml
+ansible-playbook unapplied-vars.yml
 sudo podman restart nova_compute

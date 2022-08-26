@@ -5,6 +5,10 @@
   hosts: localhost ansible_connection=local
   vars:
     my_file: /home/stack/ext/tripleo-ansible/tripleo_ansible/inventory/99-custom
+    placement_auth_url: "{{ lookup('ini', 'tripleo_nova_compute_placement_auth_url section=Compute:vars file=' ~ my_file) }}"
+    placement_password: "{{ lookup('ini', 'tripleo_nova_compute_placement_password section=Compute:vars file=' ~ my_file) }}"
+    neutron_auth_url: "{{ lookup('ini', 'tripleo_nova_compute_neutron_auth_url section=Compute:vars file=' ~ my_file) }}"
+    neutron_password: "{{ lookup('ini', 'tripleo_nova_compute_neutron_password section=Compute:vars file=' ~ my_file) }}"
     my_ini: /var/lib/config-data/ansible-generated/nova_libvirt/etc/nova/nova.conf
   tasks:
     - name: Add missing placement key/values to nova.conf (like LP 1850691)
@@ -24,6 +28,8 @@
         - { key: 'user_domain_name', value: 'Default' }
         - { key: 'valid_interfaces', value: 'internal' }
         - { key: 'region_name', value: 'regionOne' }
+        - { key: 'auth_url', value: "{{ placement_auth_url }}" }
+        - { key: 'password', value: "{{ placement_password }}" }
     - name: Add missing neutron key/values to nova.conf
       become: true
       ini_file:
@@ -41,3 +47,5 @@
         - { key: 'region_name', value: 'regionOne' }
         - { key: 'username', value: 'neutron' }
         - { key: 'valid_interfaces', value: 'internal' }
+        - { key: 'auth_url', value: "{{ neutron_auth_url }}" }
+        - { key: 'password', value: "{{ neutron_password }}" }
