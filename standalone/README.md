@@ -54,7 +54,7 @@ which exports information from the standalone deployment to
 on the new compute node.
 
 Note that [compute.sh](compute.sh) calls 
-[unapplied-vars.yml.yml](unapplied-vars.yml.yml)
+[unapplied-vars.yml](unapplied-vars.yml)
 which contains a workaround to the symptoms of 
 [LP 1850691](https://bugs.launchpad.net/charm-nova-cell-controller/+bug/1850691)
 for the palcement service as well as fill in the [neutron] section of
