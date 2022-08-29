@@ -18,4 +18,5 @@ popd
 
 oc get csv -l operators.coreos.com/mariadb-operator.openstack
 oc get pods -l app=mariadb
+sleep 15;
 oc exec -it  pod/mariadb-openstack -- mysql -uroot -p12345678 -e "show databases;"
