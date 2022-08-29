@@ -16,7 +16,7 @@ pushd ~/install_yamls
 make glance_deploy_cleanup
 make keystone_deploy_cleanup
 make mariadb_deploy_cleanup
-make crc_storage_cleanup
+# make crc_storage_cleanup
 
 # Clean Operators
 # make neutron_cleanup
@@ -36,6 +36,8 @@ oc get pods
 # popd
 
 # Clean CRC
-# crc cleanup
+echo "Clean crc:"
+echo "make crc_storage_cleanup"
+echo "crc cleanup"
 
 popd
