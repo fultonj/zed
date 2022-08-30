@@ -23,9 +23,18 @@ mkdir -p ~/bin
 eval $(crc oc-env)
 oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
 oc whoami
+
+# -------------------------------------------------------
 # https://github.com/openstack-k8s-operators/install_yamls/pull/23
-curl https://raw.githubusercontent.com/fmount/install_yamls/85e4c5e55c313afdce104e3d53bdb22345154305/crc/storage.yaml > ~/install_yamls/crc/storage.yaml
+
+# 1. Testing 'volumeBindingMode: Immediate'
+## curl https://raw.githubusercontent.com/fmount/install_yamls/85e4c5e55c313afdce104e3d53bdb22345154305/crc/storage.yaml > ~/install_yamls/crc/storage.yaml
+
+# 2. Testing 'volumeBindingMode: WaitForFirstConsumer'
+curl https://raw.githubusercontent.com/openstack-k8s-operators/install_yamls/b608987836055560dc51c772196e44c165f11aab/crc/storage.yaml > ~/install_yamls/crc/storage.yaml
+
 make crc_storage
+# -------------------------------------------------------
 
 # Notes from the clean up:
 #   oc get pv | grep local
