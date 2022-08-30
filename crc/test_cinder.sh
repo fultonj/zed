@@ -12,11 +12,23 @@ export OS_CLOUD=default
 export OS_PASSWORD=12345678
 
 openstack service list
-#openstack endpoint list
+openstack endpoint list
 openstack volume service list
 
-# openstack volume list
-# returns "public endpoint for compute service in regionOne region not found"
+if [[ ! -e ~/.local/bin/cinder ]]; then
+    pip3 install openstackclient --user
+fi
+if [[ ! -e ~/.local/bin/cinder ]]; then
+    echo "unable to install cinder client"
+    exit 1
+fi
+if [[ ! -e admin-rc ]]; then
+    echo "admin-rc is missing"
+    exit 1
+fi
 
-# openstack volume create test --size 1
-# returns "public endpoint for image service in regionOne region not found"
+source admin-rc
+cinder list
+cinder create --name foo 1
+cinder list
+cinder delete foo
