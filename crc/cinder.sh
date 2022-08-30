@@ -10,10 +10,6 @@ oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
 
 pushd ~/install_yamls
 
-# The following was used for rabbit but does not have cinder
-# https://github.com/openstack-k8s-operators/install_yamls/pull/4/files
-git reset --hard
-
 # make cinder
 # Pull abay's image until the following becomes the default
 # https://github.com/openstack-k8s-operators/cinder-operator/pull/7
