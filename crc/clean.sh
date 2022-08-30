@@ -10,9 +10,18 @@ oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
 
 pushd ~/install_yamls
 
+
+
 # Clean CRs
 
 # make neutron_deploy_cleanup
+make cinder_deploy_cleanup
+
+# rabbit
+curl https://raw.githubusercontent.com/openstack-k8s-operators/install_yamls/eae7c79c296fc06301ed141bc1c338cf3056564b/Makefile > Makefile
+make rabbitmq_deploy_cleanup
+git reset --hard
+
 make glance_deploy_cleanup
 make keystone_deploy_cleanup
 make mariadb_deploy_cleanup
@@ -20,8 +29,14 @@ make mariadb_deploy_cleanup
 
 # Clean Operators
 # make neutron_cleanup
-make glance_cleanup
 make cinder_cleanup
+
+# rabbit
+curl https://raw.githubusercontent.com/openstack-k8s-operators/install_yamls/eae7c79c296fc06301ed141bc1c338cf3056564b/Makefile > Makefile
+make rabbitmq_cleanup
+git reset --hard
+
+make glance_cleanup
 make keystone_cleanup
 make mariadb_cleanup
 
