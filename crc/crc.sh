@@ -23,8 +23,18 @@ mkdir -p ~/bin
 eval $(crc oc-env)
 oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
 oc whoami
-
+# https://github.com/openstack-k8s-operators/install_yamls/pull/23
+curl https://raw.githubusercontent.com/fmount/install_yamls/85e4c5e55c313afdce104e3d53bdb22345154305/crc/storage.yaml > ~/install_yamls/crc/storage.yaml
 make crc_storage
+
+# Notes from the clean up:
+#   oc get pv | grep local
+#   for i in $(seq 2 6); do oc delete pv $i; done
+#   for i in $(seq 2 6); do oc delete pv local-storage$i; done
+#   NODE=$(oc get nodes | grep master | awk {'print $1'})
+#   oc debug node/$NODE
+#   chroot /host
+#   ls /mnt/openstack/
 
 popd # out of install_yamls
 popd # out of ~
