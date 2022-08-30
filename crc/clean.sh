@@ -1,5 +1,11 @@
 #!/bin/bash
 
+CINDER=0
+RABBIT=0
+GLANCE=0
+KEYSTONE=1
+MARIA=1
+
 if [[ ! -d ~/install_yamls ]]; then
     echo "~/install_yamls missing (did you run crc.sh?)"
     exit 1
@@ -10,35 +16,54 @@ oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
 
 pushd ~/install_yamls
 
-
-
 # Clean CRs
-
 # make neutron_deploy_cleanup
-make cinder_deploy_cleanup
 
-# rabbit
-curl https://raw.githubusercontent.com/openstack-k8s-operators/install_yamls/eae7c79c296fc06301ed141bc1c338cf3056564b/Makefile > Makefile
-make rabbitmq_deploy_cleanup
-git reset --hard
+if [[ $CINDER -eq 1 ]]; then
+    make cinder_deploy_cleanup
+fi
 
-make glance_deploy_cleanup
-make keystone_deploy_cleanup
-make mariadb_deploy_cleanup
+if [[ $RABBIT -eq 1 ]]; then
+    curl https://raw.githubusercontent.com/openstack-k8s-operators/install_yamls/eae7c79c296fc06301ed141bc1c338cf3056564b/Makefile > Makefile
+    make rabbitmq_deploy_cleanup
+    git reset --hard
+fi
+
+if [[ $GLANCE -eq 1 ]]; then
+    make glance_deploy_cleanup
+fi
+if [[ $KEYSTONE -eq 1 ]]; then
+    make keystone_deploy_cleanup
+fi
+if [[ $MARIA -eq 1 ]]; then
+    make mariadb_deploy_cleanup
+fi
+
 # make crc_storage_cleanup
 
+# -------------------------------------------------------
 # Clean Operators
 # make neutron_cleanup
-make cinder_cleanup
 
-# rabbit
-curl https://raw.githubusercontent.com/openstack-k8s-operators/install_yamls/eae7c79c296fc06301ed141bc1c338cf3056564b/Makefile > Makefile
-make rabbitmq_cleanup
-git reset --hard
+if [[ $CINDER -eq 1 ]]; then
+    make cinder_cleanup
+fi
 
-make glance_cleanup
-make keystone_cleanup
-make mariadb_cleanup
+if [[ $RABBIT -eq 1 ]]; then
+    curl https://raw.githubusercontent.com/openstack-k8s-operators/install_yamls/eae7c79c296fc06301ed141bc1c338cf3056564b/Makefile > Makefile
+    make rabbitmq_cleanup
+    git reset --hard
+fi
+
+if [[ $GLANCE -eq 1 ]]; then
+    make glance_cleanup
+fi
+if [[ $KEYSTONE -eq 1 ]]; then
+    make keystone_cleanup
+fi
+if [[ $MARIA -eq 1 ]]; then
+    make mariadb_cleanup
+fi
 
 # Are the above pods gone?
 oc get pods
