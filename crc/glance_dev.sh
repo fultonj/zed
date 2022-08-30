@@ -36,20 +36,7 @@ if [[ $BUILD -eq 1 ]]; then
     make build
     make generate
     make manifests
-    
     popd
-fi
-
-if [[ $OPERATOR -eq 1 ]]; then
-    pushd develop_operator/glance-operator
-    OPERATOR_TEMPLATES=$PWD/templates ./bin/manager -metrics-bind-address ":$MET_PORT" & 
-    popd
-fi
-
-if [[ $DEPLOY -eq 1 ]]; then
-    # If the operator is up, and the resourceDelete has been
-    # reconciled all the resources, then this triggers the GlanceAPI deployment
-    oc kustomize ~/install_yamls/out/openstack/glance/cr | oc apply -f -
 fi
 
 if [[ $CRD -eq 1 ]]; then
@@ -57,6 +44,25 @@ if [[ $CRD -eq 1 ]]; then
     CRD=$(oc get crds | grep -i glance | awk {'print $1'})
     oc delete crds $CRD
     oc create -f ~/install_yamls/develop_operator/glance-operator/config/crd/bases/glance.openstack.org_glanceapis.yaml
+fi
+
+if [[ $OPERATOR -eq 1 ]]; then
+    pushd develop_operator/glance-operator
+    OPERATOR_TEMPLATES=$PWD/templates ./bin/manager -metrics-bind-address ":$MET_PORT"
+    popd
+    # Note: run the above in a separate tmux pane to observe reconciliations
+fi
+
+if [[ $DEPLOY -eq 1 ]]; then
+    # If the operator is up, and the resourceDelete has been
+    # reconciled all the resources, then this triggers the GlanceAPI deployment
+    oc kustomize ~/install_yamls/out/openstack/glance/cr | oc apply -f -
+
+    # Note:
+    #   If you see 'Waiting for GlanceAPI PVC to bind'
+    #   and `oc get pvc` or `oc get pv | grep local` do not
+    #   show it binding, then change 'volumeBindingMode: immediate'
+    #   as per https://github.com/openstack-k8s-operators/install_yamls/pull/23
 fi
 
 if [[ $LOGS -eq 1 ]]; then
