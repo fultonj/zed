@@ -2,10 +2,10 @@
 
 CINDER=0
 RABBIT=0
-GLANCE=0
-KEYSTONE=0
-MARIA=0
-CRC=1
+GLANCE=1
+KEYSTONE=1
+MARIA=1
+CRC=0
 
 if [[ ! -d ~/install_yamls ]]; then
     echo "~/install_yamls missing (did you run crc.sh?)"
@@ -77,9 +77,13 @@ oc get pods
 # popd
 
 # Clean CRC
-echo "Clean crc:"
 
 if [[ $CRC -eq 1 ]]; then
+    read -p "Are you sure you want to delete CRC? " -n 1 -r
+    echo    # (optional) move to a new line
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        [[ "$0" = "$BASH_SOURCE" ]] && exit 1 || return 1
+    fi
     make crc_storage_cleanup
     sleep 10
     crc cleanup
