@@ -13,12 +13,7 @@ pushd ~/install_yamls
 # deploy glance operator
 make glance
 
-OP=$(oc get pods -l control-plane=controller-manager -o name  | grep glance)
-oc describe $OP
-oc logs $OP
-
-# deploy glance
-make glance_deploy
+sleep 60
 
 # modify glance to use use 1G PVs created by crc_storage
 GLANCE_CR=out/openstack/glance/cr/glance_v1beta1_glanceapi.yaml
@@ -26,13 +21,14 @@ sed -i $GLANCE_CR -e s/10G/1G/g
 echo '  storageClass: local-storage' >> $GLANCE_CR
 oc apply -f $GLANCE_CR
 
+sleep 60
+
+make glance_deploy
+
+# OP=$(oc get pods -l control-plane=controller-manager -o name  | grep glance)
+# oc describe $OP
+# oc logs $OP
+
 popd
 
 oc get pods -l service=glance
-
-export OS_CLOUD=default
-export OS_PASSWORD=12345678
-
-openstack service list
-openstack endpoint list
-openstack image list
