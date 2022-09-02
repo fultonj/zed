@@ -24,10 +24,7 @@ pushd ~/install_yamls
 if [[ $GIT -eq 1 ]]; then
     mkdir -p develop_operator
     pushd develop_operator
-    git clone git@github.com:openstack-k8s-operators/glance-operator.git
-    pushd glance-operator
-    echo "Work here: $PWD"
-    popd
+    ln -s ~/glance-operator
     popd
 fi
 
@@ -86,8 +83,12 @@ if [[ $CRD -eq 1 ]]; then
 fi
 
 if [[ $LOGS -eq 1 ]]; then
-    POD=$(oc get pods | grep glance | grep manager | awk {'print $1'})
-    oc logs $POD
+    OP=$(oc get pods -l control-plane=controller-manager -o name  | grep glance)
+    oc describe $OP
+    oc logs $OP
+
+    SVC=$(oc get pods -l service=glance | grep Running | awk {'print $1'})
+    oc logs $SVC
 fi
 
 popd
