@@ -17,11 +17,16 @@ sleep 60
 
 # modify glance to use use 1G PVs created by crc_storage
 GLANCE_CR=out/openstack/glance/cr/glance_v1beta1_glanceapi.yaml
-sed -i $GLANCE_CR -e s/10G/1G/g
-echo '  storageClass: local-storage' >> $GLANCE_CR
-oc apply -f $GLANCE_CR
 
-sleep 60
+if [[ -e $GLANCE_CR ]]; then
+    sed -i $GLANCE_CR -e s/10G/1G/g
+    echo '  storageClass: local-storage' >> $GLANCE_CR
+    oc apply -f $GLANCE_CR
+    sleep 60
+else
+    echo "WARNING: $GLANCE_CR does not exist yet. So apply it later."
+    echo "oc apply -f $GLANCE_CR"
+fi
 
 make glance_deploy
 
