@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 # Clones the repos that I am interested in.
 # -------------------------------------------------------
+if [[ $1 == 'k8s' ]]; then
+    pushd ~
+    if [[ ! -d glance-operator ]]; then
+       git clone git@github.com:fultonj/glance-operator.git
+    fi
+    if [[ ! -d cinder-operator ]]; then
+        git clone git@github.com:fultonj/cinder-operator.git
+    fi
+    popd
+    exit 0
+fi
+# -------------------------------------------------------
 if [[ $1 == 'ext' ]]; then
     sudo rm -rf ~/ext
     declare -a repos=(
