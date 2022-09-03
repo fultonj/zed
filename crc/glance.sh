@@ -14,9 +14,10 @@ pushd ~/install_yamls
 make glance
 
 sleep 60
+make glance_deploy
 
 # modify glance to use use 1G PVs created by crc_storage
-GLANCE_CR=out/openstack/glance/cr/glance_v1beta1_glanceapi.yaml
+GLANCE_CR=~/install_yamls/out/openstack/glance/cr/glance_v1beta1_glanceapi.yaml
 
 if [[ -e $GLANCE_CR ]]; then
     sed -i $GLANCE_CR -e s/10G/1G/g
@@ -27,8 +28,6 @@ else
     echo "WARNING: $GLANCE_CR does not exist yet. So apply it later."
     echo "oc apply -f $GLANCE_CR"
 fi
-
-make glance_deploy
 
 # OP=$(oc get pods -l control-plane=controller-manager -o name  | grep glance)
 # oc describe $OP
