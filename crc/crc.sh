@@ -28,7 +28,7 @@ oc whoami
 # https://github.com/openstack-k8s-operators/install_yamls/pull/23
 
 # 1. Testing 'volumeBindingMode: Immediate'
-curl https://raw.githubusercontent.com/fmount/install_yamls/85e4c5e55c313afdce104e3d53bdb22345154305/crc/storage.yaml > ~/install_yamls/crc/storage.yaml
+# curl https://raw.githubusercontent.com/fmount/install_yamls/85e4c5e55c313afdce104e3d53bdb22345154305/crc/storage.yaml > ~/install_yamls/crc/storage.yaml
 
 # 2. Testing 'volumeBindingMode: WaitForFirstConsumer'
 ## curl https://raw.githubusercontent.com/openstack-k8s-operators/install_yamls/b608987836055560dc51c772196e44c165f11aab/crc/storage.yaml > ~/install_yamls/crc/storage.yaml
