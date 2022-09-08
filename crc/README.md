@@ -7,7 +7,6 @@
 - [glance.sh](glance.sh): Deploy Glance
 - [test_glance.sh](test_glance.sh): Test Glance
 - [glance_dev.sh](glance_dev.sh): Script to help Glance Operator development
-- [glance_cr.sh](glance_cr.sh): Generate a Glance CR
 - [rabbit.sh](rabbit.sh): Deploy RabbitMQ
 - [nfs.sh](nfs.sh): Set up NFS server for Cinder
 - [cinder.sh](cinder.sh): Deploy Cinder

@@ -19,6 +19,16 @@ make glance_deploy
 # modify glance to use use 1G PVs created by crc_storage
 GLANCE_CR=~/install_yamls/out/openstack/glance/cr/glance_v1beta1_glanceapi.yaml
 
+# To use external ceph, add the following to a copy of the $GLANCE_CR
+# cephBackend:
+#   cephFsid: "<fsid>"
+#   cephMons: "<ip1>,<ip2>,<ip3>"
+#   cephClientKey: "<key>"
+#   cephUser: "<user>"
+#   cephPools:
+#     glance:
+#       name: "<pool>"
+
 if [[ -e $GLANCE_CR ]]; then
     sed -i $GLANCE_CR -e s/10G/1G/g
     echo '  storageClass: local-storage' >> $GLANCE_CR
