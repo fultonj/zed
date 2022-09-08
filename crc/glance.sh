@@ -33,7 +33,6 @@ if [[ -e $GLANCE_CR ]]; then
     sed -i $GLANCE_CR -e s/10G/1G/g
     echo '  storageClass: local-storage' >> $GLANCE_CR
     oc apply -f $GLANCE_CR
-    sleep 60
 else
     echo "WARNING: $GLANCE_CR does not exist yet. So apply it later."
     echo "oc apply -f $GLANCE_CR"
