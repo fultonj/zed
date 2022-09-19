@@ -7,6 +7,7 @@ REPO=1
 LP1982744=1
 TMATE=0
 INSTALL=1
+FILES=1
 EXPORT=1
 
 CONTROLLER_IP=192.168.24.2
@@ -86,6 +87,14 @@ fi
 
 if [[ $INSTALL -eq 1 ]]; then
     sudo dnf install -y ansible-collection-containers-podman python3-tenacity ansible-collection-community-general ansible-collection-ansible-posix
+fi
+
+if [[ $FILES -eq 1 ]]; then
+    # workaround https://paste.opendev.org/show/boSZ8vBqsblPYKKN8ASe/
+    # workaround https://paste.opendev.org/show/bY8SzmXGy0BWV4rWvZRY/
+    pushd /home/stack/ext/tripleo-ansible/tripleo_ansible/playbooks
+    ln -s ../../roles/tripleo_nova_libvirt/files/
+    popd
 fi
 
 if [[ $EXPORT -eq 1 ]]; then
