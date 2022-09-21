@@ -3,19 +3,24 @@
 # -------------------------------------------------------
 # FILES
 
-DST=~/ext/tripleo-ansible/tripleo_ansible/roles/tripleo_nova_libvirt
-pushd ~/tripleo-ansible/tripleo_ansible/roles/tripleo_nova_libvirt/
-cp -v tasks/configure.yml $DST/tasks/configure.yml
-cp -v files/nova_libvirt_init_secret.yaml $DST/files/nova_libvirt_init_secret.yaml
-cp -v tasks/run.yml $DST/tasks/run.yml
-cp -v files/nova_libvirt_init_secret.sh $DST/files/nova_libvirt_init_secret.sh
-cp -v templates/nova_libvirt_init_secret.yaml.j2 $DST/templates/nova_libvirt_init_secret.yaml.j2
-popd
+function push_changes() {
+    REPO=tripleo-ansible/tripleo_ansible
+    pushd $HOME/$REPO/$ROLE
+    for F in ${FILES[@]}; do
+        cp -v $F $HOME/ext/$REPO/$ROLE/$F
+    done
+    popd
+}
 
-# DST=~/ext/tripleo-ansible/tripleo_ansible/roles/tripleo_container_standalone/
-# pushd ~/tripleo-ansible/tripleo_ansible/roles/tripleo_container_standalone/
-# cp -v tasks/main.yml $DST/tasks/main.yml
-# popd
+ROLE=roles/tripleo_nova_libvirt
+FILES=(
+    tasks/configure.yml
+    files/nova_libvirt_init_secret.yaml
+    tasks/run.yml
+    files/nova_libvirt_init_secret.sh
+    templates/nova_libvirt_init_secret.yaml.j2
+)
+push_changes
 # -------------------------------------------------------
 # VARS
 
