@@ -1,9 +1,0 @@
----
-- name: Configure Ceph client for Nova
-  gather_facts: false
-  hosts: localhost ansible_connection=local
-  tasks:
-    - name: Configure tripleo_nova_libvirt (for ceph)
-      import_role:
-        name: tripleo_nova_libvirt
-        tasks_from: configure.yml
