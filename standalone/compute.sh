@@ -12,7 +12,7 @@ cp ansible.cfg /home/stack/ansible.cfg
 sudo cp ansible.cfg /root/ansible.cfg
 
 pushd /home/stack/
-sudo ansible-playbook -i $INV $PLAY
+time sudo ansible-playbook -i $INV $PLAY
 popd
 
 # workaround
