@@ -105,23 +105,24 @@ scheduled on it.
 
 Use [verify.sh](verify.sh) to launch an instance on the new compute node.
 
-## Create /etc/ceph
+## Populate /var/lib/tripleo-config/ceph/
 
-Run [ceph_client.sh](ceph_client.sh).
+Run [ceph_client.sh](ceph_client.sh) (which calls [mkinv.py](mkinv.py)).
 
 tripleo-ansible's [tripleo_ceph_client role](https://github.com/openstack/tripleo-ansible/tree/master/tripleo_ansible/roles/tripleo_ceph_client)
-does not need any modification to create and populate /etc/ceph on the
-standalone compute node.
+can have a
+[modification](https://review.opendev.org/c/openstack/tripleo-ansible/+/859149)
+so that it uses the same variable names as found in other standalone
+anible roles.
 
 When [ceph.sh](ceph.sh) is run to create the external ceph server on a
 separate VM, it creates a ceph_client.yml file which 
-[pre-compute.sh](pre-compute.sh) copies to the standalone compute node.
-
-The [08-ceph](08-ceph) inventory file sets `tripleo_ceph_client_vars`
-to the path of this file and establishes the ceph_client inventory
-group which the tripleo_ceph_client role requires. The 
-[ceph_client.sh](ceph_client.sh) script copies [08-ceph](08-ceph)
-into the inventory directory and runs
+[pre-compute.sh](pre-compute.sh) copies to the standalone compute
+node. The [mkinv.py](mkinv.py) converts this file into an inventory
+like the one described in a 
+[tripleo docs patch](https://review.opendev.org/c/openstack/tripleo-docs/+/859142).
+The [ceph_client.sh](ceph_client.sh) script copies this inventory 
+in place (as 08-ceph) into the inventory directory and runs
 [ceph_client_playbook.yml](ceph_client_playbook.yml) which just 
 includes the tripleo_ceph_client role.
 

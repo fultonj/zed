@@ -1,6 +1,0 @@
-# ceph_client group is needed by tripleo_ceph_client
-[ceph_client:children]
-Compute
-
-[ceph_client:vars]
-tripleo_ceph_client_vars=/home/stack/ceph_client.yaml
