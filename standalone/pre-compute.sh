@@ -99,4 +99,5 @@ fi
 
 if [[ $EXPORT -eq 1 ]]; then
     bash export.sh
+    python3 mkinv.py
 fi

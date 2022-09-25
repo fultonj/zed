@@ -1,8 +1,0 @@
----
-- name: Configure Ceph Clients
-  gather_facts: false
-  hosts: localhost ansible_connection=local
-  tasks:
-    - name: configure ceph clients
-      include_role:
-        name: tripleo_ceph_client

@@ -11,10 +11,13 @@ PLAY=/home/stack/ext/tripleo-ansible/tripleo_ansible/playbooks/deploy-overcloud-
 cp ansible.cfg /home/stack/ansible.cfg
 sudo cp ansible.cfg /root/ansible.cfg
 
+if [[ -e 08-ceph ]]; then
+    cp -f 08-ceph $INV/
+else
+    echo "08-ceph is missing, run mkinv.py"
+    exit 1
+fi
+
 pushd /home/stack/
 time sudo ansible-playbook -i $INV $PLAY
 popd
-
-# workaround
-# ansible-playbook unapplied-vars.yml
-# sudo podman restart nova_compute

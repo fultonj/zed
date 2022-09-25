@@ -45,26 +45,70 @@ Confirm it works.
 On the overcloud0 VM run:
 
 - [git-init.sh ext](../init/git-init.sh)
+- [standalone_ceph_patches.sh](../init/standalone_ceph_patches.sh)
 - [pre-compute.sh](pre-compute.sh)
 - [compute.sh](compute.sh)
 
-Note that [pre-compute.sh](pre-compute.sh) calls [export.sh](export.sh)
-which exports information from the standalone deployment to
-[populate local Ansible variables](https://github.com/fultonj/zed/commit/3be4554ad67a7885c5feea15dda9b806b4681031)
-on the new compute node.
+The above scritps import the tripleo patches in progress
+and build an inventory (99-standalone-vars and 08-ceph)
+to make an external compute node deployed with standalone
+tripleo-ansible support external ceph as described in this
+[docs patch](https://review.opendev.org/c/openstack/tripleo-docs/+/859142).
 
-Note that [compute.sh](compute.sh) calls 
-[unapplied-vars.yml](unapplied-vars.yml)
-which contains a workaround to the symptoms of 
-[LP 1850691](https://bugs.launchpad.net/charm-nova-cell-controller/+bug/1850691)
-for the palcement service as well as fill in the [neutron] section of
-the nova.conf. I don't know why the placement section of the nova.conf
-genereated by the new tripleo-ansible standalone compute roles has a
-missing placement section. This playbook just populates the missing
-placement section with four variables from [export.sh](export.sh) and
-other missing key/value pairs. I
-[shared](https://paste.opendev.org/show/816007) this with the
-author of the tripleo_nova_compute role.
+### Details
+
+#### Set up unmerged patches
+
+[git-init.sh ext](../init/git-init.sh) installs the main 
+[tripleo-ansible standalone patch](https://review.opendev.org/c/openstack/tripleo-ansible/+/840509)
+and all of its dependencies as described in the project
+[etherpad](https://etherpad.opendev.org/p/tripleo-standalone-roles).
+into /home/stack/ext/tripleo-ansible on the standalone
+compute node.
+
+[standalone_ceph_patches.sh](../init/standalone_ceph_patches.sh)
+installs the following patches necessary to configure a standalone
+compute node to use external ceph.
+
+- [import ceph_client role - 859197](https://review.opendev.org/c/openstack/tripleo-ansible/+/859197) 
+- [update ceph_client role - 859149](https://review.opendev.org/c/openstack/tripleo-ansible/+/859149) 
+- [libvirt role configures ceph secret - 858585](https://review.opendev.org/c/openstack/tripleo-ansible/+/858585)
+
+How these patches will work described in a 
+[docs patch](https://review.opendev.org/c/openstack/tripleo-docs/+/859142).
+standalone_ceph_patches.sh assumes you have used 
+[git-init.sh](../init/git-init.sh) (without the 'ext' argument) to
+get a copy of tripleo-ansible in ~ (not in ~/ext) do further patch
+development in a branch in this directory as needed.
+
+#### Set up inventory with local environment variables
+
+[pre-compute.sh](pre-compute.sh) calls [export.sh](export.sh)
+which exports information from the standalone deployment to
+populate local Ansible variables into 99-standalone-vars on the new
+compute node. It does this by calling the
+[tripleo-standalone-vars script](https://review.opendev.org/c/openstack/tripleo-ansible/+/840509/41/scripts/tripleo-standalone-vars)
+in my local environment and copying the result back to the external
+compute node. See the
+[design and development docs on how to use the standalone roles and playbooks](https://review.opendev.org/c/openstack/tripleo-ansible/+/847347)
+for more information on how 99-standalone-vars works.
+
+[pre-compute.sh](pre-compute.sh) also connects to an existing
+ceph VM environment running at 192.168.122.253 and exports its
+information from the `ceph_client.yaml` file to /home/stack. Though
+the `ceph_client.yaml` file is compatible with the tripleo_ceph_client
+role if set to `tripleo_ceph_client_vars` it is not the convention
+of the standalone ansible roles to define a variable containing
+a variable file to pass to `include_vars`. Instead there are already
+variables for ceph used in `tripleo_nova_*` roles. The convention
+I'm promoting instead is to use those existing variables plus some new
+ones as described the
+[docs patch](https://review.opendev.org/c/openstack/tripleo-docs/+/859142).
+The [mkinv.py](mkinv.py) script creates the described 08-ceph inventory.
+
+#### Run the playbook and discover the deployed node
+
+The [compute.sh](compute.sh) script calls 
 
 On the standalone VM run [discover.sh](discover.sh) so that new
 exteranl compute node becomes available for scheduling.
@@ -105,29 +149,46 @@ scheduled on it.
 
 Use [verify.sh](verify.sh) to launch an instance on the new compute node.
 
-## Populate /var/lib/tripleo-config/ceph/
+### Was /var/lib/tripleo-config/ceph/ populated?
 
-Run [ceph_client.sh](ceph_client.sh) (which calls [mkinv.py](mkinv.py)).
+If [the patch](https://review.opendev.org/c/openstack/tripleo-ansible/+/859197)
+to make the standalone playbook import the 
+[tripleo_ceph_client role](https://github.com/openstack/tripleo-ansible/tree/master/tripleo_ansible/roles/tripleo_ceph_client)
+and
+[the patch](https://review.opendev.org/c/openstack/tripleo-ansible/+/859149)
+to make the 
+[tripleo_ceph_client role](https://github.com/openstack/tripleo-ansible/tree/master/tripleo_ansible/roles/tripleo_ceph_client)
+handle the new
+[documented](https://review.opendev.org/c/openstack/tripleo-docs/+/859142)
+inventory format worked, then the directory should be correctly populated.
+```
+[stack@centos tripleo_ansible]$ sudo ls -l /var/lib/tripleo-config/ceph
+total 8
+-rw-r--r--. 1 root root 230 Sep 25 15:52 ceph.conf
+-rw-------. 1 root root 211 Sep 25 15:52 ceph.openstack.keyring
+[stack@centos tripleo_ansible]$
+```
+### Does the nova_compute container see the files it needs?
 
-tripleo-ansible's [tripleo_ceph_client role](https://github.com/openstack/tripleo-ansible/tree/master/tripleo_ansible/roles/tripleo_ceph_client)
-can have a
-[modification](https://review.opendev.org/c/openstack/tripleo-ansible/+/859149)
-so that it uses the same variable names as found in other standalone
-anible roles.
+```
+[stack@centos standalone]$ sudo podman exec -ti nova_compute /bin/bash
+bash-5.1$ ls /etc/ceph/
+ceph.conf  ceph.openstack.keyring  rbdmap
+bash-5.1$ 
 
-When [ceph.sh](ceph.sh) is run to create the external ceph server on a
-separate VM, it creates a ceph_client.yml file which 
-[pre-compute.sh](pre-compute.sh) copies to the standalone compute
-node. The [mkinv.py](mkinv.py) converts this file into an inventory
-like the one described in a 
-[tripleo docs patch](https://review.opendev.org/c/openstack/tripleo-docs/+/859142).
-The [ceph_client.sh](ceph_client.sh) script copies this inventory 
-in place (as 08-ceph) into the inventory directory and runs
-[ceph_client_playbook.yml](ceph_client_playbook.yml) which just 
-includes the tripleo_ceph_client role.
+bash-5.1$ cat /etc/nova/ceph-secret.xml 
+<secret ephemeral='no' private='no'>
+  <usage type='ceph'>
+    <name>ceph.client.openstack secret</name>
+  </usage>
+  <uuid>604c9994-1d82-11ed-8ae5-5254003d6107</uuid>
+</secret>
+bash-5.1$ 
+```
 
-## Develop
+Note that `ceph.client.openstack.keyring` != `ceph.openstack.keyring`
+so I still have a bug to fix.
 
-Use [git-init.sh](../init/git-init.sh) (without the 'ext' argument) to
-get a copy of tripleo-ansible in ~ (not in ~/ext) and write a patch
-there. Copy the changed files into ~/ext to test them.
+### Can you create an instance which uses Ceph as its backend?
+
+todo: write a script to test it.
