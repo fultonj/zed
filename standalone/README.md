@@ -62,9 +62,8 @@ tripleo-ansible support external ceph as described in this
 [git-init.sh ext](../init/git-init.sh) installs the main 
 [tripleo-ansible standalone patch](https://review.opendev.org/c/openstack/tripleo-ansible/+/840509)
 and all of its dependencies as described in the project
-[etherpad](https://etherpad.opendev.org/p/tripleo-standalone-roles).
-into /home/stack/ext/tripleo-ansible on the standalone
-compute node.
+[etherpad](https://etherpad.opendev.org/p/tripleo-standalone-roles)
+into /home/stack/ext/tripleo-ansible on the standalone compute node.
 
 [standalone_ceph_patches.sh](../init/standalone_ceph_patches.sh)
 installs the following patches necessary to configure a standalone
@@ -74,16 +73,16 @@ compute node to use external ceph.
 - [update ceph_client role - 859149](https://review.opendev.org/c/openstack/tripleo-ansible/+/859149) 
 - [libvirt role configures ceph secret - 858585](https://review.opendev.org/c/openstack/tripleo-ansible/+/858585)
 
-How these patches will work described in a 
+How these patches will work described in a
 [docs patch](https://review.opendev.org/c/openstack/tripleo-docs/+/859142).
-standalone_ceph_patches.sh assumes you have used 
+The `standalone_ceph_patches.sh` scripts assumes you have used
 [git-init.sh](../init/git-init.sh) (without the 'ext' argument) to
-get a copy of tripleo-ansible in ~ (not in ~/ext) do further patch
-development in a branch in this directory as needed.
+get a copy of tripleo-ansible in ~ (not in ~/ext). I do further patch
+development in the different branches of this directory as needed.
 
 #### Set up inventory with local environment variables
 
-[pre-compute.sh](pre-compute.sh) calls [export.sh](export.sh)
+[pre-compute.sh](pre-compute.sh) calls [export.sh](export.sh),
 which exports information from the standalone deployment to
 populate local Ansible variables into 99-standalone-vars on the new
 compute node. It does this by calling the
@@ -97,18 +96,19 @@ for more information on how 99-standalone-vars works.
 ceph VM environment running at 192.168.122.253 and exports its
 information from the `ceph_client.yaml` file to /home/stack. Though
 the `ceph_client.yaml` file is compatible with the tripleo_ceph_client
-role if set to `tripleo_ceph_client_vars` it is not the convention
+role if set to `tripleo_ceph_client_vars`, it is not the convention
 of the standalone ansible roles to define a variable containing
 a variable file to pass to `include_vars`. Instead there are already
-variables for ceph used in `tripleo_nova_*` roles. The convention
-I'm promoting instead is to use those existing variables plus some new
-ones as described the
+variables for ceph used in new standlone roles like `tripleo_nova_*`.
+The convention I'm promoting instead is to use those existing
+variables plus some new ones as described this
 [docs patch](https://review.opendev.org/c/openstack/tripleo-docs/+/859142).
 The [mkinv.py](mkinv.py) script creates the described 08-ceph inventory.
 
 #### Run the playbook and discover the deployed node
 
-The [compute.sh](compute.sh) script calls 
+The [compute.sh](compute.sh) script calls the main playbook of the
+[tripleo-ansible standalone patch](https://review.opendev.org/c/openstack/tripleo-ansible/+/840509).
 
 On the standalone VM run [discover.sh](discover.sh) so that new
 exteranl compute node becomes available for scheduling.
@@ -146,8 +146,6 @@ scheduled on it.
 +--------------------------------------+----------------+------------------------+----------+---------+-------+----------------------------+
 [stack@standalone ~]$
 ```
-
-Use [verify.sh](verify.sh) to launch an instance on the new compute node.
 
 ### Was /var/lib/tripleo-config/ceph/ populated?
 
@@ -191,4 +189,4 @@ so I still have a bug to fix.
 
 ### Can you create an instance which uses Ceph as its backend?
 
-todo: write a script to test it.
+Use [verify.sh](verify.sh) to launch an instance on the new compute node.
