@@ -25,3 +25,9 @@ sed -i '/service_net_map/d' 99-standalone-vars
 
 
 cat 99-standalone-vars missing_vars > $DST
+
+if [[ -e 03-tripleo ]]; then
+    # workaround https://paste.opendev.org/show/bW1qCm8K5SsdaYYpm2vX/
+    # 03-tripleo is provided by https://review.opendev.org/840509
+    cp 03-tripleo $DST
+fi
