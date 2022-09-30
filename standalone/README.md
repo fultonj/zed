@@ -174,14 +174,14 @@ bash-5.1$ ls /etc/ceph/
 ceph.conf  ceph.openstack.keyring  rbdmap
 bash-5.1$ 
 
-bash-5.1$ cat /etc/nova/ceph-secret.xml 
+bash-5.1$ cat /etc/nova/secret.xml
 <secret ephemeral='no' private='no'>
   <usage type='ceph'>
-    <name>ceph.client.openstack secret</name>
+    <name>client.openstack secret</name>
   </usage>
   <uuid>604c9994-1d82-11ed-8ae5-5254003d6107</uuid>
 </secret>
-bash-5.1$ 
+bash-5.1$
 ```
 
 Note that `ceph.client.openstack.keyring` != `ceph.openstack.keyring`
