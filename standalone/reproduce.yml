@@ -1,0 +1,15 @@
+- hosts: localhost
+  become: true
+  tasks:
+    - name: reproduce libvirt secret create using tripleo-ansible
+      block:
+        - name: "Manage nova_libvirt_init_secret container with tripleo-ansible"
+          include_role:
+            name: tripleo_container_manage
+          vars:
+            tripleo_container_manage_systemd_order: true
+            tripleo_container_manage_config_patterns: "*.json"
+            tripleo_container_manage_config: "/var/lib/tripleo-config/container-startup-config/nova_libvirt_init_secret"
+            tripleo_container_manage_config_id: "nova_libvirt_init_secret"
+            tripleo_container_manage_clean_orphans: false
+            tripleo_container_manage_config_overrides: {}
