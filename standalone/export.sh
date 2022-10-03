@@ -8,7 +8,7 @@ OPT='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
 scp $OPT $SRC stack@$CONTROLLER_IP:/home/stack/tripleo-standalone-vars
 
 ssh $OPT $CONTROLLER_IP -l stack "python3 \
-  tripleo-standalone-vars \
+  tripleo-standalone-vars --force \
   -c \$(ls /home/stack/ | grep standalone-ansible) \
   -r Standalone"
 
