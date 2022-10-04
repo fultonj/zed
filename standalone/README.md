@@ -45,7 +45,7 @@ Confirm it works.
 On the overcloud0 VM run:
 
 - [git-init.sh ext](../init/git-init.sh)
-- [standalone_ceph_patches.sh](../init/standalone_ceph_patches.sh)
+- [standalone_ceph_patches.sh import libvirt update](../init/standalone_ceph_patches.sh)
 - [pre-compute.sh](pre-compute.sh)
 - [compute.sh](compute.sh)
 

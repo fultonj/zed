@@ -18,25 +18,7 @@ else
     exit 1
 fi
 
-# borrowing from standalone_ceph_patches.sh
-function push_changes() {
-    REPO=tripleo-ansible/tripleo_ansible
-    pushd $HOME/$REPO/$ROLE
-    for F in ${FILES[@]}; do
-        cp -v $F $HOME/ext/$REPO/$ROLE/$F
-    done
-    popd
-}
-ROLE=roles/tripleo_nova_libvirt
-FILES=(
-    tasks/configure.yml
-    files/nova_libvirt_init_secret.yaml
-    tasks/run.yml
-    files/nova_libvirt_init_secret.sh
-    templates/nova_libvirt_init_secret.yaml.j2
-)
-push_changes
-
+# bash ../init/standalone_ceph_patches.sh nodown import libvirt update
 
 pushd /home/stack/
 time sudo ansible-playbook -i $INV $PLAY
