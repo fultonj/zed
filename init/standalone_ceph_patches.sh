@@ -3,12 +3,12 @@
 #  https://review.opendev.org/c/openstack/tripleo-ansible/+/859197 (import ceph_client role)
 #  https://review.opendev.org/c/openstack/tripleo-ansible/+/859149 (update ceph_client role)
 #  https://review.opendev.org/c/openstack/tripleo-ansible/+/858585 (libvirt)
+#  https://review.opendev.org/c/openstack/tripleo-ansible/+/860483 (compute)
 
 IMPORT=0
 UPDATE=0
 LIBVIRT=0
 COMPUTE=0
-KOLLA=0
 NODOWN=0
 
 for var in "$@"; do
@@ -16,7 +16,6 @@ for var in "$@"; do
     if [[ $var == "update" ]]; then UPDATE=1; fi
     if [[ $var == "libvirt" ]]; then LIBVIRT=1; fi
     if [[ $var == "compute" ]]; then COMPUTE=1; fi
-    if [[ $var == "kolla" ]]; then KOLLA=1; fi
     if [[ $var == "nodown" ]]; then NODOWN=1; fi
 done
 
@@ -93,22 +92,20 @@ if [ $LIBVIRT -eq 1 ]; then
 fi
 # -------------------------------------------------------
 # COMPUTE (patch on top of 843659 to come later)
-# -------------------------------------------------------
-# kolla 860472
-if [ $KOLLA -eq 1 ]; then
+if [ $COMPUTE -eq 1 ]; then
     pushd $TARGET
     if [ $NODOWN -eq 1 ]; then
-        git checkout tripleo_container_standalone_kolla
+        git checkout ceph_client_compute
     else
         # use this option only if patch is already downloaded
-        git review -d 860472
-        git branch -M tripleo_container_standalone_kolla
+        git review -d 860483
+        git branch -M ceph_client_compute
     fi
     popd
-    ROLE=roles/tripleo_container_standalone
+    ROLE=roles/tripleo_nova_compute
     FILES=(
-        tasks/main.yml
-        tasks/make_kolla_config_file_sub_directories.yml
+        defaults/main.yml
+        templates/kolla_config/nova_compute.yaml.j2
     )
     push_changes
 fi

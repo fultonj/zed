@@ -7,33 +7,6 @@
     my_ini: /var/lib/config-data/ansible-generated/nova_libvirt/etc/nova/nova.conf
   tasks:
     - include_vars: /home/stack/ceph_client.yaml
-    - name: Add missing neutron key/values to nova.conf
-      become: true
-      ini_file:
-        path: "{{ my_ini }}"
-        create: false
-        backup: false
-        section: 'neutron'
-        option: "{{ item.key }}"
-        value: "{{ item.value }}"
-      loop:
-        - { key: 'auth_type', value: 'v3password' }
-        - { key: 'project_name', value: 'service' }
-        - { key: 'user_domain_name', value: 'Default' }
-        - { key: 'project_domain_name', value: 'Default' }
-        - { key: 'region_name', value: 'regionOne' }
-        - { key: 'username', value: 'neutron' }
-    - name: Add missing service_user key/values to nova.conf
-      become: true
-      ini_file:
-        path: "{{ my_ini }}"
-        create: false
-        backup: false
-        section: 'service_user'
-        option: "{{ item.key }}"
-        value: "{{ item.value }}"
-      loop:
-        - { key: 'username', value: 'nova' }
     - name: Add missing rbd libvirt key/values to nova.conf
       become: true
       ini_file:
