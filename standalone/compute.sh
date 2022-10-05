@@ -18,7 +18,8 @@ else
     exit 1
 fi
 
-# bash ../init/standalone_ceph_patches.sh nodown import libvirt update
+# bash ../init/standalone_ceph_patches.sh nodown import libvirt update kolla
+# --tags facts,tripleo_nova_compute
 
 pushd /home/stack/
 time sudo ansible-playbook -i $INV $PLAY
