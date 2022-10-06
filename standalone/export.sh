@@ -19,15 +19,4 @@ if [[ ! -e 99-standalone-vars ]]; then
     exit 1
 fi
 
-# workaround service_net_map issues
-# https://review.opendev.org/c/openstack/tripleo-ansible/+/840509/36/scripts/tripleo-standalone-vars#95
-sed -i '/service_net_map/d' 99-standalone-vars
-
-
 cat 99-standalone-vars missing_vars > $DST
-
-if [[ -e 03-tripleo ]]; then
-    # workaround https://paste.opendev.org/show/bW1qCm8K5SsdaYYpm2vX/
-    # 03-tripleo is provided by https://review.opendev.org/840509
-    cp 03-tripleo /home/stack/ext/tripleo-ansible/tripleo_ansible/inventory/
-fi
