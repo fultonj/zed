@@ -2,7 +2,7 @@
 
 CONTROLLER_IP=192.168.24.2
 SRC=/home/stack/ext/tripleo-ansible/scripts/tripleo-standalone-vars
-DST=/home/stack/ext/tripleo-ansible/tripleo_ansible/inventory/99-custom
+INV=/home/stack/ext/tripleo-ansible/tripleo_ansible/inventory
 OPT='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
 
 scp $OPT $SRC stack@$CONTROLLER_IP:/home/stack/tripleo-standalone-vars
@@ -19,6 +19,11 @@ if [[ ! -e 99-standalone-vars ]]; then
     exit 1
 fi
 
-python missing_vars.py
+python3 missing_vars.py
 diff -u 99-standalone-vars 99-standalone-vars-new
-cat 99-standalone-vars-new > $DST
+python3 add_ceph_vars_to_nova_conf.py
+diff -u 99-standalone-vars-new 99-standalone-vars-new-ceph
+cp -fv 99-standalone-vars-new-ceph $INV/99-custom
+
+python3 ceph_vars.py
+cp -fv 08-ceph $INV/
