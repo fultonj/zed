@@ -14,7 +14,7 @@ sudo cp ansible.cfg /root/ansible.cfg
 if [[ -e 08-ceph ]]; then
     cp -f 08-ceph $INV/
 else
-    echo "08-ceph is missing, run mkinv.py"
+    echo "08-ceph is missing, run ceph_vars.py"
     exit 1
 fi
 

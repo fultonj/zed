@@ -103,7 +103,7 @@ variables for ceph used in new standlone roles like `tripleo_nova_*`.
 The convention I'm promoting instead is to use those existing
 variables plus some new ones as described this
 [docs patch](https://review.opendev.org/c/openstack/tripleo-docs/+/859142).
-The [mkinv.py](mkinv.py) script creates the described 08-ceph inventory.
+The [ceph_vars.py](ceph_vars.py) script creates the described 08-ceph inventory.
 
 #### Run the playbook and discover the deployed node
 
