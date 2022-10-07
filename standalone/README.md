@@ -1,6 +1,8 @@
 # Standalone and External Compute on VMs from virsh
 
 My scripts to reproduce https://etherpad.opendev.org/p/tripleo-standalone-roles
+and have the compute node deployed with standalone ansible (no puppet/heat)
+use external Ceph.
 
 ## Get VMs
 
@@ -184,9 +186,28 @@ bash-5.1$ cat /etc/nova/secret.xml
 bash-5.1$
 ```
 
-Note that `ceph.client.openstack.keyring` != `ceph.openstack.keyring`
-so I still have a bug to fix.
-
 ### Can you create an instance which uses Ceph as its backend?
 
-Use [verify.sh](verify.sh) to launch an instance on the new compute node.
+Use [verify.sh](verify.sh) to launch an instance on the new compute
+node.
+
+In my case I see an instance running on the compute node which was
+deployed only with Ansible (no puppet/heat):
+
+```
++--------------------------------------+-----------------------------+--------+----------+--------+---------+
+| ID                                   | Name                        | Status | Networks | Image  | Flavor  |
++--------------------------------------+-----------------------------+--------+----------+--------+---------+
+| fa17d9ab-e9c2-4496-9d74-70c9dfc1febe | myserver-centos.example.com | ACTIVE |          | cirros | m1.tiny |
++--------------------------------------+-----------------------------+--------+----------+--------+---------+
+```
+
+and I see its root disk was created on my Ceph cluster:
+
+```
+[ceph: root@ceph /]# rbd ls -l vms
+NAME                                              SIZE     PARENT  FMT  PROT  LOCK
+fa17d9ab-e9c2-4496-9d74-70c9dfc1febe_disk           1 GiB            2
+fa17d9ab-e9c2-4496-9d74-70c9dfc1febe_disk.config  474 KiB            2
+[ceph: root@ceph /]#
+```
