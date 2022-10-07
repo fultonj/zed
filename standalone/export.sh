@@ -19,4 +19,6 @@ if [[ ! -e 99-standalone-vars ]]; then
     exit 1
 fi
 
-cat 99-standalone-vars missing_vars > $DST
+python missing_vars.py
+diff -u 99-standalone-vars 99-standalone-vars-new
+cat 99-standalone-vars-new > $DST
