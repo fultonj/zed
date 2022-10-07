@@ -211,3 +211,5 @@ fa17d9ab-e9c2-4496-9d74-70c9dfc1febe_disk           1 GiB            2
 fa17d9ab-e9c2-4496-9d74-70c9dfc1febe_disk.config  474 KiB            2
 [ceph: root@ceph /]#
 ```
+
+[![Video demo of tripleo standalone ansible roles with external Ceph](https://img.youtube.com/vi/rR1xArDLs7k/0.jpg)](https://www.youtube.com/watch?v=rR1xArDLs7k)
