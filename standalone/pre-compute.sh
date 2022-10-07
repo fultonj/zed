@@ -99,5 +99,4 @@ fi
 
 if [[ $EXPORT -eq 1 ]]; then
     bash export.sh
-    python3 ceph_vars.py
 fi
