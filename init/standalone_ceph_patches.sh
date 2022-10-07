@@ -8,14 +8,12 @@
 IMPORT=0
 UPDATE=0
 LIBVIRT=0
-COMPUTE=0
 NODOWN=0
 
 for var in "$@"; do
     if [[ $var == "import" ]]; then IMPORT=1; fi
     if [[ $var == "update" ]]; then UPDATE=1; fi
     if [[ $var == "libvirt" ]]; then LIBVIRT=1; fi
-    if [[ $var == "compute" ]]; then COMPUTE=1; fi
     if [[ $var == "nodown" ]]; then NODOWN=1; fi
 done
 
@@ -87,25 +85,6 @@ if [ $LIBVIRT -eq 1 ]; then
         tasks/run.yml
         files/nova_libvirt_init_secret.sh
         templates/nova_libvirt_init_secret.yaml.j2
-    )
-    push_changes
-fi
-# -------------------------------------------------------
-# COMPUTE (patch on top of 843659 to come later)
-if [ $COMPUTE -eq 1 ]; then
-    pushd $TARGET
-    if [ $NODOWN -eq 1 ]; then
-        git checkout ceph_client_compute
-    else
-        # use this option only if patch is already downloaded
-        git review -d 860483
-        git branch -M ceph_client_compute
-    fi
-    popd
-    ROLE=roles/tripleo_nova_compute
-    FILES=(
-        defaults/main.yml
-        templates/kolla_config/nova_compute.yaml.j2
     )
     push_changes
 fi
