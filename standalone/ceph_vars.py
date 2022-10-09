@@ -16,8 +16,9 @@ standalone_vars = {
     'tripleo_nova_libvirt_enable_rbd_backend': True,
     'tripleo_ceph_cluster_fsid': ceph_client['tripleo_ceph_client_fsid'],
     'tripleo_ceph_cluster_keys': ceph_client['keys'],
-    'tripleo_ceph_cluster_name': ceph_client['tripleo_ceph_client_cluster'],
     'external_cluster_mon_ips': ceph_client['external_cluster_mon_ips'],
+    'tripleo_ceph_cluster_name': ceph_client['tripleo_ceph_client_cluster'],
+    'tripleo_ceph_client_user_name': ceph_client['keys'][0]['name'].replace('client.', '')
 }
 
 if multiple:
