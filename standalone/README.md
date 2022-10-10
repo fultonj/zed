@@ -215,3 +215,51 @@ fa17d9ab-e9c2-4496-9d74-70c9dfc1febe_disk.config  474 KiB            2
 ### Demo
 
 [![Video demo of tripleo standalone ansible roles with external Ceph](https://img.youtube.com/vi/rR1xArDLs7k/0.jpg)](https://www.youtube.com/watch?v=rR1xArDLs7k)
+
+### Multiple Ceph Clusters
+
+If `multiple = True` in [ceph_vars.py](ceph_vars.py), then the
+inventory it outputs (e.g. `08-ceph`) will contain
+`tripleo_cinder_rbd_multi_config` and `tripleo_ceph_cluster_multi_config`
+which will be built from
+[tripleo_ceph_cluster_multi_config.yml](tripleo_ceph_cluster_multi_config.yml).
+
+The `tripleo_ceph_client` role will then populate
+`/var/lib/tripleo-config/ceph/` with the following:
+
+```
+-rw-------. 1 root root 236 Oct 10 12:50 ceph2.client.openstack.keyring
+-rw-r--r--. 1 root root 247 Oct 10 12:31 ceph2.conf
+-rw-------. 1 root root 236 Oct 10 12:50 ceph3.client.openstack.keyring
+-rw-r--r--. 1 root root 247 Oct 10 12:31 ceph3.conf
+-rw-------. 1 root root 218 Oct  7 21:31 ceph.client.openstack.keyring
+-rw-r--r--. 1 root root 230 Oct  7 21:31 ceph.conf
+```
+
+The `tripleo_nova_libvirt` role will crteate the nova.conf and libvirt
+secret files:
+
+```
+[stack@centos standalone]$ ls -l /var/lib/config-data/ansible-generated/nova_libvirt/etc/nova
+total 208
+-rw-r--r--. 1 root root     179 Oct 10 13:49 ceph2-secret.xml
+-rw-r--r--. 1 root root     179 Oct 10 13:49 ceph3-secret.xml
+-rw-r-----. 1 root 42436 197529 Oct 10 13:58 nova.conf
+-rw-r--r--. 1 root root     173 Oct  7 21:33 secret.xml
+[stack@centos standalone]$
+```
+It will also create the secrets in the virtsecretd service:
+```
+[stack@centos standalone]$ ./secret-list.sh
+nova_virtsecretd
+ UUID                                   Usage
+----------------------------------------------------------------------------
+ 604c9994-1d82-11ed-8ae5-5254003d6107   ceph client.openstack secret
+ 7ac7b952-21ff-4a05-869f-3c494746455f   ceph ceph3.client.openstack secret
+ e2cba068-5f14-4b0f-b047-acf375c0004a   ceph ceph2.client.openstack secret
+
+AQCKyftiFuuKKBAAz6f8e3dUpdXdZpvhu7xngw==
+AQBG0EFjAAAAABAAdzNRNhqTW2jjotrmZXVu+A==
+AQCwmeRcAAAAABAA6SQU/bGqFjlfLro5KxrB1Q==
+[stack@centos standalone]$
+```
