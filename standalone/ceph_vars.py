@@ -26,13 +26,13 @@ if multiple:
         ceph_clients = yaml.safe_load(multi_file)
     standalone_vars['tripleo_ceph_cluster_multi_config'] = \
         ceph_clients['tripleo_ceph_cluster_multi_config']
-    libvirt_vars = []
+    libvirt_vars = {}
     for ceph in ceph_clients['tripleo_ceph_cluster_multi_config']:
         libvirt_var_item = {
             'CephClusterName': ceph['tripleo_ceph_cluster_name'],
             'CephClientUserName': ceph['keys'][0]['name'].replace('client.', '')
         }
-        libvirt_vars.append(libvirt_var_item)
+        libvirt_vars[ceph['tripleo_ceph_cluster_name']] = libvirt_var_item
     standalone_vars['tripleo_cinder_rbd_multi_config'] = libvirt_vars
 
 config_dict = {
