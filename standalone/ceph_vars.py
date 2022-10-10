@@ -30,7 +30,7 @@ if multiple:
     for ceph in ceph_clients['tripleo_ceph_cluster_multi_config']:
         libvirt_var_item = {
             'CephClusterName': ceph['tripleo_ceph_cluster_name'],
-            'CephClientUserName': ceph['tripleo_ceph_cluster_keys'][0]['name'].replace('client.', '')
+            'CephClientUserName': ceph['keys'][0]['name'].replace('client.', '')
         }
         libvirt_vars.append(libvirt_var_item)
     standalone_vars['tripleo_cinder_rbd_multi_config'] = libvirt_vars

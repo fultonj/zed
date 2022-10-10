@@ -3,7 +3,7 @@ tripleo_ceph_cluster_multi_config:
   - tripleo_ceph_cluster_name: 'ceph2'
     tripleo_ceph_cluster_fsid: 'e2cba068-5f14-4b0f-b047-acf375c0004a'
     external_cluster_mon_ips: '172.18.0.5,172.18.0.6,172.18.0.7'
-    tripleo_ceph_cluster_keys:
+    keys:
       - name: "client.openstack"
         caps:
           mgr: "allow *"
@@ -14,7 +14,7 @@ tripleo_ceph_cluster_multi_config:
   - tripleo_ceph_cluster_name: 'ceph3'
     tripleo_ceph_cluster_fsid: '7ac7b952-21ff-4a05-869f-3c494746455f'
     external_cluster_mon_ips: '172.33.0.5,172.33.0.6,172.33.0.7'
-    tripleo_ceph_cluster_keys:
+    keys:
       - name: "client.openstack"
         caps:
           mgr: "allow *"
