@@ -44,4 +44,5 @@ fi
 
 popd
 
-oc get pods -l service=glance
+oc get pods -l service=glance-external
+oc get pods -l service=glance-internal

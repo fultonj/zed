@@ -2,7 +2,7 @@
 
 OVER=1
 CIRROS=1
-IMAGE=0
+IMAGE=1
 PROJECT_ID_BUG=0
 
 eval $(crc oc-env)
@@ -11,7 +11,8 @@ export OS_CLOUD=default
 export OS_PASSWORD=12345678
 
 if [[ $OVER -eq 1 ]]; then
-    oc get pods -l service=glance
+    oc get pods -l service=glance-external
+    oc get pods -l service=glance-internal
     openstack service list
     openstack image list
 fi

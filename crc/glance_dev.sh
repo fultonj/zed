@@ -87,7 +87,9 @@ if [[ $LOGS -eq 1 ]]; then
     oc describe $OP
     oc logs $OP
 
-    SVC=$(oc get pods -l service=glance | grep Running | awk {'print $1'})
+    SVC=$(oc get pods -l service=glance-external | grep Running | awk {'print $1'})
+    oc logs $SVC
+    SVC=$(oc get pods -l service=glance-internal | grep Running | awk {'print $1'})
     oc logs $SVC
 fi
 
