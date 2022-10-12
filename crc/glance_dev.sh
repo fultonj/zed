@@ -28,14 +28,17 @@ if [[ $GIT -eq 1 ]]; then
     popd
 fi
 
-
 if [[ $CLEAN -eq 1 ]]; then
     make glance_cleanup
-    oc delete deployment glance -n openstack
+    for G in $(oc get deployment -o custom-columns=NAME:metadata.name | grep glance); do
+        oc delete deployment $G -n openstack;
+    done
     oc delete pvc glance
-
-    echo "Now run this in another window:"
-    echo "  oc delete GlanceAPI glance"
+    echo "Now run this in two other windows:"
+    echo "  oc delete GlanceAPI glance-external"
+    echo "  oc delete GlanceAPI glance-internal"
+    echo "OR"
+    echo "  oc delete GlanceAPI glance-default"
     echo "The above will hang until you run w/ BUILD=OPERATOR=1"
     echo "Then the output of /bin/manager should that the new instance "
     echo "of the operator reconciled the 'oc delete' above."
@@ -77,20 +80,24 @@ if [[ $CRD -eq 1 ]]; then
     # By default you don't need this since the CRD
     # exists already from running glance.sh first.
     # If a patch adds a new parameter to the crd API, then redefine it
-    CRD=$(oc get crds | grep -i glance | awk {'print $1'})
-    oc delete crds $CRD
-    oc create -f ~/install_yamls/develop_operator/glance-operator/config/crd/bases/glance.openstack.org_glanceapis.yaml
+    for CRD in $(oc get crds | grep -i glance | awk {'print $1'}); do
+        oc delete crds $CRD;
+    done
+    pushd ~/install_yamls/develop_operator/glance-operator/config/crd/bases/
+    for F in $(ls); do
+        oc create -f $F;
+    done
+    popd
+    # e.g. glance.openstack.org_glanceapis.yaml glance.openstack.org_glances.yaml
 fi
 
 if [[ $LOGS -eq 1 ]]; then
     OP=$(oc get pods -l control-plane=controller-manager -o name  | grep glance)
     oc describe $OP
     oc logs $OP
-
-    SVC=$(oc get pods -l service=glance-external | grep Running | awk {'print $1'})
-    oc logs $SVC
-    SVC=$(oc get pods -l service=glance-internal | grep Running | awk {'print $1'})
-    oc logs $SVC
+    for POD in $(oc get pods | grep glance | grep Running | awk {'print $1'}); do
+        oc logs $POD
+    done
 fi
 
 popd
