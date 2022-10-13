@@ -8,7 +8,6 @@
 - [test_glance.sh](test_glance.sh): Test Glance
 - [glance_dev.sh](glance_dev.sh): Script to help Glance Operator development ([notes](glance_dev_notes.md))
 - [rabbit.sh](rabbit.sh): Deploy RabbitMQ
-- [nfs.sh](nfs.sh): Set up NFS server for Cinder
 - [cinder.sh](cinder.sh): Deploy Cinder
 - [test_cinder.sh](test_cinder.sh): Test Cinder
 - [clean.sh](clean.sh): Remove keystone, maria, cinder, crc
