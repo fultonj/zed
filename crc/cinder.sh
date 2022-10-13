@@ -14,3 +14,9 @@ make cinder
 sleep 60
 make cinder_deploy
 popd
+
+echo "Updating Cinder CR to use cephBackend"
+cp cr/cinder_v1beta1_cinder_ceph.yaml ~/install_yamls/out/openstack/cinder/cr/cinder_v1beta1_cinder.yaml
+oc delete -f ~/install_yamls/out/openstack/cinder/cr/cinder_v1beta1_cinder.yaml
+sleep 10
+oc kustomize ~/install_yamls/out/openstack/cinder/cr | oc apply -f -
