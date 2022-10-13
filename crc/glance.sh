@@ -17,7 +17,12 @@ sleep 60
 make glance_deploy
 
 # modify glance to use use 1G PVs created by crc_storage
-GLANCE_CR=~/install_yamls/out/openstack/glance/cr/glance_v1beta1_glanceapi.yaml
+if [[ -e ~/install_yamls/out/openstack/glance/cr/glance_v1beta1_glanceapi.yaml ]]; then
+    GLANCE_CR=~/install_yamls/out/openstack/glance/cr/glance_v1beta1_glanceapi.yaml
+fi
+if [[ -e ~/install_yamls/out/openstack/glance/cr/glance_v1beta1_glance.yaml]]; then
+    GLANCE_CR=~/install_yamls/out/openstack/glance/cr/glance_v1beta1_glance.yaml
+fi
 
 # To use external ceph, add the following to a copy of the $GLANCE_CR
 # cephBackend:
@@ -44,5 +49,7 @@ fi
 
 popd
 
-oc get pods -l service=glance-external
-oc get pods -l service=glance-internal
+#oc get pods -l service=glance-default
+#oc get pods -l service=glance-external
+#oc get pods -l service=glance-internal
+oc get pods | egrep "NAME|glance"
