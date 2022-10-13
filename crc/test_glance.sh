@@ -3,6 +3,7 @@
 OVER=1
 CIRROS=1
 IMAGE=1
+CLEAN=0
 PROJECT_ID_BUG=0
 
 eval $(crc oc-env)
@@ -28,6 +29,12 @@ if [[ $IMAGE -eq 1 ]]; then
     openstack image create cirros --container-format bare --disk-format qcow2 --file cirros-0.4.0-x86_64-disk.img
     openstack image list
     # openstack image show cirros
+fi
+
+if [[ $CLEAN -eq 1 ]]; then
+    for ID in $(openstack image list -f value -c ID); do
+        openstack image delete $ID
+    done
 fi
 
 if [[ $PROJECT_ID_BUG -eq 1 ]]; then
