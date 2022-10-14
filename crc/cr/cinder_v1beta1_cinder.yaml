@@ -38,11 +38,3 @@ spec:
       debug:
         initContainer: false
         service: false
-  cephBackend:
-    cephFsid: ${cephBackend[cephFsid]}
-    cephMons: ${cephBackend[cephMons]}
-    cephClientKey: ${cephBackend[cephClientKey]}
-    cephUser: ${cephBackend[cephUser]}
-    cephPools:
-      cinder:
-        name: ${cephBackend[cephPools]}
