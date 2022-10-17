@@ -23,3 +23,7 @@ cp $CR ~/install_yamls/out/openstack/cinder/cr/cinder_v1beta1_cinder.yaml
 sleep 10
 oc kustomize ~/install_yamls/out/openstack/cinder/cr | oc apply -f -
 popd
+
+# oc logs cinder-volume-ceph-0 cinder-volume
+# oc logs cinder-volume-ceph-0 probe
+# oc logs cinder-volume-ceph-0 init
