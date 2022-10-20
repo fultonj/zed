@@ -42,6 +42,8 @@ if [[ -e $GLANCE_CR ]]; then
         # add Ceph to CR
         pushd cr
         CR=$(bash ceph_cr.sh glance)
+        echo "Backing up $GLANCE_CR"
+        cp -v $GLANCE_CR $(basename $GLANCE_CR).bak
         echo "Applying a CR with the following diff:"
         diff -u $GLANCE_CR $CR
         cp $CR $GLANCE_CR
