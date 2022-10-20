@@ -15,11 +15,15 @@ sleep 60
 make cinder_deploy
 popd
 
+CINDER_CR=~/install_yamls/out/openstack/cinder/cr/cinder_v1beta1_cinder.yaml
+
 echo "Updating Cinder CR to use cephBackend"
 pushd cr
+echo "Backing up $CINDER_CR"
+cp -v $CINDER_CR $(basename $CINDER_CR).bak
 CR=$(bash ceph_cr.sh cinder)
-oc delete -f ~/install_yamls/out/openstack/cinder/cr/cinder_v1beta1_cinder.yaml
-cp $CR ~/install_yamls/out/openstack/cinder/cr/cinder_v1beta1_cinder.yaml
+oc delete -f $CINDER_CR
+cp $CR $CINDER_CR
 sleep 10
 oc kustomize ~/install_yamls/out/openstack/cinder/cr | oc apply -f -
 popd
