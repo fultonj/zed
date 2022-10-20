@@ -8,6 +8,13 @@ fi
 eval $(crc oc-env)
 oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
 
+RABBITS=$(oc get pods | grep default-security-context | wc -l)
+if [[ $RABBITS -eq 0 ]]; then
+    echo "It looks like rabbit is not running. Exiting."
+    echo "oc get pods | grep default-security-context"
+    exit 1
+fi
+
 pushd ~/install_yamls
 make cinder_prep
 make cinder
