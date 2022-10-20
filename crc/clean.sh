@@ -25,9 +25,9 @@ if [[ $CINDER -eq 1 ]]; then
 fi
 
 if [[ $RABBIT -eq 1 ]]; then
-    curl https://raw.githubusercontent.com/openstack-k8s-operators/install_yamls/eae7c79c296fc06301ed141bc1c338cf3056564b/Makefile > Makefile
+    # curl https://raw.githubusercontent.com/openstack-k8s-operators/install_yamls/eae7c79c296fc06301ed141bc1c338cf3056564b/Makefile > Makefile
     make rabbitmq_deploy_cleanup
-    git reset --hard
+    # git reset --hard
 fi
 
 if [[ $GLANCE -eq 1 ]]; then
@@ -51,9 +51,9 @@ if [[ $CINDER -eq 1 ]]; then
 fi
 
 if [[ $RABBIT -eq 1 ]]; then
-    curl https://raw.githubusercontent.com/openstack-k8s-operators/install_yamls/eae7c79c296fc06301ed141bc1c338cf3056564b/Makefile > Makefile
+    # curl https://raw.githubusercontent.com/openstack-k8s-operators/install_yamls/eae7c79c296fc06301ed141bc1c338cf3056564b/Makefile > Makefile
     make rabbitmq_cleanup
-    git reset --hard
+    # git reset --hard
 fi
 
 if [[ $GLANCE -eq 1 ]]; then
