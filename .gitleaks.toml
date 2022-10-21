@@ -7,4 +7,9 @@
     '''^\.?export.sh$''',
     '''^\.?standalone/export.sh$''',
     '''^\.?standalone\/export.sh$''',
+    '''^\.?cinder_v1beta1_cinder.yaml$''',
+    '''^\.?crc/cr/cinder_v1beta1_cinder.yaml$''',
+    '''^\.?crc/cr\/cinder_v1beta1_cinder.yaml$''',
+    '''^\.?crc\/cr/cinder_v1beta1_cinder.yaml$''',
+    '''^\.?crc\/cr\/cinder_v1beta1_cinder.yaml$''',
   ]
