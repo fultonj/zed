@@ -8,6 +8,7 @@ spec:
   customServiceConfig: |
     [DEFAULT]
     debug = true
+    transport_url=rabbit://openstack:redhat@rabbitmq.openstack.svc:5672
   databaseInstance: openstack
   databaseUser: cinder
   cinderAPI:
