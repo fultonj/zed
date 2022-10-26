@@ -11,3 +11,5 @@
 - [cinder.sh](cinder.sh): Deploy Cinder
 - [test_cinder.sh](test_cinder.sh): Test Cinder
 - [clean.sh](clean.sh): Remove keystone, maria, cinder, crc
+- [cr](cr): Directory of CRs or scripts to create CRs for the glance
+  or cinder operators.

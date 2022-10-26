@@ -39,6 +39,8 @@ Assuming an operator is running and you want to run a new patch...
    oc kustomize ~/install_yamls/out/openstack/glance/cr | oc apply -f -
    ```
 
+If you need to modify lib-common see [local-lib-common.md](local-lib-common.md).
+
 ## Deleting resources to unblock creating new ones
 
 The following additional cleaning commands may be necessary

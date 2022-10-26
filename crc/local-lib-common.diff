@@ -1,0 +1,78 @@
+diff --git a/api/v1beta1/glance_types.go b/api/v1beta1/glance_types.go
+index 1f399fa..765df05 100644
+--- a/api/v1beta1/glance_types.go
++++ b/api/v1beta1/glance_types.go
+@@ -20,7 +20,7 @@ import (
+ 	condition "github.com/openstack-k8s-operators/lib-common/modules/common/condition"
+ 	"github.com/openstack-k8s-operators/lib-common/modules/storage/ceph"
+ 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+-	"github.com/openstack-k8s-operators/lib-common/modules/storage"
++	"lib-common/modules/storage"
+ )
+ 
+ const (
+diff --git a/api/v1beta1/glanceapi_types.go b/api/v1beta1/glanceapi_types.go
+index 69d0344..71fa672 100644
+--- a/api/v1beta1/glanceapi_types.go
++++ b/api/v1beta1/glanceapi_types.go
+@@ -24,7 +24,7 @@ import (
+ 	"github.com/openstack-k8s-operators/lib-common/modules/storage/ceph"
+ 	corev1 "k8s.io/api/core/v1"
+ 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+-	"github.com/openstack-k8s-operators/lib-common/modules/storage"
++	"lib-common/modules/storage"
+ )
+ 
+ const (
+diff --git a/pkg/glance/dbsync.go b/pkg/glance/dbsync.go
+index 8851d67..4606df7 100644
+--- a/pkg/glance/dbsync.go
++++ b/pkg/glance/dbsync.go
+@@ -23,7 +23,7 @@ import (
+ 	batchv1 "k8s.io/api/batch/v1"
+ 	corev1 "k8s.io/api/core/v1"
+ 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+-	"github.com/openstack-k8s-operators/lib-common/modules/storage"
++	"lib-common/modules/storage"
+ )
+ 
+ const (
+diff --git a/pkg/glance/volumes.go b/pkg/glance/volumes.go
+index 77cfab2..c403d48 100644
+--- a/pkg/glance/volumes.go
++++ b/pkg/glance/volumes.go
+@@ -17,7 +17,7 @@ package glance
+ 
+ import (
+ 	corev1 "k8s.io/api/core/v1"
+-	"github.com/openstack-k8s-operators/lib-common/modules/storage"
++	"lib-common/modules/storage"
+ )
+ 
+ // GetVolumes - service volumes
+diff --git a/pkg/glanceapi/deployment.go b/pkg/glanceapi/deployment.go
+index 124faf0..9599e69 100644
+--- a/pkg/glanceapi/deployment.go
++++ b/pkg/glanceapi/deployment.go
+@@ -28,7 +28,7 @@ import (
+ 	corev1 "k8s.io/api/core/v1"
+ 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+ 	"k8s.io/apimachinery/pkg/util/intstr"
+-	"github.com/openstack-k8s-operators/lib-common/modules/storage"
++	"lib-common/modules/storage"
+ )
+ 
+ const (
+diff --git a/pkg/glanceapi/volumes.go b/pkg/glanceapi/volumes.go
+index 735874d..2868a62 100644
+--- a/pkg/glanceapi/volumes.go
++++ b/pkg/glanceapi/volumes.go
+@@ -17,7 +17,7 @@ package glanceapi
+ 
+ import (
+ 	corev1 "k8s.io/api/core/v1"
+-	"github.com/openstack-k8s-operators/lib-common/modules/storage"
++	"lib-common/modules/storage"
+ )
+ 
+ // getInitVolumeMounts - general init task VolumeMounts
