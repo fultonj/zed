@@ -19,7 +19,7 @@
 ## Deploy OpenStack with Meta Operator
 
 - [meta.sh](meta.sh): Deploy Maria, Keystone, Glance, RabbitMQ and Cinder
-- [scale_down.sh](scale_down.sh): Scale down openstack, glance and cinder controllers
+- [scale.sh](scale.sh): Scale openstack, glance and cinder controllers
 
 ## Other
 
