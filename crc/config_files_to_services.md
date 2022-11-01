@@ -208,3 +208,14 @@ actually define an `extraVolType` in lib-common to support another
 backend configuration. As long as that backend can be defined in terms
 of a set of files to be accessible wtihin a pod no additional update
 to lib-common should be required.
+
+### Demo
+
+Screencast by [fmount](https://github.com/fmount) showing the
+[meta-operator](https://github.com/openstack-k8s-operators/openstack-operator)
+CRD with `extraVol` propagating volumes to Glance, Cinder, and
+Compute; where Compute results in the 
+[ansibleee-operator](https://github.com/openstack-k8s-operators/ansibleee-operator)
+having access to the Ceph configuration files (so it could then
+use Ansible to distribute them to non-worker nodes).
+[![asciicast](https://asciinema.org/a/533951.svg)](https://asciinema.org/a/533951)
