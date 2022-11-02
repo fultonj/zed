@@ -21,6 +21,11 @@ if [[ $CREATE -eq 1 ]]; then
     make openstack_deploy
 fi
 
+if [[ $(( $CREATE + $UPDATE )) -eq 2 ]]; then
+    echo "Give 'make openstack_deploy' 60 seconds before updating CR"
+    sleep 60
+fi
+
 if [[ $UPDATE -eq 1 ]]; then
     # update glance and cinder to use ceph
     # update cinder to use transport_url via customServiceConfig
