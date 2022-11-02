@@ -7,19 +7,22 @@
 
 - [maria.sh](maria.sh): Deploy MariaDB
 - [keystone.sh](keystone.sh): Deploy Keystone
-- [test_keystone.sh](test_keystone.sh): Test Keystone
 - [glance.sh](glance.sh): Deploy Glance
-- [test_glance.sh](test_glance.sh): Test Glance
 - [glance_dev.sh](glance_dev.sh): Script to help Glance Operator development ([notes](glance_dev_notes.md))
 - [rabbit.sh](rabbit.sh): Deploy RabbitMQ
 - [cinder.sh](cinder.sh): Deploy Cinder
-- [test_cinder.sh](test_cinder.sh): Test Cinder
 - [clean.sh](clean.sh): Remove cinder, rabbit, glance, keystone, maria or crc
 
 ## Deploy OpenStack with Meta Operator
 
 - [meta.sh](meta.sh): Deploy Maria, Keystone, Glance, RabbitMQ and Cinder
 - [scale.sh](scale.sh): Scale openstack, glance and cinder controllers
+
+## Tests
+
+- [test_keystone.sh](test_keystone.sh): Test Keystone
+- [test_glance.sh](test_glance.sh): Test Glance
+- [test_cinder.sh](test_cinder.sh): Test Cinder
 
 ## Other
 
