@@ -27,6 +27,7 @@ fi
 if [[ $(rabbitmqctl list_users | awk {'print $1'} | grep $USERNAME | wc -l) -eq 0 ]]; then
     #echo "Need to make $USERNAME an admin"
     rabbitmqctl set_user_tags $USERNAME administrator
+    rabbitmqctl set_permissions "$USERNAME" ".*" ".*" ".*"
 fi
 if [[ $RESETPASSWD -eq 1 ]]; then
     #echo "Ensure username:password for rabbitmqctl is $USERNAME:$PASSWORD"
