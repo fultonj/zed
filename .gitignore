@@ -4,5 +4,5 @@
 */cirros-*.img
 */standalone_parameters.yaml
 */glance_v1beta1_glance_ceph.yaml
-*/core_v1beta1_openstackcontrolplane_ceph_backend.yaml
-*/core_v1beta1_openstackcontrolplane_extra_vols.yaml
+*/cr/core_v1beta1_openstackcontrolplane_ceph_backend.yaml
+*/cr/core_v1beta1_openstackcontrolplane_extra_vols.yaml
