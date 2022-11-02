@@ -31,8 +31,14 @@ if [[ $UPDATE -eq 1 ]]; then
     # update cinder to use transport_url via customServiceConfig
     # scale cinder-volume-volume1-0 down to 0 replicas
     pushd cr
+    OUT=core_v1beta1_openstackcontrolplane_ceph_backend.yaml
     bash meta_cr.sh
-    oc apply -f core_v1beta1_openstackcontrolplane_ceph_backend.yaml
+    if [[ -e $OUT ]]; then
+        oc apply -f $OUT
+    else
+        echo "$OUT is missing"
+        exit 1
+    fi
     popd
 fi
 
