@@ -8,11 +8,18 @@ and
 
 ### Patches to Merge
 
-- [lib-common update](https://github.com/openstack-k8s-operators/lib-common/compare/master...fmount:lib-common:extra_volumes)
-- [cinder-operator patch](https://github.com/openstack-k8s-operators/cinder-operator/compare/master...fmount:cinder-operator:extra_volumes)
-- [glance-operator patch](https://github.com/openstack-k8s-operators/glance-operator/compare/master...fmount:glance-operator:extra_volumes)
-- [ansibleee-operator patch](https://github.com/openstack-k8s-operators/ansibleee-operator/compare/main...fmount:ansibleee-operator:extra_volumes)
-- [openstack-operator patch](https://github.com/openstack-k8s-operators/openstack-operator/compare/master...fmount:openstack-operator:extra_volumes)
+1. [lib-common update](https://github.com/openstack-k8s-operators/lib-common/compare/master...fmount:lib-common:extra_volumes)
+2. [cinder-operator patch](https://github.com/openstack-k8s-operators/cinder-operator/compare/master...fmount:cinder-operator:extra_volumes)
+3. [glance-operator patch](https://github.com/openstack-k8s-operators/glance-operator/compare/master...fmount:glance-operator:extra_volumes)
+4. [ansibleee-operator patch](https://github.com/openstack-k8s-operators/ansibleee-operator/compare/main...fmount:ansibleee-operator:extra_volumes)
+5. [ansible-operator_patch](https://github.com/openstack-k8s-operators/ansibleee-operator/pull/3)
+6. [openstack-operator EV patch](https://github.com/openstack-k8s-operators/openstack-operator/compare/master...fmount:openstack-operator:extra_volumes)
+7. [openstack-operator_AnsibleEE patch](https://github.com/openstack-k8s-operators/openstack-operator/compare/master...fmount:openstack-operator:ansible_operator_support)
+
+When testing you need:
+- 4 rebased on top of 5
+- 6 rebased on top of 7
+- 4,5,6,7 all need to be able to access 1
 
 ### Context
 
@@ -208,6 +215,10 @@ actually define an `extraVolType` in lib-common to support another
 backend configuration. As long as that backend can be defined in terms
 of a set of files to be accessible wtihin a pod no additional update
 to lib-common should be required.
+
+It is not mandatory to use the propagation list, but it's there for
+finer grain control if you need it.
+
 
 ### Demo
 
