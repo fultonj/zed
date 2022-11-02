@@ -1,7 +1,8 @@
 #!/bin/bash
 
 GLANCE=1
-ALL=0
+CINDER=1
+META=0
 REPLIACS=0
 
 eval $(crc oc-env)
@@ -23,8 +24,26 @@ if [[ $GLANCE -eq 1 ]]; then
     oc get pods | grep glance
 fi
 
-if [[ $ALL -eq 1 ]]; then
-    for op in openstack cinder placement; do
-        oc scale deployment $op-operator-controller-manager --replicas=0
+if [[ $CINDER -eq 1 ]]; then
+    echo "Scaling cinder: replicas: $REPLIACS"
+    oc get pods | grep cinder
+    oc get deployment | grep cinder
+    pushd cr
+    bash meta_cr.sh $REPLIACS
+    oc apply -f core_v1beta1_openstackcontrolplane_ceph_backend.yaml
+    popd
+    oc scale deployment cinder-operator-controller-manager --replicas=$REPLIACS
+    if [[ $REPLIACS -eq 0 ]]; then
+        oc scale deployment cinder --replicas=$REPLIACS
+    fi
+    echo "sleeping 30 seconds"
+    sleep 30
+    echo "greping for cinder pods"
+    oc get pods | grep cinder
+fi
+
+if [[ $META -eq 1 ]]; then
+    for op in openstack placement; do
+        oc scale deployment $op-operator-controller-manager --replicas=$REPLIACS
     done
 fi

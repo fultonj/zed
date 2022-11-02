@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ $# -eq 0 ]; then
+    CINDER_REPLICAS=1
+else
+    CINDER_REPLICAS=$1
+fi
+
 OUT=core_v1beta1_openstackcontrolplane_ceph_backend.yaml
 
 declare -A cephBackend
@@ -79,19 +85,19 @@ spec:
     databaseInstance: openstack
     databaseUser: cinder
     cinderAPI:
-      replicas: 1
+      replicas: $CINDER_REPLICAS
       containerImage: quay.io/tripleowallabycentos9/openstack-cinder-api:current-tripleo
       debug:
         initContainer: false
         service: false
     cinderScheduler:
-      replicas: 1
+      replicas: $CINDER_REPLICAS
       containerImage: quay.io/tripleowallabycentos9/openstack-cinder-scheduler:current-tripleo
       debug:
         initContainer: false
         service: false
     cinderBackup:
-      replicas: 1
+      replicas: $CINDER_REPLICAS
       containerImage: quay.io/tripleowallabycentos9/openstack-cinder-backup:current-tripleo
       customServiceConfig: |
         [DEFAULT]
@@ -106,9 +112,10 @@ spec:
       volume1:
         containerImage: quay.io/tripleowallabycentos9/openstack-cinder-volume:current-tripleo
         replicas: 0
+        # keep at zero since volume1 is a fake
       ceph:
         containerImage: quay.io/tripleowallabycentos9/openstack-cinder-volume:current-tripleo
-        replicas: 1
+        replicas: $CINDER_REPLICAS
         customServiceConfig: |
           [DEFAULT]
           enabled_backends=ceph
