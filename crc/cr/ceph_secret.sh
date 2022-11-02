@@ -2,13 +2,14 @@
 
 OUT=cephSecret.yaml
 SEC=~/cephBackend
-TYPE=glance
 
 declare -A cephBackend
 for KEY in cephFsid cephMons cephClientKey cephUser; do
     cephBackend[$KEY]=$(grep $KEY ~/cephBackend | awk {'print $2'} | sed s/\"//g)
 done;
-cephBackend[pool]=$(grep $TYPE ~/cephBackend -A 1 \
+cephBackend[glance]=$(grep glance ~/cephBackend -A 1 \
+                        | tail -1 | awk {'print $2'} | sed s/\"//g)
+cephBackend[cinder]=$(grep cinder ~/cephBackend -A 1 \
                         | tail -1 | awk {'print $2'} | sed s/\"//g)
 
 cat <<EOF > $OUT
@@ -24,7 +25,7 @@ stringData:
         key = ${cephBackend[cephClientKey]}
         caps mgr = "allow *"
         caps mon = "profile rbd"
-        caps osd = "profile rbd pool=${cephBackend[pool]}"
+        caps osd = "profile rbd pool=${cephBackend[glance]}, profile rbd pool=${cephBackend[cinder]}"
   ceph.conf: |
     [global]
     fsid = ${cephBackend[cephFsid]}
