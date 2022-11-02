@@ -13,12 +13,12 @@ fi
 eval $(crc oc-env)
 oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
 
-pushd ~/install_yamls
-
 if [[ $CREATE -eq 1 ]]; then
+    pushd ~/install_yamls
     make openstack
     sleep 60
     make openstack_deploy
+    popd
 fi
 
 if [[ $(( $CREATE + $UPDATE )) -eq 2 ]]; then
@@ -31,21 +31,17 @@ if [[ $UPDATE -eq 1 ]]; then
     # update cinder to use transport_url via customServiceConfig
     # scale cinder-volume-volume1-0 down to 0 replicas
     pushd cr
-    OUT=core_v1beta1_openstackcontrolplane_ceph_backend.yaml
     bash meta_cr.sh
-    if [[ -e $OUT ]]; then
-        oc apply -f $OUT
-    else
-        echo "$OUT is missing"
-        exit 1
-    fi
+    oc apply -f core_v1beta1_openstackcontrolplane_ceph_backend.yaml
     popd
 fi
 
 if [[ $DELETE -eq 1 ]]; then
+    pushd ~/install_yamls
     make openstack_deploy_cleanup
     sleep 60
     make openstack_cleanup
+    popd
 fi
 
 if [[ $PV -eq 1 ]]; then
@@ -53,5 +49,3 @@ if [[ $PV -eq 1 ]]; then
 	oc patch pv $i --type='json' -p='[{"op": "remove", "path": "/spec/claimRef"}]';
     done
 fi
-
-popd
