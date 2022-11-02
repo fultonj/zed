@@ -1,6 +1,7 @@
 #!/bin/bash
 
 CREATE=1
+DEPLOY=1
 UPDATE=1
 DELETE=0
 PV=0
@@ -17,7 +18,9 @@ if [[ $CREATE -eq 1 ]]; then
     pushd ~/install_yamls
     make openstack
     sleep 60
-    make openstack_deploy
+    if [[ $DEPLOY -eq 1 ]]; then
+        make openstack_deploy
+    fi
     popd
 fi
 

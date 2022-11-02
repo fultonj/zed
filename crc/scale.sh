@@ -2,6 +2,7 @@
 
 GLANCE=1
 CINDER=1
+CR_DELETE=0
 META=0
 REPLIACS=0
 
@@ -40,6 +41,11 @@ if [[ $CINDER -eq 1 ]]; then
     sleep 30
     echo "greping for cinder pods"
     oc get pods | grep cinder
+fi
+
+if [[ $CR_DELETE -eq 1 ]]; then
+    oc delete -f \
+       ~/install_yamls/out/openstack/openstack/cr/core_v1beta1_openstackcontrolplane.yaml
 fi
 
 if [[ $META -eq 1 ]]; then
