@@ -6,10 +6,10 @@ declare -A cephBackend
 for KEY in cephFsid cephMons cephClientKey cephUser; do
     cephBackend[$KEY]=$(grep $KEY ~/cephBackend | awk {'print $2'} | sed s/\"//g)
 done;
-cephBackend[glance]=$(grep glance ~/cephBackend -A 1 \
-                        | tail -1 | awk {'print $2'} | sed s/\"//g)
-cephBackend[cinder]=$(grep cinder ~/cephBackend -A 1 \
-                        | tail -1 | awk {'print $2'} | sed s/\"//g)
+for KEY in glance cinder backup; do
+    cephBackend[$KEY]=$(grep $KEY ~/cephBackend -A 1 | head -2 \
+                            | tail -1 | awk {'print $2'} | sed s/\"//g)
+done
 
 RABBIT_SECRET=rabbitmq-default-user
 TRANSPORT_URL=rabbit://$(oc get secret $RABBIT_SECRET -o json | jq -r '.data.username' | base64 -d):$(oc get secret $RABBIT_SECRET -o json | jq -r '.data.password' | base64 -d)@rabbitmq.openstack.svc:5672
@@ -91,13 +91,13 @@ spec:
         initContainer: false
         service: false
     cinderBackup:
-      replicas: 0
+      replicas: 1
       containerImage: quay.io/tripleowallabycentos9/openstack-cinder-backup:current-tripleo
       customServiceConfig: |
         [DEFAULT]
         backup_driver = cinder.backup.drivers.ceph.CephBackupDriver
-        backup_ceph_pool = backups
-        backup_ceph_user = admin
+        backup_ceph_pool = ${cephBackend[backup]}
+        backup_ceph_user = ${cephBackend[cephUser]}
       debug:
         initContainer: false
         service: false

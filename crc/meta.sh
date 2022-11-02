@@ -29,7 +29,7 @@ fi
 if [[ $UPDATE -eq 1 ]]; then
     # update glance and cinder to use ceph
     # update cinder to use transport_url via customServiceConfig
-    # scale cinder-backup-0 + cinder-volume-volume1-0 to 0 replicas
+    # scale cinder-volume-volume1-0 down to 0 replicas
     pushd cr
     bash meta_cr.sh
     oc apply -f core_v1beta1_openstackcontrolplane_ceph_backend.yaml
