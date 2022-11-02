@@ -1,6 +1,7 @@
 #!/bin/bash
 
 CREATE=1
+UPDATE=1
 DELETE=0
 PV=0
 
@@ -20,6 +21,15 @@ if [[ $CREATE -eq 1 ]]; then
     make openstack_deploy
 fi
 
+if [[ $UPDATE -eq 1 ]]; then
+    # update glance and cinder to use ceph
+    # update cinder to use transport_url via customServiceConfig
+    # scale cinder-backup-0 + cinder-volume-volume1-0 to 0 replicas
+    pushd cr
+    bash meta_cr.sh
+    oc apply -f core_v1beta1_openstackcontrolplane_ceph_backend.yaml
+    popd
+fi
 
 if [[ $DELETE -eq 1 ]]; then
     make openstack_deploy_cleanup
