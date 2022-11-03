@@ -10,6 +10,14 @@ spec:
   # args: ["ansible-runner", "run", "/runner", "-vvv", "-p", "test.yaml"]
   # args: ["cat", "/usr/share/ansible/tripleo-playbooks/test.yaml"]
   image: "quay.io/jlarriba/openstack-tripleo-ansible-ee"
+  # playbook: |
+  #   - name: Test example
+  #     gather_facts: false
+  #     hosts: localhost ansible_connection=local
+  #     tasks:
+  #       - name: Test task
+  #         debug:
+  #           msg: "hello world"
   inventory: |
           all:
             hosts:
