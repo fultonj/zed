@@ -8,6 +8,7 @@ spec:
   # or args, which allows specify the whole command that we want to execute
   playbook: "test.yaml"
   # args: ["ansible-runner", "run", "/runner", "-vvv", "-p", "test.yaml"]
+  # args: ["cat", "/usr/share/ansible/tripleo-playbooks/test.yaml"]
   image: "quay.io/jlarriba/openstack-tripleo-ansible-ee"
   inventory: |
           all:
