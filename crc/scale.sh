@@ -44,8 +44,7 @@ if [[ $CINDER -eq 1 ]]; then
 fi
 
 if [[ $CR_DELETE -eq 1 ]]; then
-    oc delete -f \
-       ~/install_yamls/out/openstack/openstack/cr/core_v1beta1_openstackcontrolplane.yaml
+    oc delete -f cr/core_v1beta1_openstackcontrolplane_default.yaml
 fi
 
 if [[ $META -eq 1 ]]; then
