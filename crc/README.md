@@ -11,6 +11,7 @@
 - [glance_dev.sh](glance_dev.sh): Script to help Glance Operator development ([notes](glance_dev_notes.md))
 - [rabbit.sh](rabbit.sh): Deploy RabbitMQ
 - [cinder.sh](cinder.sh): Deploy Cinder
+- [ansibleee.sh](ansibleee.sh): Run an ansible playbook with access to openstack CRs in a pod
 - [clean.sh](clean.sh): Remove cinder, rabbit, glance, keystone, maria or crc
 
 ## Deploy OpenStack with Meta Operator
