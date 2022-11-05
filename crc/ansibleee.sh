@@ -7,6 +7,7 @@ PUSH=0
 DEPLOY=1
 OPERATOR=1
 UNDEPLOY=0
+REDEPLOY=0
 LOGS=1
 
 MET_PORT=6668
@@ -65,6 +66,14 @@ fi
 if [[ $UNDEPLOY -eq 1 ]]; then
     oc delete -f ~/zed/crc/cr/ansibleee-test.yaml
 fi
+
+if [[ $REDEPLOY -eq 1 ]]; then
+    oc delete -f ~/zed/crc/cr/ansibleee-test.yaml
+    oc create -f ~/zed/crc/cr/ansibleee-test.yaml
+    # let playbook finish
+    sleep 5
+fi
+
 
 if [[ $LOGS -eq 1 ]]; then
     oc logs $(oc get pods | grep ansible | awk {'print $1'})
