@@ -8,18 +8,13 @@ and
 
 ### Patches to Merge
 
-1. [lib-common update](https://github.com/openstack-k8s-operators/lib-common/compare/master...fmount:lib-common:extra_volumes)
-2. [cinder-operator patch](https://github.com/openstack-k8s-operators/cinder-operator/compare/master...fmount:cinder-operator:extra_volumes)
-3. [glance-operator patch](https://github.com/openstack-k8s-operators/glance-operator/compare/master...fmount:glance-operator:extra_volumes)
-4. [ansibleee-operator patch](https://github.com/openstack-k8s-operators/ansibleee-operator/compare/main...fmount:ansibleee-operator:extra_volumes)
-5. [ansible-operator_patch](https://github.com/openstack-k8s-operators/ansibleee-operator/pull/3)
-6. [openstack-operator EV patch](https://github.com/openstack-k8s-operators/openstack-operator/compare/master...fmount:openstack-operator:extra_volumes)
-7. [openstack-operator_AnsibleEE patch](https://github.com/openstack-k8s-operators/openstack-operator/compare/master...fmount:openstack-operator:ansible_operator_support)
+1. https://github.com/openstack-k8s-operators/lib-common/pull/88
+2. https://github.com/openstack-k8s-operators/glance-operator/pull/75
+3. https://github.com/openstack-k8s-operators/ansibleee-operator/pull/6
+4. https://github.com/openstack-k8s-operators/cinder-operator/pull/65
+5. https://github.com/openstack-k8s-operators/openstack-operator/pull/38
 
-When testing you need:
-- 4 rebased on top of 5
-- 6 rebased on top of 7
-- 4,5,6,7 all need to be able to access 1
+When testing, 2,3,4 and 5 all need to be able to access 1.
 
 ### Context
 
