@@ -33,6 +33,12 @@ if [[ $CRD -eq 1 ]]; then
     oc create -f test-configmap-1.yaml
     oc create -f test-configmap-2.yaml
     popd
+    HAVE_ANSIBLE_CRD=$(oc get crd \
+      -o=custom-columns=NAME:.metadata.name,CR_NAME:.spec.names.singular,SCOPE:.spec.scope \
+      | grep ansible | wc -l)
+    if [[ $HAVE_ANSIBLE_CRD -eq 0 ]]; then
+        oc create -f ~/ansibleee-operator/config/crd/bases/redhat.com_ansibleees.yaml
+    fi
 fi
 
 if [[ $BUILD -eq 1 ]]; then
