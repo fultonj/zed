@@ -1,0 +1,10 @@
+---
+- name: Example Playbook
+  gather_facts: false
+  hosts: localhost ansible_connection=local
+  vars:
+    foo: world
+  tasks:
+    - name: hello world
+      debug:
+        msg: "hello {{ foo }}"
