@@ -32,5 +32,5 @@ stringData:
     mon_host = ${cephBackend[cephMons]}
 EOF
 
-#oc create -f cephSecret.yaml
-#oc get secret ceph-client-conf -o json | jq -r '.data."ceph.conf"' | base64 -d
+oc create -f cephSecret.yaml
+oc get secret ceph-client-conf -o json | jq -r '.data."ceph.conf"' | base64 -d
