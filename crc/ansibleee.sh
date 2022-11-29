@@ -13,7 +13,7 @@ REDEPLOY=1
 LOGS=1
 KILLALL=0
 
-CR_ANSIBLE=~/zed/crc/cr/ansibleee-play.yaml
+CR_ANSIBLE=~/zed/crc/cr/ansibleee-extra-vol-ceph.yaml
 
 MET_PORT=6668
 if [[ -e /usr/bin/lsof ]]; then

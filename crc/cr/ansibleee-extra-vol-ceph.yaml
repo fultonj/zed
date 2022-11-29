@@ -1,0 +1,61 @@
+apiVersion: redhat.com/v1alpha1
+kind: AnsibleEE
+metadata:
+  name: ansibleee-play
+  namespace: openstack
+spec:
+  image: "quay.io/jlarriba/openstack-tripleo-ansible-ee:stable"
+  env:
+    - name: ANSIBLE_FORCE_COLOR
+      value: "True"
+    - name: ANSIBLE_SSH_ARGS
+      value: "-C -o ControlMaster=auto -o ControlPersist=80s"
+    - name: ANSIBLE_ENABLE_TASK_DEBUGGER
+      value: "True"
+  configs:
+    - name: swift-configmap
+      mountpath: /runner/configs/swift-configmap
+    - name: test-configmap-1
+      mountpath: /runner/configs/test-configmap-1
+    - name: test-configmap-2
+      mountpath: /runner/configs/test-configmap-2
+    - name: key-configmap
+      mountpath: /runner/env
+  extraMounts:
+    - extraVolType: Ceph
+      volumes:
+      - name: ceph
+        projected:
+          sources:
+          - secret:
+              name: ceph-client-conf
+      mounts:
+      - name: ceph
+        mountPath: "/etc/ceph"
+        readOnly: true
+  inventory: |
+    Compute:
+      hosts:
+        compute-0:
+          ansible_host: 10.1.27.21
+      vars:
+        ansible_ssh_user: fultonj
+    allovercloud:
+      children:
+        Compute:
+    overcloud:
+      children:
+        Compute:
+  play: |
+    - name: run command on all nodes
+      gather_facts: false
+      hosts: all
+      vars:
+        cmd: "ls /etc/ceph/"
+      tasks:
+        - name: run command
+          shell: "{{ cmd }}"
+          register: cmd_out
+        - name: show command output
+          debug:
+            msg: "{{ cmd_out.stdout }}"
