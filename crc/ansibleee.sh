@@ -12,6 +12,8 @@ REDEPLOY=1
 LOGS=1
 KILLALL=0
 
+CR_ANSIBLE=~/zed/crc/cr/ansibleee-play.yaml
+
 MET_PORT=6668
 if [[ -e /usr/bin/lsof ]]; then
     lsof -i :$MET_PORT
@@ -68,7 +70,7 @@ if [[ $PUSH -eq 1 ]]; then
 fi
 
 if [[ $DEPLOY -eq 1 ]]; then
-    oc create -f ~/zed/crc/cr/ansibleee-play.yaml
+    oc create -f $CR_ANSIBLE
     # Watch the operator reconcile from ./bin/manager output
 fi
 
@@ -81,12 +83,12 @@ if [[ $OPERATOR -eq 1 ]]; then
 fi
 
 if [[ $UNDEPLOY -eq 1 ]]; then
-    oc create -f ~/zed/crc/cr/ansibleee-play.yaml
+    oc create -f $CR_ANSIBLE
 fi
 
 if [[ $REDEPLOY -eq 1 ]]; then
-    oc delete -f ~/zed/crc/cr/ansibleee-play.yaml
-    oc create -f ~/zed/crc/cr/ansibleee-play.yaml
+    oc delete -f $CR_ANSIBLE
+    oc create -f $CR_ANSIBLE
     # let playbook finish
     sleep 5
 fi
