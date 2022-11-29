@@ -21,6 +21,7 @@ spec:
       mountpath: /runner/configs/test-configmap-2
     - name: key-configmap
       mountpath: /runner/env
+
   extraMounts:
     - extraVolType: Ceph
       volumes:
@@ -31,8 +32,9 @@ spec:
               name: ceph-client-conf
       mounts:
       - name: ceph
-        mountPath: "/etc/ceph"
+        mountPath: /runner/config/ceph
         readOnly: true
+
   inventory: |
     Compute:
       hosts:
@@ -46,16 +48,36 @@ spec:
     overcloud:
       children:
         Compute:
+
+  # The following playbook calls the three main tasks from this role:
+  #   https://review.opendev.org/c/openstack/tripleo-ansible/+/865197/
+  #   tripleo_ansible/roles/tripleo_ceph_client_files/tasks/main.yml
   play: |
-    - name: run command on all nodes
+    - name: Configure Computes as Ceph Clients
       gather_facts: false
-      hosts: all
+      hosts: compute-0
       vars:
-        cmd: "ls /etc/ceph/"
+        tripleo_ceph_client_files_source: /runner/config/ceph
+        tripleo_ceph_client_files_config_home: /var/lib/tripleo-config/ceph/
       tasks:
-        - name: run command
-          shell: "{{ cmd }}"
-          register: cmd_out
-        - name: show command output
-          debug:
-            msg: "{{ cmd_out.stdout }}"
+        - name: Get list ceph files to copy from localhost tripleo_ceph_client_files_source
+          delegate_to: localhost
+          become: true
+          set_fact:
+            tripleo_ceph_client_dist: "{{ lookup('fileglob',
+                                          tripleo_ceph_client_files_source ~ '/*',
+                                          wantlist=True) | list }}"
+
+        - name: Ensure tripleo_ceph_client_config_home (e.g. /etc/ceph) exists on all hosts
+          file:
+            path: "{{ tripleo_ceph_client_files_config_home }}"
+            state: directory
+          become: true
+
+        - name: Push files from tripleo_ceph_client_files_source to all hosts
+          become: true
+          copy:
+            src: "{{ item }}"
+            dest: "{{ tripleo_ceph_client_files_config_home }}/{{ item | basename }}"
+            mode: "{{ '600' if item | regex_search('.*.keyring$') else '644' }}"
+          loop: "{{ tripleo_ceph_client_dist }}"
