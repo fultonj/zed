@@ -4,24 +4,35 @@ metadata:
   name: ansibleee-play
   namespace: openstack
 spec:
-  # We can specify either playbook, which will run with default ansible-runner options,
-  # or args, which allows specify the whole command that we want to execute
-  play: |
-    - name: Print hello world
-      hosts: localhost ansible_connection=local
-      vars:
-        foo: world
-      tasks:
-        - name: Use debug statement
-          ansible.builtin.debug:
-            msg: "Hello, {{ foo }}"
+  image: "quay.io/jlarriba/openstack-tripleo-ansible-ee:stable"
   # playbook: "playbook.yaml"
   # args: ["ansible-runner", "run", "/runner", "-vvv", "-p", "test.yaml"]
-  image: "quay.io/jlarriba/openstack-tripleo-ansible-ee:stable"
+  play: |
+    - name: run command on all nodes
+      gather_facts: false
+      hosts: all
+      vars:
+        cmd: "uname -a"
+      tasks:
+        - name: run command
+          shell: "{{ cmd }}"
+          register: cmd_out
+        - name: show command output
+          debug:
+            msg: "{{ cmd_out.stdout }}"
   inventory: |
-    all:
+    Compute:
       hosts:
-        localhost
+        compute-0:
+          ansible_host: 10.1.27.21
+      vars:
+        ansible_ssh_user: fultonj
+    allovercloud:
+      children:
+        Compute:
+    overcloud:
+      children:
+        Compute:
   env:
     - name: ANSIBLE_FORCE_COLOR
       value: "True"
@@ -36,3 +47,5 @@ spec:
       mountpath: /runner/configs/test-configmap-1
     - name: test-configmap-2
       mountpath: /runner/configs/test-configmap-2
+    - name: key-configmap
+      mountpath: /runner/env

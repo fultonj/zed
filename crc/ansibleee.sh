@@ -2,6 +2,7 @@
 
 GIT=0
 CRD=0
+SSH=0
 BUILD=0
 PUSH=0
 DEPLOY=0
@@ -40,6 +41,15 @@ if [[ $CRD -eq 1 ]]; then
     if [[ $HAVE_ANSIBLE_CRD -eq 0 ]]; then
         oc create -f ~/ansibleee-operator/config/crd/bases/redhat.com_ansibleees.yaml
     fi
+fi
+
+if [[ $SSH -eq 1 ]]; then
+    pushd ~/zed/crc/cr
+    KEY_CR=$(bash ssh_configmap.sh)
+    if [[ -e $KEY_CR ]]; then
+        oc create -f $KEY_CR
+    fi
+    popd
 fi
 
 if [[ $BUILD -eq 1 ]]; then
