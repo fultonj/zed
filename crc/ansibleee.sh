@@ -1,14 +1,15 @@
 #!/bin/bash
 
 GIT=0
-CRD=1
-BUILD=1
+CRD=0
+BUILD=0
 PUSH=0
-DEPLOY=1
-OPERATOR=1
+DEPLOY=0
+OPERATOR=0
 UNDEPLOY=0
-REDEPLOY=0
+REDEPLOY=1
 LOGS=1
+KILLALL=0
 
 MET_PORT=6668
 if [[ -e /usr/bin/lsof ]]; then
@@ -57,7 +58,7 @@ if [[ $PUSH -eq 1 ]]; then
 fi
 
 if [[ $DEPLOY -eq 1 ]]; then
-    oc create -f ~/zed/crc/cr/ansibleee-test.yaml
+    oc create -f ~/zed/crc/cr/ansibleee-play.yaml
     # Watch the operator reconcile from ./bin/manager output
 fi
 
@@ -70,19 +71,23 @@ if [[ $OPERATOR -eq 1 ]]; then
 fi
 
 if [[ $UNDEPLOY -eq 1 ]]; then
-    oc delete -f ~/zed/crc/cr/ansibleee-test.yaml
+    oc create -f ~/zed/crc/cr/ansibleee-play.yaml
 fi
 
 if [[ $REDEPLOY -eq 1 ]]; then
-    oc delete -f ~/zed/crc/cr/ansibleee-test.yaml
-    oc create -f ~/zed/crc/cr/ansibleee-test.yaml
+    oc delete -f ~/zed/crc/cr/ansibleee-play.yaml
+    oc create -f ~/zed/crc/cr/ansibleee-play.yaml
     # let playbook finish
     sleep 5
 fi
 
-
 if [[ $LOGS -eq 1 ]]; then
-    oc logs $(oc get pods | grep ansible | awk {'print $1'})
+    oc logs $(oc get pods | grep ansibleee-play- | awk {'print $1'} | tail -1)
+fi
+
+if [[ $KILLALL -eq 1 ]]; then
+    oc delete -f  ~/ansibleee-operator/config/crd/bases/redhat.com_ansibleees.yaml
+    oc create -f  ~/ansibleee-operator/config/crd/bases/redhat.com_ansibleees.yaml
 fi
 
 popd

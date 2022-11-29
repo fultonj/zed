@@ -1,27 +1,27 @@
 apiVersion: redhat.com/v1alpha1
 kind: AnsibleEE
 metadata:
-  name: ansibleee-test
+  name: ansibleee-play
   namespace: openstack
 spec:
   # We can specify either playbook, which will run with default ansible-runner options,
   # or args, which allows specify the whole command that we want to execute
-  playbook: "test.yaml"
+  play: |
+    - name: Print hello world
+      hosts: localhost ansible_connection=local
+      vars:
+        foo: world
+      tasks:
+        - name: Use debug statement
+          ansible.builtin.debug:
+            msg: "Hello, {{ foo }}"
+  # playbook: "playbook.yaml"
   # args: ["ansible-runner", "run", "/runner", "-vvv", "-p", "test.yaml"]
-  # args: ["cat", "/usr/share/ansible/tripleo-playbooks/test.yaml"]
-  image: "quay.io/jlarriba/openstack-tripleo-ansible-ee"
-  # playbook: |
-  #   - name: Test example
-  #     gather_facts: false
-  #     hosts: localhost ansible_connection=local
-  #     tasks:
-  #       - name: Test task
-  #         debug:
-  #           msg: "hello world"
+  image: "quay.io/jlarriba/openstack-tripleo-ansible-ee:stable"
   inventory: |
-          all:
-            hosts:
-              localhost
+    all:
+      hosts:
+        localhost
   env:
     - name: ANSIBLE_FORCE_COLOR
       value: "True"
