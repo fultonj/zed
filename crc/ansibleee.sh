@@ -3,6 +3,7 @@
 GIT=0
 CRD=0
 SSH=0
+CEPH=0
 BUILD=0
 PUSH=0
 DEPLOY=0
@@ -51,6 +52,12 @@ if [[ $SSH -eq 1 ]]; then
     if [[ -e $KEY_CR ]]; then
         oc create -f $KEY_CR
     fi
+    popd
+fi
+
+if [[ $CEPH -eq 1 ]]; then
+    pushd ~/zed/crc/cr
+    bash ceph_secret.sh
     popd
 fi
 
