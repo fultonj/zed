@@ -49,6 +49,7 @@ fi
 if [[ $SSH -eq 1 ]]; then
     pushd ~/zed/crc/cr
     KEY_CR=$(bash ssh_configmap.sh)
+    # KEY_CR=$(bash ssh_secret.sh)
     if [[ -e $KEY_CR ]]; then
         oc create -f $KEY_CR
     fi
