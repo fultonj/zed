@@ -21,8 +21,39 @@ lib-common, then you can modify your environment so your operator
 uses the local copy of lib-common. This allows you to test your patch
 with that version of lib-common before sending in a PR.
 
-For example, in my home dir I have the following directories and each
-contains unmerged patches to the operator nad lib-common:
+### Use go mod edit
+
+If I want to update the
+[ansibleee-operator](https://github.com/openstack-k8s-operators/ansibleee-operator),
+to use a local copy of lib-common in my home directory, then I do this.
+
+```
+cd ~/ansiblee-operator
+go get github.com/openstack-k8s-operators/lib-common/modules/storage
+go mod edit -replace github.com/openstack-k8s-operators/lib-common/modules/storage=../lib-common/modules/storage
+make
+```
+
+The ansibleEE operator should then be ready to run with the local copy
+of lib-common. 
+
+```
+oc create -f ~/ansiblee-operator/config/crd/bases/redhat.com_ansibleees.yaml
+```
+
+```
+MET_PORT=6668
+./bin/manager -metrics-bind-address ":$MET_PORT"
+```
+
+### Symlink Hack
+
+Below are old my notes from when the above didn't work for me and I
+worked around it with a symlink. Better to use the above method
+instead.
+
+In my home dir I have the following directories and each contains
+unmerged patches to the operator and lib-common:
 
 ```
 ~/glance-operator
