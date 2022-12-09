@@ -12,17 +12,19 @@ spec:
       value: "-C -o ControlMaster=auto -o ControlPersist=80s"
     - name: ANSIBLE_ENABLE_TASK_DEBUGGER
       value: "True"
-  configs:
-    - name: swift-configmap
-      mountpath: /runner/configs/swift-configmap
-    - name: test-configmap-1
-      mountpath: /runner/configs/test-configmap-1
-    - name: test-configmap-2
-      mountpath: /runner/configs/test-configmap-2
-    - name: key-configmap
-      mountpath: /runner/env
 
   extraMounts:
+    - volumes:
+      - name: ssh-key
+        secret:
+          secretName: ssh-key-secret
+          items:
+          - key: ssh_key
+            path: ssh_key
+      mounts:
+      - name: ssh-key
+        mountPath: /runner/env/ssh_key
+        subPath: ssh_key
     - extraVolType: Ceph
       volumes:
       - name: ceph
