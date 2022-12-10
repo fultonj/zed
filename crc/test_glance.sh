@@ -3,6 +3,7 @@
 OVER=1
 CIRROS=1
 IMAGE=1
+IMAGE_MULTI=0
 CLEAN=0
 PROJECT_ID_BUG=0
 
@@ -31,14 +32,7 @@ if [[ $IMAGE -eq 1 ]]; then
     # openstack image show cirros
 fi
 
-if [[ $CLEAN -eq 1 ]]; then
-    for ID in $(openstack image list -f value -c ID); do
-        openstack image delete $ID
-    done
-fi
-
-if [[ $PROJECT_ID_BUG -eq 1 ]]; then
-    # https://etherpad.opendev.org/p/nextgen-efforts-glance-testing
+if [[ $(( $IMAGE_MULTI + $PROJECT_ID_BUG)) -gt 0 ]]; then
     if [[ ! -e admin-rc ]]; then
         echo "admin-rc is missing"
         exit 1
@@ -48,6 +42,27 @@ if [[ $PROJECT_ID_BUG -eq 1 ]]; then
         exit 1
     fi
     source admin-rc
+fi
+
+if [[ $IMAGE_MULTI -eq 1 ]]; then
+    # use 'glance' instead of 'openstack' client so
+    # that --store can be passed if we want to upload
+    # an image to multiple backends later
+    glance image-create \
+           --disk-format qcow2 --container-format bare \
+           --name cirros --file cirros-0.4.0-x86_64-disk.img \
+           --store default_backend
+fi
+
+if [[ $CLEAN -eq 1 ]]; then
+    for ID in $(openstack image list -f value -c ID); do
+        openstack image delete $ID
+    done
+fi
+
+if [[ $PROJECT_ID_BUG -eq 1 ]]; then
+    # We are now seeing an owner of the image so the bug seems to be resolved
+    # https://etherpad.opendev.org/p/nextgen-efforts-glance-testing
     # Scenario 1: Create image without using import workflow
     NAME=image-without-owner
     ID=$(openstack image show -f value -c id $NAME)
