@@ -63,39 +63,16 @@ Edit the CRD (`oc edit crd`) and remove
 [finalizers](https://kubernetes.io/blog/2021/05/14/using-finalizers-to-control-deletion/)
 (`- finalizers:`) which might be blocking deletion.
 
-## Example: Apply Glance Operator CRD Change
+## Example: Apply Glance Operator Change
 
 If you have the Glance operator running and want to switch from its
-default file backend to its Ceph backend and you have a new CR
-`glance_v1beta1_glance_ceph.yaml` 
-(maybe made by [cr/glance_ceph_cr.sh](cr/glance_ceph_cr.sh)
-from [cr/glance_v1beta1_glance.yaml](cr/glance_v1beta1_glance.yaml), 
-then do the following:
+default file backend to its Ceph backend:
+
+- Create a Ceph secret: [ceph_secret.sh](cr/ceph_secret.sh)
+- oc create -f [glance_v1beta1_ceph_secret.yaml](cr/glance_v1beta1_ceph_secret.yaml)
+
 ```
-cp cr/glance_v1beta1_glance_ceph.yaml ~/install_yamls/out/openstack/glance/cr/glance_v1beta1_glance.yaml
+cp cr/glance_v1beta1_ceph_secret.yaml ~/install_yamls/out/openstack/glance/cr/glance_v1beta1_glance.yaml
 oc delete -f ~/install_yamls/out/openstack/glance/cr/glance_v1beta1_glance.yaml
 oc kustomize ~/install_yamls/out/openstack/glance/cr | oc apply -f -
-```
-You can reverse the procedure (Ceph to file) with this:
-```
-cp cr/glance_v1beta1_glance.yaml ~/install_yamls/out/openstack/glance/cr/glance_v1beta1_glance.yaml
-oc delete -f ~/install_yamls/out/openstack/glance/cr/glance_v1beta1_glance.yaml
-oc kustomize ~/install_yamls/out/openstack/glance/cr | oc apply -f -
-```
-For example, I did the above for
-[this patch](https://github.com/fmount/glance-operator/commit/d40064ea6a3942859a4901e970b0b70c02cd396a)
-and saw the operator create different pods depending on the backend.
-
-File:
-```
-$ oc get pods | grep glance
-glance-default-api-b4c89f66d-brrwx                                1/1     Running     0          10s
-$
-```
-
-Ceph:
-```
-$ oc get pods | grep glance
-glance-external-api-6865d4f859-rkxtj                              1/1     Running     0          16s
-glance-internal-api-565b754d-prbxs                                1/1     Running     0          16s
 ```
