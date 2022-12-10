@@ -22,8 +22,6 @@ if [[ $MAKE -eq 1 ]]; then
     popd
 fi
 
-
-# modify glance to use use 1G PVs created by crc_storage
 if [[ -e ~/install_yamls/out/openstack/glance/cr/glance_v1beta1_glanceapi.yaml ]]; then
     GLANCE_CR=~/install_yamls/out/openstack/glance/cr/glance_v1beta1_glanceapi.yaml
 fi
@@ -32,8 +30,6 @@ if [[ -e ~/install_yamls/out/openstack/glance/cr/glance_v1beta1_glance.yaml ]]; 
 fi
 
 if [[ -e $GLANCE_CR ]]; then
-    # sed -i $GLANCE_CR -e s/10G/1G/g
-    # echo '  storageClass: local-storage' >> $GLANCE_CR
     if [[ $DELETE -eq 1 ]]; then
         echo "Deleting current Glance CR first"
         oc delete -f $GLANCE_CR
@@ -41,7 +37,8 @@ if [[ -e $GLANCE_CR ]]; then
     if [[ $CEPH -eq 1 ]]; then
         # add Ceph to CR
         pushd cr
-        CR=$(bash ceph_cr.sh glance)
+        bash ceph_secret.sh
+        CR=glance_v1beta1_ceph_secret.yaml
         echo "Backing up $GLANCE_CR"
         cp -v $GLANCE_CR $(basename $GLANCE_CR).bak
         echo "Applying a CR with the following diff:"
@@ -58,7 +55,4 @@ fi
 # oc describe $OP
 # oc logs $OP
 
-#oc get pods -l service=glance-default
-#oc get pods -l service=glance-external
-#oc get pods -l service=glance-internal
 oc get pods | egrep "NAME|glance"
