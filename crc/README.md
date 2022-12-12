@@ -29,4 +29,4 @@
 
 - [cr](cr): Directory of CRs or scripts to create CRs for the glance or cinder operators.
 - [Overview of lib-common interface to configure storage backends](config_files_to_services.md)
-- [Access extraVols config files secrets with AnsibleEE operator](extra_vols_ansible.md)
+- [Access extraVols config files secrets with AnsibleEE operator](ceph_rhel_cr.md)
