@@ -17,7 +17,7 @@ ls -l ~/.config/openstack/clouds.yaml
 cat ~/.config/openstack/clouds.yaml
 
 if [[ ! -e ~/.local/bin/openstack ]]; then
-    pip3 install openstackclient
+    python3 -m pip install openstackclient
 fi
 
 if [[ $(grep 127.0.0.1 /etc/resolv.conf | wc -l) -eq 0 ]]; then

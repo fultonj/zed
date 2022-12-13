@@ -16,7 +16,7 @@ openstack endpoint list
 openstack volume service list
 
 if [[ ! -e ~/.local/bin/cinder ]]; then
-    pip3 install openstackclient --user
+    python3 -m pip install openstackclient
 fi
 if [[ ! -e ~/.local/bin/cinder ]]; then
     echo "unable to install cinder client"
