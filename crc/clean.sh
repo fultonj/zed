@@ -5,6 +5,7 @@ RABBIT=0
 GLANCE=1
 KEYSTONE=1
 MARIA=1
+EDPM=0
 CRC=0
 
 if [[ ! -d ~/install_yamls ]]; then
@@ -75,6 +76,17 @@ oc get pods
 # oc delete -f osp-director-dev-tools/ansible/roles/cnosp/files/ovn || true
 # oc delete cm ovn-connection
 # popd
+
+if [[ $EDPM -eq 1 ]]; then
+    pushd devsetup
+    # delete rhel vm
+    make edpm-play-cleanup
+    make edpm-compute-cleanup
+    # delete ssh key files and k8s secret
+    rm -f -v out/edpm/*
+    oc delete secret ansibleee-ssh-key-secret
+    popd
+fi
 
 # Clean CRC
 
