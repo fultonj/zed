@@ -14,5 +14,5 @@ if [[ $CHANGE -eq 1 ]]; then
     sed -i s/$OLD_IP/$IP/g  ~/install_yamls/devsetup/edpm/edpm-play.yaml
 else
     echo $IP
-    echo "sed -i s/$OLD_IP/$IP/g  ~/install_yamls/devsetup/edpm/edpm-play.yaml"
+    echo "sed -i s/$OLD_IP/$IP/g cr/edpm-play.yaml"
 fi

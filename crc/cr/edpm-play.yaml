@@ -1,0 +1,108 @@
+apiVersion: redhat.com/v1alpha1
+kind: AnsibleEE
+metadata:
+  name: edpm-hello-world
+  namespace: openstack
+spec:
+  image: "quay.io/tripleomastercentos9/openstack-tripleo-ansible-ee:current-tripleo"
+  env:
+    - name: ANSIBLE_FORCE_COLOR
+      value: "True"
+    - name: ANSIBLE_SSH_ARGS
+      value: "-C -o ControlMaster=auto -o ControlPersist=80s"
+    - name: ANSIBLE_ENABLE_TASK_DEBUGGER
+      value: "True"
+  extraMounts:
+    - volumes:
+        - name: ssh-key
+          secret:
+            secretName: ansibleee-ssh-key-secret
+            items:
+              - key: private_ssh_key
+                path: ssh_key
+      mounts:
+        - name: ssh-key
+          mountPath: /runner/env/ssh_key
+          subPath: ssh_key
+    - extraVolType: Ceph
+      volumes:
+      - name: ceph
+        projected:
+          sources:
+          - secret:
+              name: ceph-client-conf
+      mounts:
+      - name: ceph
+        mountPath: /runner/config/ceph
+        readOnly: true
+
+  play: |
+    - hosts: all
+      vars:
+        tripleo_ceph_client_files_source: /runner/config/ceph
+        tripleo_ceph_client_files_config_home: /var/lib/tripleo-config/ceph/
+
+      tasks:
+        - name: Enable tripleo-repos
+          shell: |
+            rpm -q git || sudo yum -y install git
+            sudo yum -y install python-setuptools python-requests python3-pip
+            git clone https://git.openstack.org/openstack/tripleo-repos
+            pushd tripleo-repos
+            sudo python3 setup.py install
+            popd
+            sudo /usr/local/bin/tripleo-repos current-tripleo-dev
+
+        # - name: dnf install tmux
+        #   shell: dnf -y install tmux
+
+        # - name: pip install sshuttle
+        #   shell: pip install sshuttle
+
+        # - name: run sshuttle
+        #   shell: tmux new-session -d -s sshuttle "sshuttle -r root@192.168.122.1 192.168.130.0/24"
+
+        - name: Get list ceph files to copy from localhost tripleo_ceph_client_files_source
+          delegate_to: localhost
+          become: true
+          set_fact:
+            tripleo_ceph_client_dist: "{{ lookup('fileglob',
+                                          tripleo_ceph_client_files_source ~ '/*',
+                                          wantlist=True) | list }}"
+
+        - name: Ensure tripleo_ceph_client_config_home (e.g. /etc/ceph) exists on all hosts
+          file:
+            path: "{{ tripleo_ceph_client_files_config_home }}"
+            state: directory
+          become: true
+
+        - name: Push files from tripleo_ceph_client_files_source to all hosts
+          become: true
+          copy:
+            src: "{{ item }}"
+            dest: "{{ tripleo_ceph_client_files_config_home }}/{{ item | basename }}"
+            mode: "{{ '600' if item | regex_search('.*.keyring$') else '644' }}"
+          loop: "{{ tripleo_ceph_client_dist }}"
+          
+    - name: Deploy TripleO facts playbook
+      ansible.builtin.import_playbook: deploy-tripleo-facts.yml
+
+  inventory: |
+    allovercloud:
+      children:
+        overcloud:
+            children:
+              Compute:
+                hosts:
+                  # Add additional computes here, and optionally drop localhost.
+                  # Add host vars under the host_vars dir.
+                  192.168.122.139:
+                    ansible_ssh_user: root
+                    ctlplane_ip: 192.168.24.100
+                    internal_api_ip: 192.168.24.2
+                    tenant_ip: 192.168.24.2
+                    fqdn_internal_api: '{{ ansible_fqdn }}'
+                vars:
+                  chrony_ntp_servers:
+                    - clock.redhat.com
+                    - clock2.redhat.com
