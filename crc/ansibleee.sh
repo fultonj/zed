@@ -33,11 +33,6 @@ if [[ $GIT -eq 1 ]]; then
 fi
 
 if [[ $CRD -eq 1 ]]; then
-    pushd ~/ansibleee-operator/example
-    oc create -f swift-configmap.yaml
-    oc create -f test-configmap-1.yaml
-    oc create -f test-configmap-2.yaml
-    popd
     HAVE_ANSIBLE_CRD=$(oc get crd \
       -o=custom-columns=NAME:.metadata.name,CR_NAME:.spec.names.singular,SCOPE:.spec.scope \
       | grep ansible | wc -l)
@@ -48,8 +43,8 @@ fi
 
 if [[ $SSH -eq 1 ]]; then
     pushd ~/zed/crc/cr
-    KEY_CR=$(bash ssh_configmap.sh)
-    # KEY_CR=$(bash ssh_secret.sh)
+    # KEY_CR=$(bash ssh_configmap.sh)
+    KEY_CR=$(bash ssh_secret.sh)
     if [[ -e $KEY_CR ]]; then
         oc create -f $KEY_CR
     fi
