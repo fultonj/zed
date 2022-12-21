@@ -34,7 +34,7 @@ spec:
     - hosts: all
       gather_facts: false
       vars:
-        cmd: "uname -a"
+        cmd: "lsblk"
       tasks:
         - name: run command
           shell: "{{ cmd }}"

@@ -51,7 +51,6 @@ This simulates _2. Deploy RHEL on a set of servers (minimum 3)_.
 Use `make edpm-compute` as described in
 [slagle's intall_yamls edpm branch](https://github.com/slagle/install_yamls/tree/edpm-integration/devsetup#edpm-deployment).
 I personally run the following:
-
 ```
  pushd ~/install_yamls
  make ansibleee
@@ -60,6 +59,17 @@ I personally run the following:
  cd ~/install_yamls/devsetup
  make crc_attach_default_interface
  for I in 0 1 2; do make edpm-compute EDPM_COMPUTE_SUFFIX=$I; done
+ popd
+```
+To run Ceph on these systems you need to add disks. I use
+[edpm-compute-disk.sh](../crc/edpm-compute-disk.sh).
+```
+ for I in 0 1 2; do bash ~/zed/crc/edpm-compute-disk.sh $I; done
+```
+To remove the edpm-compute VMs:
+```
+ pushd ~/install_yamls/devsetup
+ for I in 0 1 2; do make edpm-compute-cleanup EDPM_COMPUTE_SUFFIX=$I; done
  popd
 ```
 
@@ -78,13 +88,21 @@ using the IPs reported by
 CR uses the SSH key secret (created in the previous
 step) and the inventory ConfigMap to run a simple playbook
 on all nodes.
-
 ```
 ./ip-inventory.sh
 oc create -f inventory-configmap.yaml
 oc create -f verify-ansible.yaml
 ```
+The output of the playbook should also confirm that the disks were
+created in the previous step.
+```
+ oc logs $(oc get pods -l job-name=verify-ansible -o name)
+```
+If you need to directly debug on one of the VMs, SSH like this:
+```
+ IP=$(bash ~/zed/crc/edpm-compute-ip.sh 0)
+ ssh -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP
+```
 
 ### Install Ceph
 
-todo...
