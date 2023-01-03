@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ceph-spec-configmap
+  namespace: openstack
+data:
+  ceph_spec.yaml: |
+    ---
+    addr: 192.168.122.X:
+    hostname: edpm-compute-0
+    labels:
+    - mon
+    - mgr
+    - osd
+    - _admin
+    service_type: host
+    ---
+    addr: 192.168.122.Y
+    hostname: edpm-compute-1
+    labels:
+    - mon
+    - mgr
+    - osd
+    - _admin
+    service_type: host
+    ---
+    addr: 192.168.122.Z
+    hostname: edpm-compute-2
+    labels:
+    - mon
+    - mgr
+    - osd
+    - _admin
+    service_type: host
+    ---
+    placement:
+      hosts:
+      - edpm-compute-0
+      - edpm-compute-1
+      - edpm-compute-2
+    service_id: mon
+    service_name: mon
+    service_type: mon
+    ---
+    placement:
+      hosts:
+      - edpm-compute-0
+      - edpm-compute-1
+      - edpm-compute-2
+    service_id: mgr
+    service_name: mgr
+    service_type: mgr
+    ---
+    data_devices:
+      all: true
+    placement:
+      hosts:
+      - edpm-compute-0
+      - edpm-compute-1
+      - edpm-compute-2
+    service_id: default_drive_group
+    service_name: osd.default_drive_group
+    service_type: osd

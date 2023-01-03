@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ceph-vars-configmap
+  namespace: openstack
+data:
+  ceph_vars.yaml: |
+    dynamic_ceph_spec: false
+    ceph_spec_path: /runner/project/ceph_spec.yaml
+    working_dir: /runner/project
+    public_network: 192.168.122.0/24
+    public_network_name: ctlplane
+    cluster_network: 192.168.122.0/24
+    cluster_network_name: ctlplane
+    tripleo_cephadm_first_mon_ip: 192.168.122.X
+    cephadm_admin_hosts:
+      - 192.168.122.X
+      - 192.168.122.Y
+      - 192.168.122.Z

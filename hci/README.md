@@ -96,13 +96,40 @@ oc create -f verify-ansible.yaml
 The output of the playbook should also confirm that the disks were
 created in the previous step.
 ```
- oc logs $(oc get pods -l job-name=verify-ansible -o name)
+oc logs $(oc get pods -l job-name=verify-ansible -o name)
 ```
 If you need to directly debug on one of the VMs, SSH like this:
 ```
- IP=$(bash ~/zed/crc/edpm-compute-ip.sh 0)
- ssh -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP
+IP=$(bash ~/zed/crc/edpm-compute-ip.sh 0)
+ssh -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP
 ```
 
-### Install Ceph
+## Install Ceph
 
+This simulates _3. Install Ceph on the RHEL systems from step 2_.
+
+Deployers can do this by running
+[cephadm](https://docs.ceph.com/en/quincy/cephadm/index.html)
+directly on the RHEL nodes created from the previous section.
+For my example I'll create CRs which call tripleo-ansilbe's cephadm
+roles. If we want to ship and support CRs like this that's another
+matter.
+
+Create a Ceph spec file from
+[ceph-spec-configmap.yaml](ceph-spec-configmap.yaml)
+and Ceph vars file from
+[ceph-vars-configmap.yaml](ceph-vars-configmap.yaml)
+Use [ip-inventory.sh](ip-inventory.sh) to update the IPs.
+```
+./ip-inventory.sh ceph-spec-configmap.yaml
+oc create -f ceph-spec-configmap.yaml
+
+./ip-inventory.sh ceph-vars-configmap.yaml
+oc create -f ceph-vars-configmap.yaml
+```
+
+[ceph-internal-opt.yaml](ceph-internal-opt.yaml)
+provides an option to deploy "internal ceph".
+```
+oc create -f ceph-internal-opt.yaml
+```

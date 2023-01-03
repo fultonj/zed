@@ -1,0 +1,100 @@
+apiVersion: redhat.com/v1alpha1
+kind: AnsibleEE
+metadata:
+  name: ceph-internal-opt
+  namespace: openstack
+spec:
+  image: "quay.io/tripleomastercentos9/openstack-tripleo-ansible-ee:current-tripleo"
+  env:
+    - name: ANSIBLE_FORCE_COLOR
+      value: "True"
+    - name: ANSIBLE_SSH_ARGS
+      value: "-C -o ControlMaster=auto -o ControlPersist=80s"
+    - name: ANSIBLE_ENABLE_TASK_DEBUGGER
+      value: "True"
+  extraMounts:
+    - volumes:
+        - name: inventory
+          configMap:
+            name: inventory-configmap
+        - name: ceph-spec
+          configMap:
+            name: ceph-spec-configmap
+        - name: ceph-vars
+          configMap:
+            name: ceph-vars-configmap
+        - name: ssh-key
+          secret:
+            secretName: ansibleee-ssh-key-secret
+            items:
+              - key: private_ssh_key
+                path: ssh_key
+              - key: public_ssh_key
+                path: public_ssh_key
+      mounts:
+        - name: inventory
+          mountPath: /runner/inventory/inventory.yaml
+          subPath: inventory.yaml
+        - name: ceph-spec
+          mountPath: /runner/project/ceph_spec.yaml
+          subPath: ceph_spec.yaml
+        - name: ceph-vars
+          mountPath: /runner/project/ceph_vars.yaml
+          subPath: ceph_vars.yaml
+        - name: ssh-key
+          mountPath: /runner/env/ssh_key
+          subPath: ssh_key
+        - name: ssh-key
+          mountPath: /runner/env/public_ssh_key
+          subPath: public_ssh_key
+  play: |
+    - hosts: all
+      gather_facts: false
+      vars:
+        repos: false
+      tasks:
+        - name: Enable tripleo-repos
+          shell: |
+            rpm -q git || sudo yum -y install git
+            sudo yum -y install python-setuptools python-requests python3-pip
+            git clone https://git.openstack.org/openstack/tripleo-repos
+            pushd tripleo-repos
+            sudo python3 setup.py install
+            popd
+            sudo /usr/local/bin/tripleo-repos current-tripleo-dev
+          when:
+            - repos
+
+        - name: Include ceph_vars.yaml
+          ansible.builtin.include_vars: /runner/project/ceph_vars.yaml
+
+        - name: Add edpm hosts to ceph_mon inventory group for next play
+          add_host:
+            name: "{{ item }}"
+            groups: ceph_mon
+          loop: "{{ cephadm_admin_hosts }}"
+          run_once: true
+
+        # Using same SSH keys for POC only
+        - name: Get local private key
+          shell: "cat /runner/env/ssh_key"
+          register: private_key_get
+          delegate_to: localhost
+          no_log: true
+
+        - name: Get local public key
+          shell: "cat /runner/env/public_ssh_key"
+          register: public_key_get
+          delegate_to: localhost
+
+        - name: Create ceph-admin user and SSH keys
+          include_role:
+            name: tripleo_create_admin
+          vars:
+            distribute_private_key: true
+            tripleo_admin_user: ceph-admin
+            tripleo_admin_pubkey: "{{ public_key_get.stdout }}"
+            tripleo_admin_prikey: "{{ private_key_get.stdout }}"
+
+    - name: Deploy TripleO facts playbook
+      ansible.builtin.import_playbook: cli-deployed-ceph.yaml
