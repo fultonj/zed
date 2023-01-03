@@ -1,12 +1,14 @@
 #!/bin/bash
 
-declare -A map
-map[0]=X
-map[1]=Y
-map[2]=Z
+if [[ $# -eq 0 ]] ; then
+    TARGET=inventory-configmap.yaml
+else
+    TARGET=$1
+fi
 
 for I in 0 1 2; do
     IP=$(bash ../crc/edpm-compute-ip.sh $I)
-    OLD_IP=192.168.122.${map[$I]}
-    sed -i s/$OLD_IP/$IP/ inventory-configmap.yaml
+    L=$(echo $I | tr 012 XYZ)
+    OLD_IP=192.168.122.${L}
+    sed -i s/$OLD_IP/$IP/ $TARGET
 done
