@@ -133,3 +133,7 @@ provides an option to deploy "internal ceph".
 ```
 oc create -f ceph-internal-opt.yaml
 ```
+This CR uses [my own version](container-with-new-tripleo-ansible.md)
+of `quay.io/tripleomastercentos9/openstack-tripleo-ansible-ee`
+with a very small change to the tripleo-ansible contents inside the
+container.
