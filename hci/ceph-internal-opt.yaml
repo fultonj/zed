@@ -4,7 +4,7 @@ metadata:
   name: ceph-internal-opt
   namespace: openstack
 spec:
-  image: "quay.io/tripleomastercentos9/openstack-tripleo-ansible-ee:current-tripleo"
+  image: "quay.io/fultonj/openstack-tripleo-ansible-ee-ceph:latest"
   env:
     - name: ANSIBLE_FORCE_COLOR
       value: "True"
@@ -50,8 +50,6 @@ spec:
   play: |
     - hosts: all
       gather_facts: false
-      vars:
-        repos: false
       tasks:
         - name: Enable tripleo-repos
           shell: |
@@ -62,8 +60,13 @@ spec:
             sudo python3 setup.py install
             popd
             sudo /usr/local/bin/tripleo-repos current-tripleo-dev
-          when:
-            - repos
+
+        - name: Install packages required by cephadm
+          ansible.builtin.dnf:
+            name:
+              - podman
+              - lvm2
+            state: latest
 
         - name: Include ceph_vars.yaml
           ansible.builtin.include_vars: /runner/project/ceph_vars.yaml
@@ -93,8 +96,8 @@ spec:
           vars:
             distribute_private_key: true
             tripleo_admin_user: ceph-admin
-            tripleo_admin_pubkey: "{{ public_key_get.stdout }}"
-            tripleo_admin_prikey: "{{ private_key_get.stdout }}"
+            tripleo_admin_pubkey: "{{ public_key_get.stdout }}\n"
+            tripleo_admin_prikey: "{{ private_key_get.stdout }}\n"
 
     - name: Deploy TripleO facts playbook
       ansible.builtin.import_playbook: cli-deployed-ceph.yaml

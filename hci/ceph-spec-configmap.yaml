@@ -6,7 +6,7 @@ metadata:
 data:
   ceph_spec.yaml: |
     ---
-    addr: 192.168.122.X:
+    addr: 192.168.122.X
     hostname: edpm-compute-0
     labels:
     - mon

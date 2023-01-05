@@ -12,6 +12,7 @@ data:
     public_network_name: ctlplane
     cluster_network: 192.168.122.0/24
     cluster_network_name: ctlplane
+    tripleo_cephadm_default_container: true
     tripleo_cephadm_first_mon_ip: 192.168.122.X
     cephadm_admin_hosts:
       - 192.168.122.X
