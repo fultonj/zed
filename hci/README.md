@@ -5,7 +5,7 @@
 1. Deploy OpenShift on a set of servers
 2. Deploy RHEL on a set of servers (minimum 3)
 3. Install Ceph on the RHEL systems from step 2
-4. Create OpenStack pools on Ceph cluster and export cephx/ceph.conf to OpenShift Ceph secreta
+4. Create OpenStack pools on Ceph cluster and export cephx/ceph.conf to an OpenShift Ceph secret
 5. Create CR to deploy OpenStack (which uses Ceph secret)
 6. Create CR to have AnsibleEE configure RHEL as Nova Compute
 
@@ -137,3 +137,50 @@ This CR uses [my own version](container-with-new-tripleo-ansible.md)
 of `quay.io/tripleomastercentos9/openstack-tripleo-ansible-ee`
 with a very small change to the tripleo-ansible contents inside the
 container.
+
+## Create OpenStack pools on Ceph cluster and export them to a secret
+
+- Connect to a ceph node
+```
+IP=$(bash ~/zed/crc/edpm-compute-ip.sh 0)
+ssh -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP
+```
+- Create the pools
+```
+for P in vms volumes images; do sudo cephadm shell -- ceph osd pool create $P; done
+for P in vms volumes images; do sudo cephadm shell -- ceph osd pool application enable $P rbd; done
+```
+- Create the cephx key
+```
+sudo cephadm shell -- ceph auth add client.openstack mgr 'allow *' mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=vms, allow rwx pool=volumes, allow rwx pool=images'
+```
+- Export the cephx key and ceph.conf
+```
+sudo cephadm shell -- ceph auth get client.openstack > ceph.client.openstack.keyring
+sudo cephadm shell -- ceph config generate-minimal-conf > ceph.conf
+```
+Disconnect from the Ceph node and save a local copy of the exported
+cephx key and ceph.conf
+```
+exit
+scp -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP:/root/ceph.conf .
+scp -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP:/root/ceph.client.openstack.keyring .
+```
+Create a
+[secret](https://kubernetes.io/docs/concepts/configuration/secret)
+containing the cephx key and ceph.conf. I do this
+with [ceph-secret.sh](ceph-secret.sh).
+
+```
+./ceph-secret.sh
+oc create -f ceph-secret.yaml
+oc get secret ceph-client-conf -o json | jq -r '.data."ceph.conf"' | base64 -d
+```
+
+## Create CR to deploy OpenStack (which uses Ceph secret)
+
+todo
+
+## Create CR to have AnsibleEE configure RHEL as Nova Compute
+
+todo
