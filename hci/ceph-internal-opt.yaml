@@ -51,6 +51,7 @@ spec:
     - hosts: all
       gather_facts: false
       tasks:
+        # PACKAGES
         - name: Enable tripleo-repos
           shell: |
             rpm -q git || sudo yum -y install git
@@ -69,16 +70,7 @@ spec:
               - jq
             state: latest
 
-        - name: Include ceph_vars.yaml
-          ansible.builtin.include_vars: /runner/project/ceph_vars.yaml
-
-        - name: Add edpm hosts to ceph_mon inventory group for next play
-          add_host:
-            name: "{{ item }}"
-            groups: ceph_mon
-          loop: "{{ cephadm_admin_hosts }}"
-          run_once: true
-
+        # USER
         # Using same SSH keys for POC only
         - name: Get local private key
           shell: "cat /runner/env/ssh_key"
@@ -100,5 +92,16 @@ spec:
             tripleo_admin_pubkey: "{{ public_key_get.stdout }}\n"
             tripleo_admin_prikey: "{{ private_key_get.stdout }}\n"
 
-    - name: Deploy TripleO facts playbook
+        # CEPH
+        - name: Include ceph_vars.yaml
+          ansible.builtin.include_vars: /runner/project/ceph_vars.yaml
+
+        - name: Add edpm hosts to ceph_mon inventory group for next play
+          add_host:
+            name: "{{ item }}"
+            groups: ceph_mon
+          loop: "{{ cephadm_admin_hosts }}"
+          run_once: true
+
+    - name: Call TripleO deployed ceph playbook
       ansible.builtin.import_playbook: cli-deployed-ceph.yaml
