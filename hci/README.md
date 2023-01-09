@@ -179,7 +179,27 @@ oc get secret ceph-client-conf -o json | jq -r '.data."ceph.conf"' | base64 -d
 
 ## Create CR to deploy OpenStack (which uses Ceph secret)
 
-todo
+Use the OpenStack operator.
+```
+pushd ~/install_yamls
+make openstack
+make openstack_deploy
+popd
+```
+I use [kustomization.yaml](kustomize-ceph/kustomization.yaml) to
+update the OpenStackControlPlane object (output by the command above)
+to use Ceph.
+```
+cp ~/install_yamls/out/openstack/openstack/cr/core_v1beta1_openstackcontrolplane.yaml kustomize-ceph/
+oc kustomize kustomize-ceph/ | oc apply -f -
+```
+The [kustomization.yaml](kustomize-ceph/kustomization.yaml) is missing
+the real FSID from `ceph-client-conf` but it can be set before running
+`oc kustomize` like this:
+```
+FSID=$(oc get secret ceph-client-conf -o json | jq -r '.data."ceph.conf"' | base64 -d | grep fsid | awk 'BEGIN { FS = "=" } ; { print $2 }' | xargs)
+sed -i kustomize-ceph/kustomization.yaml -e s/FSID/$FSID/g
+```
 
 ## Create CR to have AnsibleEE configure RHEL as Nova Compute
 
