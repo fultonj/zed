@@ -1,0 +1,116 @@
+apiVersion: redhat.com/v1alpha1
+kind: AnsibleEE
+metadata:
+  name: deploy-external-dataplane-compute
+  namespace: openstack
+spec:
+  image: "quay.io/fultonj/openstack-tripleo-ansible-ee-ceph:latest"
+  env:
+    - name: ANSIBLE_FORCE_COLOR
+      value: "True"
+    - name: ANSIBLE_SSH_ARGS
+      value: "-C -o ControlMaster=auto -o ControlPersist=80s"
+    - name: ANSIBLE_ENABLE_TASK_DEBUGGER
+      value: "True"
+  extraMounts:
+    - volumes:
+        - name: inventory
+          configMap:
+            name: inventory-configmap
+        - name: compute-vars
+          configMap:
+            name: compute-vars-configmap
+        - name: ssh-key
+          secret:
+            secretName: ansibleee-ssh-key-secret
+            items:
+              - key: private_ssh_key
+                path: ssh_key
+      mounts:
+        - name: inventory
+          mountPath: /runner/inventory/inventory.yaml
+          subPath: inventory.yaml
+        - name: compute-vars
+          mountPath: /runner/project/compute_vars.yaml
+          subPath: compute_vars.yaml
+        - name: ssh-key
+          mountPath: /runner/env/ssh_key
+          subPath: ssh_key
+
+    - extraVolType: Ceph
+      volumes:
+      - name: ceph
+        projected:
+          sources:
+          - secret:
+              name: ceph-client-conf
+      mounts:
+      - name: ceph
+        mountPath: /runner/config/ceph
+        readOnly: true
+
+  play: |
+    - hosts: all
+      gather_facts: false
+      tasks:
+        - name: Enable tripleo-repos
+          shell: |
+            rpm -q git || sudo yum -y install git
+            sudo yum -y install python-setuptools python-requests python3-pip
+            git clone https://git.openstack.org/openstack/tripleo-repos
+            pushd tripleo-repos
+            sudo python3 setup.py install
+            popd
+            sudo /usr/local/bin/tripleo-repos current-tripleo-dev
+
+        - name: dnf install tmux
+          shell: dnf -y install tmux
+
+        - name: pip install sshuttle
+          shell: pip install sshuttle
+
+        - name: run sshuttle
+          shell: tmux new-session -d -s sshuttle "sshuttle -r root@192.168.122.1 192.168.130.0/24"
+        - name: Configure Ceph Clients
+          include_role:
+            name: tripleo_ceph_client_files
+          vars:
+            tripleo_ceph_client_files_source: /runner/config/ceph
+            tripleo_ceph_client_files_config_home: /var/lib/tripleo-config/ceph/
+
+        # In the original edpm-play.yaml these were in the inventory
+        - name: Include compute_vars.yaml
+          ansible.builtin.include_vars: /runner/project/compute_vars.yaml
+
+    - name: Deploy TripleO facts playbook
+      ansible.builtin.import_playbook: deploy-tripleo-facts.yml
+
+    # - name: Deploy TripleO SELinux playbook
+    #   ansible.builtin.import_playbook: deploy-tripleo-selinux.yml
+
+    # - name: Deploy TripleO pre-network playbook
+    #   ansible.builtin.import_playbook: deploy-tripleo-pre-network.yml
+
+    # - name: Deploy TripleO network playbook
+    #   ansible.builtin.import_playbook: deploy-tripleo-network-configure.yml
+
+    # - name: Deploy TripleO network validation playbook
+    #   ansible.builtin.import_playbook: deploy-tripleo-network-validate.yml
+
+    # - name: Deploy TripleO install operating system playbook
+    #   ansible.builtin.import_playbook: deploy-tripleo-os-install.yml
+
+    # - name: Deploy TripleO configure operating system playbook
+    #   ansible.builtin.import_playbook: deploy-tripleo-os-configure.yml
+
+    # - name: Deploy TripleO run operating system playbook
+    #   ansible.builtin.import_playbook: deploy-tripleo-os-run.yml
+
+    # - name: Deploy TripleO install OpenStack playbook
+    #   ansible.builtin.import_playbook: deploy-tripleo-openstack-install.yml
+
+    # - name: Deploy TripleO configure OpenStack playbook
+    #   ansible.builtin.import_playbook: deploy-tripleo-openstack-configure.yml
+
+    # - name: Deploy TripleO run OpenStack playbook
+    #   ansible.builtin.import_playbook: deploy-tripleo-openstack-run.yml

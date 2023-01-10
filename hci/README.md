@@ -206,4 +206,20 @@ I verify this with [test_glance.sh](../crc/test_glance.sh) and
 
 ## Create CR to have AnsibleEE configure RHEL as Nova Compute
 
-todo
+Work in progress:
+```
+oc create -f compute-vars-configmap.yaml
+oc create -f edpm-play.yaml
+```
+
+[compute-vars-configmap.yaml](compute-vars-configmap.yaml) and
+[edpm-play.yaml](edpm-play.yaml)
+are based on
+[slagle's edpm-play.yaml](https://github.com/slagle/install_yamls/blob/edpm-integration/devsetup/edpm/edpm-play.yaml).
+
+I store compute vars in a separate configmap (not the inventory) since
+I already have a working inventory but otherwise I include the same
+roles. I also include the `tripleo_ceph_client_files` role as
+[documented](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/features/ceph_external.html#standalone-ansible-roles-for-external-ceph)
+to configure the compute nodes as Ceph clients using the
+`ceph-client-conf` secret created previously.
