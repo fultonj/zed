@@ -200,6 +200,9 @@ the real FSID from `ceph-client-conf` but it can be set before running
 FSID=$(oc get secret ceph-client-conf -o json | jq -r '.data."ceph.conf"' | base64 -d | grep fsid | awk 'BEGIN { FS = "=" } ; { print $2 }' | xargs)
 sed -i kustomize-ceph/kustomization.yaml -e s/FSID/$FSID/g
 ```
+At this point both both Glance and Cinder should work with Ceph.
+I verify this with [test_glance.sh](../crc/test_glance.sh) and
+[test_cinder.sh](../crc/test_cinder.sh).
 
 ## Create CR to have AnsibleEE configure RHEL as Nova Compute
 
