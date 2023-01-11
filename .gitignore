@@ -6,3 +6,4 @@
 */glance_v1beta1_glance_ceph.yaml
 */cr/core_v1beta1_openstackcontrolplane_ceph_backend.yaml
 */cr/core_v1beta1_openstackcontrolplane_extra_vols.yaml
+*/kustomize-ceph/core_v1beta1_openstackcontrolplane.yaml
