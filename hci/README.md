@@ -213,6 +213,7 @@ Work in progress:
 ```
 oc create -f compute-vars-configmap.yaml
 oc create -f edpm-play.yaml
+oc logs $(oc get pods -l job-name=deploy-external-dataplane-compute -o name)
 ```
 
 [compute-vars-configmap.yaml](compute-vars-configmap.yaml) and
