@@ -89,32 +89,32 @@ spec:
     - name: Deploy TripleO facts playbook
       ansible.builtin.import_playbook: deploy-tripleo-facts.yml
 
-    # - name: Deploy TripleO SELinux playbook
-    #   ansible.builtin.import_playbook: deploy-tripleo-selinux.yml
+    - name: Deploy TripleO SELinux playbook
+      ansible.builtin.import_playbook: deploy-tripleo-selinux.yml
 
-    # - name: Deploy TripleO pre-network playbook
-    #   ansible.builtin.import_playbook: deploy-tripleo-pre-network.yml
+    - name: Deploy TripleO pre-network playbook
+      ansible.builtin.import_playbook: deploy-tripleo-pre-network.yml
 
-    # - name: Deploy TripleO network playbook
-    #   ansible.builtin.import_playbook: deploy-tripleo-network-configure.yml
+    - name: Deploy TripleO network playbook
+      ansible.builtin.import_playbook: deploy-tripleo-network-configure.yml
 
-    # - name: Deploy TripleO network validation playbook
-    #   ansible.builtin.import_playbook: deploy-tripleo-network-validate.yml
+    - name: Deploy TripleO network validation playbook
+      ansible.builtin.import_playbook: deploy-tripleo-network-validate.yml
 
-    # - name: Deploy TripleO install operating system playbook
-    #   ansible.builtin.import_playbook: deploy-tripleo-os-install.yml
+    - name: Deploy TripleO install operating system playbook
+      ansible.builtin.import_playbook: deploy-tripleo-os-install.yml
 
-    # - name: Deploy TripleO configure operating system playbook
-    #   ansible.builtin.import_playbook: deploy-tripleo-os-configure.yml
+    - name: Deploy TripleO configure operating system playbook
+      ansible.builtin.import_playbook: deploy-tripleo-os-configure.yml
 
-    # - name: Deploy TripleO run operating system playbook
-    #   ansible.builtin.import_playbook: deploy-tripleo-os-run.yml
+    - name: Deploy TripleO run operating system playbook
+      ansible.builtin.import_playbook: deploy-tripleo-os-run.yml
 
-    # - name: Deploy TripleO install OpenStack playbook
-    #   ansible.builtin.import_playbook: deploy-tripleo-openstack-install.yml
+    - name: Deploy TripleO install OpenStack playbook
+      ansible.builtin.import_playbook: deploy-tripleo-openstack-install.yml
 
-    # - name: Deploy TripleO configure OpenStack playbook
-    #   ansible.builtin.import_playbook: deploy-tripleo-openstack-configure.yml
+    - name: Deploy TripleO configure OpenStack playbook
+      ansible.builtin.import_playbook: deploy-tripleo-openstack-configure.yml
 
-    # - name: Deploy TripleO run OpenStack playbook
-    #   ansible.builtin.import_playbook: deploy-tripleo-openstack-run.yml
+    - name: Deploy TripleO run OpenStack playbook
+      ansible.builtin.import_playbook: deploy-tripleo-openstack-run.yml
