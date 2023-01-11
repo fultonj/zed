@@ -70,7 +70,11 @@ spec:
           shell: pip install sshuttle
 
         - name: run sshuttle
-          shell: tmux new-session -d -s sshuttle "sshuttle -r root@192.168.122.1 192.168.130.0/24"
+          shell: |
+            if [[ $(tmux ls | grep sshuttle | wc -l) -eq 0 ]]; then
+              tmux new-session -d -s sshuttle "sshuttle -r root@192.168.122.1 192.168.130.0/24"
+            fi
+
         - name: Configure Ceph Clients
           include_role:
             name: tripleo_ceph_client_files
