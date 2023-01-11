@@ -12,7 +12,19 @@ spec:
       value: "-C -o ControlMaster=auto -o ControlPersist=80s"
     - name: ANSIBLE_ENABLE_TASK_DEBUGGER
       value: "True"
+
   extraMounts:
+    - extraVolType: Ceph
+      volumes:
+      - name: ceph
+        projected:
+          sources:
+          - secret:
+              name: ceph-client-conf
+      mounts:
+      - name: ceph
+        mountPath: /runner/config/ceph
+        readOnly: true
     - volumes:
         - name: inventory
           configMap:
@@ -36,18 +48,6 @@ spec:
         - name: ssh-key
           mountPath: /runner/env/ssh_key
           subPath: ssh_key
-
-    - extraVolType: Ceph
-      volumes:
-      - name: ceph
-        projected:
-          sources:
-          - secret:
-              name: ceph-client-conf
-      mounts:
-      - name: ceph
-        mountPath: /runner/config/ceph
-        readOnly: true
 
   play: |
     - hosts: all
