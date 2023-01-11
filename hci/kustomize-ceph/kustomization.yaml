@@ -11,6 +11,9 @@ patches:
     - op: replace
       path: /spec/storageClass
       value: "local-storage"
+    - op: replace
+      path: /spec/cinder/template/cinderBackup/replicas
+      value: 0
     - op: add
       path: /spec/extraMounts
       value:
