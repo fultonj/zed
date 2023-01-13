@@ -227,3 +227,12 @@ roles. I also include the `tripleo_ceph_client_files` role as
 [documented](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/features/ceph_external.html#standalone-ansible-roles-for-external-ceph)
 to configure the compute nodes as Ceph clients using the
 `ceph-client-conf` secret created previously.
+
+## Configure Nova
+
+Deploy additional RabbitMQCluster for cell1
+with [rabbit_cell1.yaml](rabbit_cell1.yaml).
+
+```
+oc create -f rabbit_cell1.yaml
+```

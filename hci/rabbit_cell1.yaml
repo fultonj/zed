@@ -1,0 +1,46 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rabbitmq-cell1
+  namespace: openstack
+spec:
+  delayStartSeconds: 30
+  image: registry.redhat.io/rhosp-rhel9/openstack-rabbitmq:17.0
+  override:
+    statefulSet:
+      spec:
+        template:
+          spec:
+            containers:
+            - args:
+              - /usr/lib/rabbitmq/bin/rabbitmq-server
+              env:
+              - name: RABBITMQ_UPGRADE_LOG
+                value: /var/lib/rabbitmq/rabbitmq_upgrade.log
+              - name: HOME
+                value: /var/lib/rabbitmq
+              name: rabbitmq
+              resources: {}
+            initContainers:
+            - name: setup-container
+              resources: {}
+              securityContext: {}
+            securityContext: {}
+  persistence:
+    storage: 1Gi
+    storageClassName: local-storage
+  rabbitmq:
+    additionalConfig: log.console = true
+  replicas: 1
+  resources:
+    limits:
+      cpu: "2"
+      memory: 2Gi
+    requests:
+      cpu: "1"
+      memory: 2Gi
+  secretBackend: {}
+  service:
+    type: ClusterIP
+  terminationGracePeriodSeconds: 604800
+  tls: {}
