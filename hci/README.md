@@ -253,5 +253,16 @@ oc kustomize kustomize-nova/ | oc apply -f -
 ```
 
 With the above `openstack compute service list` should return
-two conductors `nova-cell0-conductor-0 nova-cell0-conductor-0`.
-I'm still debugging mine.
+two conductors.
+```
+[fultonj@osp-storage-01 ~]$ export OS_CLOUD=default
+[fultonj@osp-storage-01 ~]$ export OS_PASSWORD=12345678
+[fultonj@osp-storage-01 ~]$ openstack compute service list
++--------------------------------------+----------------+------------------------+----------+---------+-------+----------------------------+
+| ID                                   | Binary         | Host                   | Zone     | Status  | State | Updated At                 |
++--------------------------------------+----------------+------------------------+----------+---------+-------+----------------------------+
+| 09e9134d-44a0-4105-bf77-3ae512e29dd7 | nova-conductor | nova-cell0-conductor-0 | internal | enabled | down  | 2023-01-13T15:05:01.000000 |
+| 3eedd901-030d-45de-ad28-4733a2c6f91b | nova-conductor | nova-cell1-conductor-0 | internal | enabled | up    | 2023-01-13T15:09:47.000000 |
++--------------------------------------+----------------+------------------------+----------+---------+-------+----------------------------+
+[fultonj@osp-storage-01 ~]$
+```
