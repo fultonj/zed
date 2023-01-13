@@ -186,9 +186,11 @@ make openstack
 make openstack_deploy
 popd
 ```
-I use [kustomization.yaml](kustomize-ceph/kustomization.yaml) to
-update the OpenStackControlPlane object (output by the command above)
-to use Ceph.
+
+I have a [kustomize](https://kustomize.io) directory for Ceph,
+with a [kustomization.yaml](kustomize-ceph/kustomization.yaml)
+file to update the OpenStackControlPlane object (output by the
+`make openstack_deploy` command) to use Ceph.
 ```
 cp ~/install_yamls/out/openstack/openstack/cr/core_v1beta1_openstackcontrolplane.yaml kustomize-ceph/
 oc kustomize kustomize-ceph/ | oc apply -f -
@@ -236,3 +238,20 @@ with [rabbit_cell1.yaml](rabbit_cell1.yaml).
 ```
 oc create -f rabbit_cell1.yaml
 ```
+
+Add cell1 to Nova in the OpenStackControlPlane CR.
+In my case
+[kustomize-nova/kustomization.yaml](kustomize-nova/kustomization.yaml)
+contains
+[kustomize-ceph/kustomization.yaml](kustomize-ceph/kustomization.yaml)
+but adds two `ops` for Nova. I still replace FSID before applying it.
+
+```
+FSID=$(oc get secret ceph-client-conf -o json | jq -r '.data."ceph.conf"' | base64 -d | grep fsid | awk 'BEGIN { FS = "=" } ; { print $2 }' | xargs)
+sed -i kustomize-nova/kustomization.yaml -e s/FSID/$FSID/g
+oc kustomize kustomize-nova/ | oc apply -f -
+```
+
+With the above `openstack compute service list` should return
+two conductors `nova-cell0-conductor-0 nova-cell0-conductor-0`.
+I'm still debugging mine.
