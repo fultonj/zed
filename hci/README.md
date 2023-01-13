@@ -232,7 +232,9 @@ to configure the compute nodes as Ceph clients using the
 
 ## Configure Nova
 
-Deploy additional RabbitMQCluster for cell1
+### Add a new Cell
+
+Deploy an additional RabbitMQCluster for cell1
 with [rabbit_cell1.yaml](rabbit_cell1.yaml).
 
 ```
@@ -253,7 +255,7 @@ oc kustomize kustomize-nova/ | oc apply -f -
 ```
 
 With the above `openstack compute service list` should return
-two conductors.
+two conductors (thanks gibi).
 ```
 [fultonj@osp-storage-01 ~]$ export OS_CLOUD=default
 [fultonj@osp-storage-01 ~]$ export OS_PASSWORD=12345678
@@ -266,3 +268,48 @@ two conductors.
 +--------------------------------------+----------------+------------------------+----------+---------+-------+----------------------------+
 [fultonj@osp-storage-01 ~]$
 ```
+
+### Network Hacks
+
+CRC runs dnsmasq so that keystone is accessible:
+
+```
+$ host keystone-public-openstack.apps-crc.testing
+keystone-public-openstack.apps-crc.testing has address 192.168.130.11
+```
+
+In [edpm-play.yaml](edpm-play.yaml) ansible sets up an `sshuttle` in a `tmux`.
+
+```
+[root@edpm-compute-0 ~]# ps axu | grep -i ssh
+...
+root     2169761  0.0  0.0   5784  2932 ?        Ss   Jan10   0:00 tmux new-session -d -s sshuttle sshuttle -r root@192.168.122.1 192.168.130.0/24
+```
+So an EDPM node can reach the 192.168.130.1 gateway.
+```
+[root@edpm-compute-2 ~]# ping 192.168.130.1 -c 1
+PING 192.168.130.1 (192.168.130.1) 56(84) bytes of data.
+64 bytes from 192.168.130.1: icmp_seq=1 ttl=64 time=0.086 ms
+
+--- 192.168.130.1 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.086/0.086/0.086/0.000 ms
+[root@edpm-compute-2 ~]#
+```
+But not the IP for keystone or other OpenStack services.
+```
+[root@edpm-compute-0 ~]# ping -c 1 192.168.130.11
+PING 192.168.130.11 (192.168.130.11) 56(84) bytes of data.
+From 192.168.122.1 icmp_seq=1 Destination Port Unreachable
+
+--- 192.168.130.11 ping statistics ---
+1 packets transmitted, 0 received, +1 errors, 100% packet loss, time 0ms
+
+[root@edpm-compute-0 ~]#
+```
+On the hypervisor run the following to allow the edpm-compute node to
+reach the openstack services at their API (thanks ralfieri).
+```
+sudo iptables -R LIBVIRT_FWI 2 -o crc -s 192.168.122.0/24 -d 192.168.130.0/24 -j ACCEPT
+```
+Confirm the edpm-compute node can now reach `ping 192.168.130.11 -c 1`.
