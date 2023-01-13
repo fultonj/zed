@@ -50,7 +50,7 @@ patches:
             rbd_flatten_volume_from_snapshot=False
             report_discard_supported=True
             backend_host=hostgroup
-            rbd_secret_uuid=54842edf-6ebf-52cc-a82d-1f303a1ed5ec
+            rbd_secret_uuid=FSID
     - op: add
       path: /spec/cinder/template/cinderBackup/customServiceConfig
       value: |
