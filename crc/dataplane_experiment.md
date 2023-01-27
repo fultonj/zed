@@ -17,16 +17,15 @@ This has a side effect of defining CRDs the next step would otherwise
 complain about. Use `oc get crds | grep openstack` to show the
 OpenStack CRDs.
 
-## Run modified openstack operator locally
+## Run dataplane operator locally
 
-Use [James' dataplane branch](https://github.com/slagle/openstack-operator/tree/dataplane)
+Clone the [dataplane-operator](https://github.com/openstack-k8s-operators/dataplane-operator).
 ```
-git clone -b dataplane git@github.com:slagle/openstack-operator.git 
+git@github.com:openstack-k8s-operators/dataplane-operator.git
 ```
-In my environment `~/install_yamls/develop_operator/openstack-operator`
-is a symlink to the above.
+Build it and run a local copy.
 ```
-cd ~/install_yamls/develop_operator/openstack-operator
+cd ~/dataplane-operator
 make generate && make manifests && make build
 MET_PORT=6666
 OPERATOR_TEMPLATES=$PWD/templates ./bin/manager -metrics-bind-address ":$MET_PORT"
@@ -34,37 +33,43 @@ OPERATOR_TEMPLATES=$PWD/templates ./bin/manager -metrics-bind-address ":$MET_POR
 The manager should be running but throwing exceptions about the new
 undefined CRDs. Define them with:
 ```
-cd config/crd/bases/
-oc create -f rabbitmq.openstack.org_transporturls.yaml
-oc create -f core.openstack.org_openstackcontrolplanes.yaml
-oc create -f core.openstack.org_openstackdataplanes.yaml
-oc create -f core.openstack.org_openstackdataplanenodes.yaml
-```
+$ oc apply -f config/crd/bases/
+customresourcedefinition.apiextensions.k8s.io/openstackdataplanenodes.dataplane.openstack.org created
+customresourcedefinition.apiextensions.k8s.io/openstackdataplaneroles.dataplane.openstack.org created
+customresourcedefinition.apiextensions.k8s.io/openstackdataplanes.dataplane.openstack.org created
+$
 Observe the new DataPlane CRDs.
 ```
 $ oc get crds | grep dataplane
-openstackdataplanenodes.core.openstack.org                        2023-01-24T19:17:46Z
-openstackdataplanes.core.openstack.org                            2023-01-24T20:41:51Z
+openstackdataplanenodes.dataplane.openstack.org                   2023-01-27T15:34:08Z
+openstackdataplaneroles.dataplane.openstack.org                   2023-01-27T15:34:08Z
+openstackdataplanes.dataplane.openstack.org                       2023-01-27T15:34:08Z
 $
-```
-```
-oc get crds openstackdataplanenodes.core.openstack.org -o yaml
-```
 
+```
+```
+oc get crd -o yaml openstackdataplanes.dataplane.openstack.org
+```
 ## See the operator react to new OpenStackDataPlane objects
 
-Right now the sample objects don't do anything.
+Right now the sample objects don't do much.
 ```
-oc create -f ~/openstack-operator/config/samples/core_v1beta1_openstackdataplane.yaml
+oc kustomize config/samples/ | oc apply -f -
 ```
-But to confirm you have the local copy running you can make a trivial
-edit in the `Reconcile` function:
+But to confirm you have the local copy running that you can edit, make
+a trivial edit in the `Reconcile` functions
 ```
-vi ~/openstack-operator/controllers/core/openstackdataplane_controller.go
+ls ~/dataplane-operator/controllers/*.go
+vi ~/dataplane-operator/controllers/openstackdataplanenode_controller.go
+```
+```
+$ git diff | curl -F 'f:1=<-' ix.io
+http://ix.io/4mm3
 ```
 Then re-run make and restart the manager (as above) and see the
 operator react.
 ```
-2023-01-24T22:12:37.860Z        INFO    Starting workers        {"controller": "openstackcontrolplane", "controllerGroup": "core.openstack.org", "controllerKind": "OpenStackControlPlane", "worker count": 1}
-hello world
+1.674834292021906e+09   INFO    Starting workers        {"controller": "openstackdataplanerole", "controllerGroup": "dataplane.openstack.org", "controllerKind": "OpenStackDataPlaneRole", "worker count": 1}
+hello from: dataplane node
+hello from: dataplane role
 ```
