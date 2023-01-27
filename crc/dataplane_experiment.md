@@ -38,6 +38,7 @@ customresourcedefinition.apiextensions.k8s.io/openstackdataplanenodes.dataplane.
 customresourcedefinition.apiextensions.k8s.io/openstackdataplaneroles.dataplane.openstack.org created
 customresourcedefinition.apiextensions.k8s.io/openstackdataplanes.dataplane.openstack.org created
 $
+```
 Observe the new DataPlane CRDs.
 ```
 $ oc get crds | grep dataplane
@@ -47,6 +48,7 @@ openstackdataplanes.dataplane.openstack.org                       2023-01-27T15:
 $
 
 ```
+Inspect them.
 ```
 oc get crd -o yaml openstackdataplanes.dataplane.openstack.org
 ```
@@ -62,6 +64,7 @@ a trivial edit in the `Reconcile` functions
 ls ~/dataplane-operator/controllers/*.go
 vi ~/dataplane-operator/controllers/openstackdataplanenode_controller.go
 ```
+For example, have each controller print it's name.
 ```
 $ git diff | curl -F 'f:1=<-' ix.io
 http://ix.io/4mm3
