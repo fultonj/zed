@@ -1,0 +1,13 @@
+---
+apiVersion: dataplane.openstack.org/v1beta1
+kind: OpenStackDataPlaneNode
+metadata:
+  name: openstackdataplanenode-sample-inheritance-2
+spec:
+  node:
+    ansibleHost: 192.168.122.19
+    hostName: openstackdataplanenode-sample-2.localdomain
+    networks:
+    - fixedIP: 192.168.122.19
+      network: ctlplane
+  role: openstackdataplanerole-sample
