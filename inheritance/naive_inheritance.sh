@@ -18,7 +18,7 @@ function show_nodes() {
                 | grep inheritance | wc -l)
     if [[ $NODES -gt 0 ]]; then
         echo "$NODES inheritance nodes were created"
-         oc get openstackdataplanenodes.dataplane.openstack.org
+         oc get openstackdataplanenodes.dataplane.openstack.org | grep inheritance
     else
         echo "Zero nodes were created (but two should have been)"
     fi
@@ -45,8 +45,10 @@ oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
 NODES=$(oc get openstackdataplanenodes.dataplane.openstack.org \
             | grep inheritance | wc -l)
 if [[ $NODES -gt 0 ]]; then
-    oc delete OpenStackDataPlaneNode inheritance-0
-    oc delete OpenStackDataPlaneNode inheritance-1
+    for NODE in $(oc get openstackdataplanenodes.dataplane.openstack.org | \
+                      grep inheritance | awk {'print $1'}); do
+        oc delete OpenStackDataPlaneNode $NODE
+    done
 fi
 
 # Create role
@@ -77,21 +79,23 @@ if [[ $FAKE_IT -eq 1 ]]; then
     fi
 else
     if [[ $CLEAN -eq 1 ]]; then
-        NODES=$(oc get openstackdataplanenodes.dataplane.openstack.org \
-                    | grep inheritance | wc -l)
-        if [[ $NODES -gt 0 ]]; then
-            echo "Deleting nodes created by role"
-            # If we're not faking it and controller works, manually clean up
-            oc delete OpenStackDataPlaneNode inheritance-0
-            oc delete OpenStackDataPlaneNode inheritance-1
-        fi
         if [[ $INV -gt 0 ]]; then
             echo "Deleting inventories created by the node"
-            if [[ $VERBOSE -eq 1 ]]; then
+            if [[ $CLEAN -eq 1 ]]; then
                 for I in $(oc get configmap | grep inheritance | awk {'print $1'}); do
                     oc delete configmap $I
                 done
             fi
+        fi
+        NODES=$(oc get openstackdataplanenodes.dataplane.openstack.org \
+                    | grep inheritance | wc -l)
+        if [[ $NODES -gt 0 ]]; then
+            echo "Deleting nodes created by role"
+            for NODE in $(oc get openstackdataplanenodes.dataplane.openstack.org | \
+                              grep inheritance | awk {'print $1'}); do
+                # If we're not faking it and controller works, manually clean up
+                oc delete OpenStackDataPlaneNode $NODE
+            done
         fi
     fi
 fi
