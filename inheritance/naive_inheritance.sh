@@ -8,6 +8,7 @@
 
 FAKE_IT=0
 VERBOSE=1
+INV=1
 CLEAN=1
 
 pushd /home/fultonj/zed/inheritance
@@ -26,10 +27,27 @@ function show_nodes() {
         oc get openstackdataplanenodes.dataplane.openstack.org -o json | jq .items[0]
         oc get openstackdataplanenodes.dataplane.openstack.org -o json | jq .items[1]
     fi
+    if [[ $INV -gt 0 ]]; then
+        echo "Each node has its own inventory:"
+        oc get configmap | grep inheritance
+        if [[ $VERBOSE -eq 1 ]]; then
+            for I in $(oc get configmap | grep inheritance | awk {'print $1'}); do
+                oc get configmap $I -o yaml
+            done
+        fi
+    fi
 }
 
 eval $(crc oc-env)
 oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
+
+# Clean nodes which were not cleaned up
+NODES=$(oc get openstackdataplanenodes.dataplane.openstack.org \
+            | grep inheritance | wc -l)
+if [[ $NODES -gt 0 ]]; then
+    oc delete OpenStackDataPlaneNode inheritance-0
+    oc delete OpenStackDataPlaneNode inheritance-1
+fi
 
 # Create role
 oc get role-sample-inheritance 2> /dev/null
@@ -64,8 +82,16 @@ else
         if [[ $NODES -gt 0 ]]; then
             echo "Deleting nodes created by role"
             # If we're not faking it and controller works, manually clean up
-            oc delete OpenStackDataPlaneNode dataplanenode-inheritance-0
-            oc delete OpenStackDataPlaneNode dataplanenode-inheritance-1
+            oc delete OpenStackDataPlaneNode inheritance-0
+            oc delete OpenStackDataPlaneNode inheritance-1
+        fi
+        if [[ $INV -gt 0 ]]; then
+            echo "Deleting inventories created by the node"
+            if [[ $VERBOSE -eq 1 ]]; then
+                for I in $(oc get configmap | grep inheritance | awk {'print $1'}); do
+                    oc delete configmap $I
+                done
+            fi
         fi
     fi
 fi
