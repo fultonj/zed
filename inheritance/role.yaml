@@ -19,6 +19,7 @@ spec:
       networks:
       - fixedIP: 192.168.122.19
         network: ctlplane
+      managed: true
   nodeTemplate:
     ansiblePort: 22
     ansibleUser: root
