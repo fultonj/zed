@@ -50,11 +50,12 @@ echo ""
 echo "Creating node3_from"
 echo "-------------------"
 oc create -f node3_from.yaml
+oc get OpenStackDataPlaneNode openstackdataplanenode-sample-3-from-inheritance -o yaml
 
 echo ""
 echo "Showing role of node3_from"
 echo "--------------------------"
-oc get openstackdataplaneroles.dataplane.openstack.org -o yaml
+oc get OpenStackDataPlaneRole openstackdataplanerole-sample-inheritance -o yaml
 
 echo ""
 echo "Showing inventory of node3_from"
