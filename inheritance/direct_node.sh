@@ -30,6 +30,7 @@
 # Assumes naive_inheritance.sh has been run once with CLEAN=0
 # Because the role needs to exist for it to inherit from it.
 
+ROLE=1
 VERBOSE=1
 INV=1
 CLEAN=1
@@ -44,6 +45,10 @@ NODE3_EXISTS=$(oc get openstackdataplanenodes.dataplane.openstack.org | \
 
 if [[ $NODE3_EXISTS -gt 0 ]]; then
     oc delete -f node3_from.yaml
+fi
+
+if [[ $ROLE -gt 0 ]]; then
+    oc create -f role.yaml
 fi
 
 echo ""
@@ -63,6 +68,15 @@ echo "-------------------------------"
 oc get configmap -o yaml \
    dataplanenode-openstackdataplanenode-sample-3-from-inheritance-inventory
 
+
+echo ""
+echo "Showing role (again) of node3_from"
+echo "----------------------------------"
+oc get OpenStackDataPlaneRole openstackdataplanerole-sample-inheritance -o yaml
+
+echo ""
+echo "Was dataPlaneNodes list ^ updated to include sample-3?"
+
 if [[ $INV -gt 0 ]]; then
     echo "Deleting inventory created by the node"
     if [[ $CLEAN -eq 1 ]]; then
@@ -71,7 +85,11 @@ if [[ $INV -gt 0 ]]; then
         done
     fi
 fi
-
+echo "Deleting node"
 if [[ $CLEAN -gt 0 ]]; then
     oc delete -f node3_from.yaml
+    if [[ $ROLE -gt 0 ]]; then
+        echo "Deleting role"
+        oc delete -f role.yaml
+    fi
 fi
