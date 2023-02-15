@@ -33,7 +33,7 @@
 ROLE=1
 VERBOSE=1
 INV=1
-CLEAN=1
+CLEAN=0
 
 pushd /home/fultonj/zed/inheritance
 
@@ -78,15 +78,16 @@ echo ""
 echo "Was dataPlaneNodes list ^ updated to include sample-3?"
 
 if [[ $INV -gt 0 ]]; then
-    echo "Deleting inventory created by the node"
     if [[ $CLEAN -eq 1 ]]; then
+        echo "Deleting inventory created by the node"
         for I in $(oc get configmap | grep from-inheritance | awk {'print $1'}); do
             oc delete configmap $I
         done
     fi
 fi
-echo "Deleting node"
+
 if [[ $CLEAN -gt 0 ]]; then
+    echo "Deleting node"
     oc delete -f node3_from.yaml
     if [[ $ROLE -gt 0 ]]; then
         echo "Deleting role"
