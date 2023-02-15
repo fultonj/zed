@@ -52,6 +52,25 @@ Inspect them.
 ```
 oc get crd -o yaml openstackdataplanes.dataplane.openstack.org
 ```
+
+If you see this error:
+```
+1.6764872853898516e+09	ERROR	controller-runtime.source
+if kind is a CRD, it should be installed before calling Start
+{
+  "kind": "OpenStackAnsibleEE.ansibleee.openstack.org",
+  "error": "no matches for kind \"OpenStackAnsibleEE\"
+            in version \"ansibleee.openstack.org/v1alpha1\""
+ }
+```
+Then get a copy of the
+[openstack-ansibleee-operator](https://github.com/openstack-k8s-operators/openstack-ansibleee-operator)
+and define the CRD.
+```
+pushd ~/ansibleee-operator
+oc create -f config/crd/bases/ansibleee.openstack.org_openstackansibleees.yaml
+```
+
 ## See the operator react to new OpenStackDataPlane objects
 
 Right now the sample objects don't do much.
