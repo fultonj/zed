@@ -5,9 +5,9 @@ metadata:
   name: openstackdataplanenode-sample-3-from-inheritance
 spec:
   role: openstackdataplanerole-sample-inheritance
+  ansibleHost: 192.168.122.20
+  hostName: openstackdataplanenode-sample-3.localdomain
   node:
-    ansibleHost: 192.168.122.20
-    hostName: openstackdataplanenode-sample-3.localdomain
     networks:
     - fixedIP: 192.168.122.20
       network: ctlplane
