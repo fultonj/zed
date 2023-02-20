@@ -4,10 +4,10 @@ kind: OpenStackDataPlaneNode
 metadata:
   name: openstackdataplanenode-sample-3-from-inheritance
 spec:
-  role: openstackdataplanerole-sample-inheritance
   ansibleHost: 192.168.122.20
   hostName: openstackdataplanenode-sample-3.localdomain
   node:
     networks:
     - fixedIP: 192.168.122.20
       network: ctlplane
+  role: openstackdataplanerole-sample-inheritance
