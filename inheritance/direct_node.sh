@@ -33,7 +33,7 @@
 ROLE=1
 VERBOSE=1
 INV=1
-CLEAN=0
+CLEAN=1
 
 pushd /home/fultonj/zed/inheritance
 
@@ -63,19 +63,17 @@ echo "--------------------------"
 oc get OpenStackDataPlaneRole openstackdataplanerole-sample-inheritance -o yaml
 
 echo ""
+echo "Note that the dataPlaneNodes list ^ was updated to include sample-3."
+
+echo ""
 echo "Showing inventory of node3_from"
 echo "-------------------------------"
 oc get configmap -o yaml \
    dataplanenode-openstackdataplanenode-sample-3-from-inheritance-inventory
 
-
 echo ""
-echo "Showing role (again) of node3_from"
-echo "----------------------------------"
-oc get OpenStackDataPlaneRole openstackdataplanerole-sample-inheritance -o yaml
-
+echo "Note that the sample-3 inherited from its role's template (e.g. ansible port)"
 echo ""
-echo "Was dataPlaneNodes list ^ updated to include sample-3?"
 
 if [[ $INV -gt 0 ]]; then
     if [[ $CLEAN -eq 1 ]]; then
