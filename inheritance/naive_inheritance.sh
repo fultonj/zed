@@ -6,7 +6,6 @@
 #   https://github.com/openstack-k8s-operators/dataplane-operator/
 #   blob/main/controllers/suite_test.go
 
-FAKE_IT=0
 VERBOSE=1
 INV=1
 CLEAN=1
@@ -67,38 +66,27 @@ fi
 # Were any nodes created?
 show_nodes
 
-if [[ $FAKE_IT -eq 1 ]]; then
-    echo "Faking it by directly creating node1 and node2"
-    oc create -f node1.yaml
-    oc create -f node2.yaml
-    show_nodes
-    if [[ $CLEAN -eq 1 ]]; then
-        echo "Deleting after fake it"
-        oc delete -f node1.yaml
-        oc delete -f node2.yaml
-    fi
-else
-    if [[ $CLEAN -eq 1 ]]; then
-        if [[ $INV -gt 0 ]]; then
-            echo "Deleting inventories created by the node"
-            if [[ $CLEAN -eq 1 ]]; then
-                for I in $(oc get configmap | grep inheritance | awk {'print $1'}); do
-                    oc delete configmap $I
-                done
-            fi
-        fi
-        NODES=$(oc get openstackdataplanenodes.dataplane.openstack.org \
-                    | grep inheritance | wc -l)
-        if [[ $NODES -gt 0 ]]; then
-            echo "Deleting nodes created by role"
-            for NODE in $(oc get openstackdataplanenodes.dataplane.openstack.org | \
-                              grep inheritance | awk {'print $1'}); do
-                # If we're not faking it and controller works, manually clean up
-                oc delete OpenStackDataPlaneNode $NODE
+if [[ $CLEAN -eq 1 ]]; then
+    if [[ $INV -gt 0 ]]; then
+        echo "Deleting inventories created by the node"
+        if [[ $CLEAN -eq 1 ]]; then
+            for I in $(oc get configmap | grep inheritance | awk {'print $1'}); do
+                oc delete configmap $I
             done
         fi
     fi
+    NODES=$(oc get openstackdataplanenodes.dataplane.openstack.org \
+                | grep inheritance | wc -l)
+    if [[ $NODES -gt 0 ]]; then
+        echo "Deleting nodes created by role"
+        for NODE in $(oc get openstackdataplanenodes.dataplane.openstack.org | \
+                          grep inheritance | awk {'print $1'}); do
+            # If we're not faking it and controller works, manually clean up
+            oc delete OpenStackDataPlaneNode $NODE
+        done
+    fi
 fi
+
 if [[ $CLEAN -eq 1 ]]; then
     # Should this role deletion should also delete the nodes?
     echo "Deleting role"
