@@ -20,6 +20,12 @@ spec:
       - fixedIP: 192.168.122.19
         network: ctlplane
       managed: true
+      ansibleVars: |
+        edpm_network_config_hide_sensitive_logs: true
+        neutron_physical_bridge_name: br-ex6
+        neutron_public_interface_name: eth6
+        ctlplane_dns_nameservers:
+        - 192.168.122.6
   nodeTemplate:
     ansiblePort: 22
     ansibleUser: root
@@ -27,3 +33,11 @@ spec:
     managementNetwork: ctlplane
     networkConfig:
       template: templates/net_config_bridge.j2
+    ansibleVars: |
+      edpm_network_config_template: templates/net_config_bridge.j2
+      edpm_network_config_hide_sensitive_logs: false
+      neutron_physical_bridge_name: br-ex
+      neutron_public_interface_name: eth0
+      ctlplane_dns_nameservers:
+      - 192.168.122.1
+      dns_search_domains: []
