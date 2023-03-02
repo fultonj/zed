@@ -12,7 +12,8 @@ if [[ ! -e pull-secret.txt ]]; then
 fi
 
 make download_tools
-make CPUS=56 MEMORY=262144 crc
+#make CPUS=56 MEMORY=262144 crc
+make CPUS=8 MEMORY=32768 crc
 
 ssh -i ~/.crc/machines/crc/id_ecdsa core@192.168.130.11 "uname -a"
 ssh -i ~/.crc/machines/crc/id_ecdsa core@192.168.130.11 "cat /etc/redhat-release"
