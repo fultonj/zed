@@ -14,10 +14,10 @@ pushd /home/fultonj/zed/inheritance
 
 function show_nodes() {
     NODES=$(oc get openstackdataplanenodes.dataplane.openstack.org \
-                | grep inheritance | wc -l)
+                | grep sample | wc -l)
     if [[ $NODES -gt 0 ]]; then
         echo "$NODES inheritance nodes were created"
-         oc get openstackdataplanenodes.dataplane.openstack.org | grep inheritance
+         oc get openstackdataplanenodes.dataplane.openstack.org | grep sample
     else
         echo "Zero nodes were created (but two should have been)"
     fi
@@ -28,9 +28,9 @@ function show_nodes() {
     fi
     if [[ $INV -gt 0 ]]; then
         echo "Each node has its own inventory:"
-        oc get configmap | grep inheritance
+        oc get configmap | grep sample
         if [[ $VERBOSE -eq 1 ]]; then
-            for I in $(oc get configmap | grep inheritance | awk {'print $1'}); do
+            for I in $(oc get configmap | grep sample | awk {'print $1'}); do
                 oc get configmap $I -o yaml
             done
         fi
@@ -42,10 +42,10 @@ oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
 
 # Clean nodes which were not cleaned up
 NODES=$(oc get openstackdataplanenodes.dataplane.openstack.org \
-            | grep inheritance | wc -l)
+            | grep sample | wc -l)
 if [[ $NODES -gt 0 ]]; then
     for NODE in $(oc get openstackdataplanenodes.dataplane.openstack.org | \
-                      grep inheritance | awk {'print $1'}); do
+                      grep sample | awk {'print $1'}); do
         oc delete OpenStackDataPlaneNode $NODE
     done
 fi
@@ -70,17 +70,17 @@ if [[ $CLEAN -eq 1 ]]; then
     if [[ $INV -gt 0 ]]; then
         echo "Deleting inventories created by the node"
         if [[ $CLEAN -eq 1 ]]; then
-            for I in $(oc get configmap | grep inheritance | awk {'print $1'}); do
+            for I in $(oc get configmap | grep sample | awk {'print $1'}); do
                 oc delete configmap $I
             done
         fi
     fi
     NODES=$(oc get openstackdataplanenodes.dataplane.openstack.org \
-                | grep inheritance | wc -l)
+                | grep sample | wc -l)
     if [[ $NODES -gt 0 ]]; then
         echo "Deleting nodes created by role"
         for NODE in $(oc get openstackdataplanenodes.dataplane.openstack.org | \
-                          grep inheritance | awk {'print $1'}); do
+                          grep sample | awk {'print $1'}); do
             # If we're not faking it and controller works, manually clean up
             oc delete OpenStackDataPlaneNode $NODE
         done
