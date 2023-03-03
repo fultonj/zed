@@ -3,44 +3,11 @@
 
 CREATE=1
 INV=1
-LOGS=1
+LOGS=0
 CLEAN=1
 KILLPODS=0
 
-# This example shows how to create a OpenStackDataPlaneNode
-# CR and observe Ansible configuring the network. The
-# [install_yamls devsetup](https://github.com/openstack-k8s-operators/install_yamls/tree/master/devsetup)
-# has been used to `make edpm_compute` nodes. This
-# command also creates an SSH key pair which may be
-# used to SSH to the EDPM node. To see the keypair
-# use `oc get secret ansibleee-ssh-key-secret -o yaml`.
-# 
-# Determine the IP address of the EDPM node.
-# ```
-# IP=$( sudo virsh -q domifaddr edpm-compute-0 | awk 'NF>1{print $NF}' | cut -d/ -f1 )
-# ```
-# If you need to directly debug on one VM, SSH like this:
-# ```
-# ssh -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP
-# ```
-# Create a DataPlaneNode CR (e.g. network-edpm-compute-0.yaml) with the IP above set to the
-# ansibleHost and define an additional networks list of configuration which Ansible
-# will apply when it runs.
-# 
-# Have k8s create the resource and observe the Ansible run output.
-# ```
-# oc create -f network-edpm-compute-0.yaml
-# oc logs $(oc get pods -o name | grep dataplane-deployment-configure-network | tail -1 )
-# ```
-# 
-# Observe the inventory which was created.
-# ```
-# oc get configmap dataplanenode-network-edpm-compute-0-inventory -o yaml
-# ```
-# 
-# Delete the resource, it's inventory and pods.
-
-pushd /home/fultonj/zed/inheritance
+pushd /home/fultonj/zed/edpm
 
 eval $(crc oc-env)
 oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
