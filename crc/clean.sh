@@ -2,11 +2,11 @@
 
 CINDER=0
 RABBIT=0
-GLANCE=1
-KEYSTONE=1
-MARIA=1
+GLANCE=0
+KEYSTONE=0
+MARIA=0
 EDPM=0
-CRC=0
+CRC=1
 
 if [[ ! -d ~/install_yamls ]]; then
     echo "~/install_yamls missing (did you run crc.sh?)"
