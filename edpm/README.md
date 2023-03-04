@@ -90,21 +90,28 @@ sudo /usr/local/bin/tripleo-repos current-tripleo-dev
 ```
 ## Run a local copy of the dataplane-operator
 
-Leave the following running in one terminal
+Leave the following running in a terminal
 ```
 pushd ~/dataplane-operator
 make generate && make manifests && make build
 OPERATOR_TEMPLATES=$PWD/templates ./bin/manager -metrics-bind-address ":6666"
 popd
 ```
-[network-edpm-compute-0.yaml](network-edpm-compute-0.yaml) is an example
-[OpenStackDataPlaneNode](https://openstack-k8s-operators.github.io/dataplane-operator/openstack_dataplanenode) CR
+[edpm-compute-0.yaml](edpm-compute-0.yaml) is an example
+[OpenStackDataPlaneNode](https://openstack-k8s-operators.github.io/dataplane-operator/openstack_dataplanenode) CR and
+[edpm-role-0.yaml](edpm-role-0.yaml) is an example
+[OpenStackDataPlaneRole](https://openstack-k8s-operators.github.io/dataplane-operator/openstack_dataplanerole) CR
 
-In another terminal instantiate the node
+In another terminal instantiate the role
 ```
-oc create -f network-edpm-compute-0.yaml
+oc create -f edpm-role-0.yaml
 ```
-Observe the Ansible inventory which was created
+Instantiate the node
+```
+oc create -f edpm-compute-0.yaml
+```
+Observe the Ansible inventory which was created with data from both
+the role and node
 ```
 oc get configmap dataplanenode-network-edpm-compute-0-inventory -o yaml
 ```
@@ -118,7 +125,11 @@ oc logs $(oc get pods -o name | grep dataplane-deployment-configure-network | ta
 ```
 Delete the node configuration instance
 ```
-oc delete -f network-edpm-compute-0.yaml
+oc delete -f edpm-compute-0.yaml
+```
+Delete the role
+```
+oc delete -f edpm-role-0.yaml
 ```
 [make_node.sh](make_node.sh) is a wrapper to run commands like the above
 

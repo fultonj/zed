@@ -16,13 +16,14 @@ IP=$( sudo virsh -q domifaddr edpm-compute-0 | awk 'NF>1{print $NF}' | cut -d/ -
 ssh -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP "uname"
 
 # Ensure the CR has been updated with the correct IP
-if [[ ! $(grep $IP network-edpm-compute-0.yaml | wc -l) -gt 1 ]]; then
-    echo "$IP not in network-edpm-compute-0.yaml"
+if [[ ! $(grep $IP edpm-compute-0.yaml | wc -l) -gt 1 ]]; then
+    echo "$IP not in edpm-compute-0.yaml"
     exit 1
 fi
 
 if [ $CREATE -eq 1 ]; then
-    oc create -f network-edpm-compute-0.yaml
+    oc create -f edpm-role-0.yaml
+    oc create -f edpm-compute-0.yaml
 fi
 
 # read
@@ -46,7 +47,8 @@ fi
 
 if [ $CLEAN -eq 1 ]; then
     echo -e "\nCleaning\n"
-    oc delete -f network-edpm-compute-0.yaml
+    oc delete -f edpm-compute-0.yaml
+    oc delete -f edpm-role-0.yaml
     oc get configmap -o name | grep dataplanenode | xargs oc delete
 fi
 
