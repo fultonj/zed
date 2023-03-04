@@ -5,7 +5,7 @@ SSH_TEST=0
 CREATE=1
 INV=1
 LOGS=0
-CLEAN=1
+CLEAN=0
 KILLPODS=0
 
 pushd /home/fultonj/zed/edpm
@@ -22,6 +22,10 @@ fi
 if [[ ! $(grep $IP edpm-compute-0.yaml | wc -l) -gt 1 ]]; then
     echo "$IP not in edpm-compute-0.yaml"
     exit 1
+fi
+
+if [ $CLEAN -eq 1 ]; then
+    bash delete_node.sh
 fi
 
 if [ $CREATE -eq 1 ]; then
@@ -49,10 +53,7 @@ if [ $LOGS -eq 1 ]; then
 fi
 
 if [ $CLEAN -eq 1 ]; then
-    echo -e "\nCleaning\n"
-    oc delete -f edpm-compute-0.yaml
-    oc delete -f edpm-role-0.yaml
-    oc get configmap -o name | grep dataplanenode | xargs oc delete
+    bash delete_node.sh
 fi
 
 if [ $KILLPODS  -eq 1 ]; then
