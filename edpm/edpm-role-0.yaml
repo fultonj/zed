@@ -4,14 +4,6 @@ kind: OpenStackDataPlaneRole
 metadata:
   name: edpm-role-0
 spec:
-  dataPlaneNodes:
-  - name: openstackdataplanenode-sample-1
-    ansibleHost: 192.168.122.18
-    hostName: openstackdataplanenode-sample-1.localdomain
-    node:
-      networks:
-      - fixedIP: 192.168.122.18
-        network: ctlplane
   nodeTemplate:
     ansibleUser: root
     managed: false
