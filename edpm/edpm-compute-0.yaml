@@ -10,6 +10,5 @@ spec:
     networks:
     - fixedIP: 192.168.122.100
       network: ctlplane
-    ansibleUser: root
+  deployStrategy:
     deploy: true
-    ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
