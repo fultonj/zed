@@ -1,6 +1,7 @@
 #!/bin/bash
 # Executing Ansible with DataPlaneNode CRs
 
+SSH_TEST=0
 CREATE=1
 INV=1
 LOGS=0
@@ -12,8 +13,11 @@ pushd /home/fultonj/zed/edpm
 eval $(crc oc-env)
 oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
 
-IP=$( sudo virsh -q domifaddr edpm-compute-0 | awk 'NF>1{print $NF}' | cut -d/ -f1 )
-ssh -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP "uname"
+
+if [ $SSH_TEST -eq 1 ]; then
+    IP=$( sudo virsh -q domifaddr edpm-compute-0 | awk 'NF>1{print $NF}' | cut -d/ -f1 )
+    ssh -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP "uname"
+fi
 
 # Ensure the CR has been updated with the correct IP
 if [[ ! $(grep $IP edpm-compute-0.yaml | wc -l) -gt 1 ]]; then
