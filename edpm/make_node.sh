@@ -13,9 +13,8 @@ pushd /home/fultonj/zed/edpm
 eval $(crc oc-env)
 oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
 
-
+IP=$( sudo virsh -q domifaddr edpm-compute-0 | awk 'NF>1{print $NF}' | cut -d/ -f1 )
 if [ $SSH_TEST -eq 1 ]; then
-    IP=$( sudo virsh -q domifaddr edpm-compute-0 | awk 'NF>1{print $NF}' | cut -d/ -f1 )
     ssh -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP "uname"
 fi
 
@@ -32,11 +31,11 @@ fi
 
 # read
 echo -e "\nCR\n"
-oc get OpenStackDataPlaneNode network-edpm-compute-0 -o yaml
+oc get OpenStackDataPlaneNode edpm-compute-0 -o yaml
 
 if [ $INV -eq 1 ]; then
     echo -e "\nInventory\n"
-    oc get configmap dataplanenode-network-edpm-compute-0-inventory -o yaml
+    oc get configmap dataplanenode-edpm-compute-0-inventory -o yaml
 fi
 
 if [ $LOGS -eq 1 ]; then
