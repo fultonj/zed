@@ -2,7 +2,7 @@
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneNode
 metadata:
-  name: network-edpm-compute-0
+  name: edpm-compute-0
 spec:
   ansibleHost: 192.168.122.100
   role: edpm-role-0
