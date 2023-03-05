@@ -6,6 +6,7 @@ metadata:
 spec:
   nodeTemplate:
     ansibleUser: root
+    ansiblePort: 22
     managementNetwork: ctlplane
     networkConfig:
       template: templates/net_config_bridge.j2
