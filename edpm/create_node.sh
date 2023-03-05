@@ -2,12 +2,15 @@
 # Executing Ansible with DataPlaneNode CRs
 
 SSH_TEST=0
-ROLE=1
-NODE=1
+CREATE_ROLE=1
+CREATE_NODE=1
 INV=1
 LOGS=0
 CLEAN=0
 KILLPODS=0
+
+NODE_CR=edpm-compute-0.yaml
+ROLE_CR=edpm-role-0.yaml
 
 pushd /home/fultonj/zed/edpm
 
@@ -20,8 +23,8 @@ if [ $SSH_TEST -eq 1 ]; then
 fi
 
 # Ensure the CR has been updated with the correct IP
-if [[ ! $(grep $IP edpm-compute-0.yaml | wc -l) -gt 1 ]]; then
-    echo "$IP not in edpm-compute-0.yaml"
+if [[ ! $(grep $IP $NODE_CR | wc -l) -gt 1 ]]; then
+    echo "$IP not in $NODE_CR"
     exit 1
 fi
 
@@ -29,15 +32,15 @@ if [ $CLEAN -eq 1 ]; then
     bash delete_node.sh
 fi
 
-if [ $ROLE -eq 1 ]; then
-    oc create -f edpm-role-0.yaml
+if [ $CREATE_ROLE -eq 1 ]; then
+    oc create -f $ROLE_CR
 fi
 
 echo -e "\nCR\n"
 oc get OpenStackDataPlaneRole edpm-role-0 -o yaml
 
-if [ $NODE -eq 1 ]; then
-    oc create -f edpm-compute-0.yaml
+if [ $CREATE_NODE -eq 1 ]; then
+    oc create -f $NODE_CR
 fi
 
 # read
