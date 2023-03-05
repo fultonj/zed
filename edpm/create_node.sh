@@ -11,6 +11,11 @@ KILLPODS=0
 
 NODE_CR=edpm-compute-0.yaml
 ROLE_CR=edpm-role-0.yaml
+# NODE_CR=dataplane_v1beta1_openstackdataplanenode_deployment.yaml
+# ROLE_CR=dataplane_v1beta1_openstackdataplanerole.yaml
+
+NODE_NAME=$(grep " name" $NODE_CR | awk {'print $2'})
+ROLE_NAME=$(grep " name" $ROLE_CR | awk {'print $2'})
 
 pushd /home/fultonj/zed/edpm
 
@@ -37,7 +42,7 @@ if [ $CREATE_ROLE -eq 1 ]; then
 fi
 
 echo -e "\nCR\n"
-oc get OpenStackDataPlaneRole edpm-role-0 -o yaml
+oc get OpenStackDataPlaneRole $ROLE_NAME -o yaml
 
 if [ $CREATE_NODE -eq 1 ]; then
     oc create -f $NODE_CR
@@ -45,11 +50,11 @@ fi
 
 # read
 echo -e "\nCR\n"
-oc get OpenStackDataPlaneNode edpm-compute-0 -o yaml
+oc get OpenStackDataPlaneNode $NODE_NAME -o yaml
 
 if [ $INV -eq 1 ]; then
     echo -e "\nInventory\n"
-    oc get configmap dataplanenode-edpm-compute-0-inventory -o yaml
+    oc get configmap dataplanenode-${NODE_NAME}-inventory -o yaml
 fi
 
 if [ $LOGS -eq 1 ]; then
