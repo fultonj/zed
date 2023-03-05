@@ -2,7 +2,8 @@
 # Executing Ansible with DataPlaneNode CRs
 
 SSH_TEST=0
-CREATE=1
+ROLE=1
+NODE=1
 INV=1
 LOGS=0
 CLEAN=0
@@ -28,8 +29,14 @@ if [ $CLEAN -eq 1 ]; then
     bash delete_node.sh
 fi
 
-if [ $CREATE -eq 1 ]; then
+if [ $ROLE -eq 1 ]; then
     oc create -f edpm-role-0.yaml
+fi
+
+echo -e "\nCR\n"
+oc get OpenStackDataPlaneRole edpm-role-0 -o yaml
+
+if [ $NODE -eq 1 ]; then
     oc create -f edpm-compute-0.yaml
 fi
 
