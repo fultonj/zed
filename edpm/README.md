@@ -131,7 +131,7 @@ Delete the role
 ```
 oc delete -f edpm-role-0.yaml
 ```
-[make_node.sh](make_node.sh) is a wrapper to run commands like the above
+[create_node.sh](create_node.sh) is a wrapper to run commands like the above
 
 ## Environment Down
 Use the following to cleanly remove the environment so it can be
