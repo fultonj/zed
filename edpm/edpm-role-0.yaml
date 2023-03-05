@@ -5,7 +5,6 @@ metadata:
   name: edpm-role-0
 spec:
   nodeTemplate:
-    ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
     ansibleUser: root
     managementNetwork: ctlplane
     networkConfig:
