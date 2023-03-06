@@ -64,6 +64,7 @@ OpenStack CRDs.
 ### Data Plane VM
 ```
 pushd ~/install_yamls/devsetup
+make crc_attach_default_interface
 make edpm_compute
 popd
 ```
