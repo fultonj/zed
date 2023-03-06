@@ -89,6 +89,24 @@ sudo python3 setup.py install
 popd
 sudo /usr/local/bin/tripleo-repos current-tripleo-dev
 ```
+## Run a local copy of the openstack-ansibleee-operator
+
+Running a local [openstack-ansibleee-operator](https://github.com/openstack-k8s-operators/openstack-ansibleee-operator)
+is only necessary if you need a change which is not yet available in the
+[container](https://quay.io/repository/openstack-k8s-operators/openstack-ansibleee-operator?tab=tags)
+
+```
+cd ~/openstack-ansibleee-operator/
+make generate && make manifests && make build
+oc project default
+OPERATOR_TEMPLATES=$PWD/templates ./bin/manager -metrics-bind-address ":6667" -health-probe-bind-address ":8082"
+```
+Leave the above running in a separate terminal
+
+The openstack operator leaves an AnsibleEE pod running in the
+openstack namespace so this local copy is run in the default
+namespace as a workaround to prevent conflicts
+
 ## Run a local copy of the dataplane-operator
 
 Leave the following running in a terminal
