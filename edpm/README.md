@@ -131,7 +131,7 @@ oc create -f edpm-compute-0.yaml
 Observe the Ansible inventory which was created with data from both
 the role and node
 ```
-oc get configmap dataplanenode-network-edpm-compute-0-inventory -o yaml
+oc get configmap dataplanenode-edpm-compute-0-inventory -o yaml
 ```
 Observe dataplane-deployment pods
 ```
