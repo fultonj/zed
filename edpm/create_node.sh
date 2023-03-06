@@ -59,12 +59,12 @@ fi
 
 if [ $LOGS -eq 1 ]; then
     echo -e "\nWaiting for Ansible Logs"
-    while [[ $(oc get pods | grep dataplane-deployment | egrep "Error" | wc -l) -eq 0 ]]; do
+    while [[ $(oc get pods | grep dataplane-deployment | egrep "Error|Running" | wc -l) -eq 0 ]]; do
         echo -n "."
         sleep 0.5
     done
     echo ""
-    oc logs $(oc get pods | grep dataplane-deployment | egrep "Error" | awk {'print $1'} | tail -1)
+    oc logs $(oc get pods | grep dataplane-deployment | egrep "Error|Running" | awk {'print $1'} | tail -1)
 fi
 
 if [ $CLEAN -eq 1 ]; then
