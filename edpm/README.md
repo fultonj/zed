@@ -111,10 +111,9 @@ namespace as a workaround to prevent conflicts
 
 Leave the following running in a terminal
 ```
-pushd ~/dataplane-operator
+cd ~/dataplane-operator
 make generate && make manifests && make build
 OPERATOR_TEMPLATES=$PWD/templates ./bin/manager -metrics-bind-address ":6666"
-popd
 ```
 [edpm-compute-0.yaml](edpm-compute-0.yaml) is an example
 [OpenStackDataPlaneNode](https://openstack-k8s-operators.github.io/dataplane-operator/openstack_dataplanenode) CR and
