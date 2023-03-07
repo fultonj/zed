@@ -11,5 +11,7 @@ spec:
     - fixedIP: 192.168.122.100
       network: ctlplane
     ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
+    cephSecrets:
+      - ceph-conf-files
   deployStrategy:
     deploy: true
