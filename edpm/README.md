@@ -37,7 +37,6 @@ Confirm k8s access
 ```
 eval $(crc oc-env)
 oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
-oc get pods
 ```
 Confirm SSH access to CRC VM
 ```
@@ -76,7 +75,7 @@ oc get secret | grep ssh
 Confirm SSH access to EDPM VM
 ```
 IP=$( sudo virsh -q domifaddr edpm-compute-0 | awk 'NF>1{print $NF}' | cut -d/ -f1 )
-ssh -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP
 ```
 Use the SSH connection to run the commands below to configure RDO
 repos on the EDPM VM
@@ -136,6 +135,30 @@ oc get configmap dataplanenode-edpm-compute-0-inventory -o yaml
 Observe dataplane-deployment pods
 ```
 oc get pods -o name | grep dataplane-deployment
+```
+Each of the pods following completed their ansible run
+```
+[fultonj@hamfast edpm]$ oc get pods | grep dataplane
+NAME                                                READY   STATUS      RESTARTS   AGE
+dataplane-deployment-configure-networklhgmw-mb5tg   0/1     Completed   0          3m56s
+dataplane-deployment-validate-network7fj77-zc68j    0/1     Completed   0          52s
+dataplane-deployment-validate-networkkzbh7-xg9m2    0/1     Completed   0          52s
+[fultonj@hamfast edpm]$
+```
+Their ansible logs may be observed
+```
+[fultonj@hamfast edpm]$ oc logs dataplane-deployment-validate-networkkzbh7-xg9m2 | tail
+skipping: [edpm-compute-0]
+
+TASK [edpm_nodes_validation : Check Controllers availability] ******************
+skipping: [edpm-compute-0]
+
+TASK [edpm_nodes_validation : Verify the configured FQDN vs /etc/hosts] ********
+skipping: [edpm-compute-0]
+
+PLAY RECAP *********************************************************************
+edpm-compute-0             : ok=3    changed=0    unreachable=0    failed=0    skipped=3    rescued=0    ignored=0
+[fultonj@hamfast edpm]$
 ```
 The output of the Ansible run can be seen in the pod logs
 ```
