@@ -30,6 +30,7 @@ pushd ~/install_yamls/devsetup
 cp ~/pull-secret.txt pull-secret.txt
 make download_tools
 make CPUS=8 MEMORY=32768 crc
+cd ..
 make crc_storage
 popd
 ```
@@ -88,38 +89,15 @@ sudo python3 setup.py install
 popd
 sudo /usr/local/bin/tripleo-repos current-tripleo-dev
 ```
-## Run a local copy of the openstack-ansibleee-operator
 
-Running a local [openstack-ansibleee-operator](https://github.com/openstack-k8s-operators/openstack-ansibleee-operator)
-is only necessary if you need a change which is not yet available in the
-[container](https://quay.io/repository/openstack-k8s-operators/openstack-ansibleee-operator?tab=tags)
+## Run Ansible by creating DataPlane CRs
 
-```
-cd ~/openstack-ansibleee-operator/
-make generate && make manifests && make build
-oc project default
-OPERATOR_TEMPLATES=$PWD/templates ./bin/manager -metrics-bind-address ":6667" -health-probe-bind-address ":8082"
-```
-Leave the above running in a separate terminal
-
-The openstack operator leaves an AnsibleEE pod running in the
-openstack namespace so this local copy is run in the default
-namespace as a workaround to prevent conflicts
-
-## Run a local copy of the dataplane-operator
-
-Leave the following running in a terminal
-```
-cd ~/dataplane-operator
-make generate && make manifests && make build
-OPERATOR_TEMPLATES=$PWD/templates ./bin/manager -metrics-bind-address ":6666"
-```
 [edpm-compute-0.yaml](edpm-compute-0.yaml) is an example
 [OpenStackDataPlaneNode](https://openstack-k8s-operators.github.io/dataplane-operator/openstack_dataplanenode) CR and
 [edpm-role-0.yaml](edpm-role-0.yaml) is an example
 [OpenStackDataPlaneRole](https://openstack-k8s-operators.github.io/dataplane-operator/openstack_dataplanerole) CR
 
-In another terminal instantiate the role
+Instantiate the role
 ```
 oc create -f edpm-role-0.yaml
 ```
@@ -134,20 +112,26 @@ oc get configmap dataplanenode-edpm-compute-0-inventory -o yaml
 ```
 Observe dataplane-deployment pods
 ```
-oc get pods -o name | grep dataplane-deployment
+oc get pods | grep dataplane-deployment
 ```
-Each of the pods following completed their ansible run
+Each pod should be created sequentially for each ansible run in
+[deployment.go](https://github.com/openstack-k8s-operators/dataplane-operator/blob/main/pkg/deployment/deployment.go)
 ```
 [fultonj@hamfast edpm]$ oc get pods | grep dataplane
 NAME                                                READY   STATUS      RESTARTS   AGE
-dataplane-deployment-configure-networklhgmw-mb5tg   0/1     Completed   0          3m56s
-dataplane-deployment-validate-network7fj77-zc68j    0/1     Completed   0          52s
-dataplane-deployment-validate-networkkzbh7-xg9m2    0/1     Completed   0          52s
+dataplane-deployment-configure-networkqcbht-7v6h6                 0/1     Completed   0          7m32s
+dataplane-deployment-configure-openstackfcl8c-9cj29               0/1     Completed   0          95s
+dataplane-deployment-configure-osl2zcb-9sp5t                      0/1     Completed   0          3m30s
+dataplane-deployment-install-openstack5mj8v-w8txd                 0/1     Completed   0          115s
+dataplane-deployment-install-os2rg76-75tlf                        0/1     Completed   0          4m21s
+dataplane-deployment-run-openstack4mzrw-s4cnz                     0/1     Completed   0          70s
+dataplane-deployment-run-os95mln-vknmk                            0/1     Completed   0          2m40s
+dataplane-deployment-validate-networkc4fgm-vhjsn                  0/1     Completed   0          4m36s
 [fultonj@hamfast edpm]$
 ```
 Their ansible logs may be observed
 ```
-[fultonj@hamfast edpm]$ oc logs dataplane-deployment-validate-networkkzbh7-xg9m2 | tail
+[fultonj@hamfast edpm]$ oc logs dataplane-deployment-validate-networkc4fgm-vhjsn | tail
 skipping: [edpm-compute-0]
 
 TASK [edpm_nodes_validation : Check Controllers availability] ******************
@@ -160,19 +144,53 @@ PLAY RECAP *********************************************************************
 edpm-compute-0             : ok=3    changed=0    unreachable=0    failed=0    skipped=3    rescued=0    ignored=0
 [fultonj@hamfast edpm]$
 ```
-The output of the Ansible run can be seen in the pod logs
-```
-oc logs $(oc get pods -o name | grep dataplane-deployment-configure-network | tail -1 )
-```
 Delete the node configuration instance
 ```
 oc delete -f edpm-compute-0.yaml
 ```
+After running the above the completed jobs observed from `oc get pods
+| grep dataplane` will be removed and running `oc create -f
+edpm-compute-0.yaml` again will trigger the same ansible jobs though
+the same server will be running so no configuration changes will be
+made (only reasserted).
+
 Delete the role
 ```
 oc delete -f edpm-role-0.yaml
 ```
 [create_node.sh](create_node.sh) is a wrapper to run commands like the above
+
+## Run a local copy of the openstack-ansibleee-operator
+
+Running a local [openstack-ansibleee-operator](https://github.com/openstack-k8s-operators/openstack-ansibleee-operator)
+is only necessary if you need a change which is not yet available in the
+[container](https://quay.io/repository/openstack-k8s-operators/openstack-ansibleee-operator?tab=tags)
+
+```
+cd ~/openstack-ansibleee-operator/
+make generate && make manifests && make build
+OPERATOR_TEMPLATES=$PWD/templates ./bin/manager -metrics-bind-address ":6667" -health-probe-bind-address ":8082"
+```
+Leave the above running in a separate terminal.
+
+Be careful that your local copy does not conflict with the one
+deployed by the openstack operator.
+
+```
+[fultonj@hamfast dataplane-operator]$ oc get pods | grep ansibleee-operator
+openstack-ansibleee-operator-controller-manager-8448cf9f49sltnt   2/2     Running     1 (9m30s ago)   142m
+[fultonj@hamfast dataplane-operator]$
+```
+
+## Run a local copy of the dataplane-operator
+
+Check out a branch to work on and run it
+```
+cd ~/dataplane-operator
+make generate && make manifests && make build
+OPERATOR_TEMPLATES=$PWD/templates ./bin/manager -metrics-bind-address ":6666"
+```
+Leave the above running in a separate terminal
 
 ## Environment Down
 Use the following to cleanly remove the environment so it can be
