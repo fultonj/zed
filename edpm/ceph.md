@@ -26,29 +26,7 @@ Ceph to test this feature.
 ## Create an EDPM node which has the secret contents in /etc/ceph
 
 The [edpm-compute-0.yaml](edpm-compute-0.yaml) CR has a `CephSecrets`
-field which is currently ignored since it's not defined in the CRD.
-```
-[fultonj@hamfast edpm]$ oc get openstackdataplanenode.dataplane.openstack.org/edpm-compute-0 -o json  | jq .spec
-{
-  "ansibleHost": "192.168.122.100",
-  "deployStrategy": {
-    "deploy": true
-  },
-  "node": {
-    "ansibleSSHPrivateKeySecret": "dataplane-ansible-ssh-private-key-secret",
-    "networks": [
-      {
-        "fixedIP": "192.168.122.100",
-        "network": "ctlplane"
-      }
-    ]
-  },
-  "openStackAnsibleEERunnerImage": "quay.io/openstack-k8s-operators/openstack-ansibleee-runner:latest",
-  "role": "edpm-role-0"
-}
-[fultonj@hamfast edpm]$ 
-```
-As the
+field. As the
 [ceph_client branch](https://github.com/fultonj/dataplane-operator/tree/ceph_client)
 evolves we should be able to inspect the environment and eventually
 see the ceph client config files copied to /etc/ceph on the EDPM nodes.
