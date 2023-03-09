@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - EDPM environment as described in [README](README.md)
-- A running local copy of the [ceph_client branch](https://github.com/fultonj/dataplane-operator/tree/ceph_client) of the dataplane-operator
+- A running local copy of the [extra_mounts branch](https://github.com/fultonj/dataplane-operator/tree/extra_mounts) of the dataplane-operator
 
 ## Create a Ceph Secret
 
@@ -23,10 +23,12 @@ and doesn't contain information for a real ceph cluster
 This file is provided to save time since it's not necessary to run
 Ceph to test this feature.
 
-## Create an EDPM node which has the secret contents in /etc/ceph
+## Testing
 
-The [edpm-compute-0.yaml](edpm-compute-0.yaml) CR has a `CephSecrets`
-field. As the
+The [edpm-compute-0.yaml](edpm-compute-0.yaml) CR has an `extraMounts`
+field.
+
+As the
 [ceph_client branch](https://github.com/fultonj/dataplane-operator/tree/ceph_client)
 evolves we should be able to inspect the environment and eventually
 see the ceph client config files copied to /etc/ceph on the EDPM nodes.
@@ -35,7 +37,31 @@ IP=$( sudo virsh -q domifaddr edpm-compute-0 | awk 'NF>1{print $NF}' | cut -d/ -
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP "ls -l /etc/ceph/"
 ```
 
-## Design
+## Old Design: cephSecrets
+
+See [ceph_client branch](https://github.com/fultonj/dataplane-operator/tree/ceph_client) of the dataplane-operator
+
+### Create an EDPM node which has the secret contents in /etc/ceph
+
+```yaml
+---
+apiVersion: dataplane.openstack.org/v1beta1
+kind: OpenStackDataPlaneNode
+metadata:
+  name: edpm-compute-0
+spec:
+  ansibleHost: 192.168.122.100
+  role: edpm-role-0
+  node:
+    networks:
+    - fixedIP: 192.168.122.100
+      network: ctlplane
+    ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
+    cephSecrets:
+      - ceph-conf-files
+  deployStrategy:
+    deploy: true
+```
 
 - [ansibleSSHPrivateKeySecret](https://github.com/openstack-k8s-operators/dataplane-operator/pull/54/files)
 is an attribute of an 
@@ -60,32 +86,38 @@ like the POC [edpm-play.yaml](../crc/cr/edpm-play.yaml)
 using
 [extraVol](https://github.com/fultonj/zed/blob/main/crc/config_files_to_services.md)
 
-## Alternatives
+## Current Design: extraMounts
 
-What if the dataplane nodes could directly support `extraMounts` such
-that the AEE POD always mounted them?
+- `cephSecrets` has some of the same problems as
+[cephBackend](https://github.com/fultonj/zed/blob/main/crc/config_files_to_services.md#why-is-extravol-better-than-cephbackend).
 
-If we could add the following to the `spec.node`
-of [edpm-compute-0.yaml](edpm-compute-0.yaml) but quote it like a
-string and then the AEE pod parsed it, then we could have a general
-interface to have our AEE pod mount anything.
-```
-  extraMounts:
-    - name: v1
-      region: r1
+- The ExtraMounts pattern has been used in other operators (glance,
+  cinder, [neutron](https://github.com/openstack-k8s-operators/neutron-operator/pull/126)).
+
+- `OpenStackAnsibleEESpec`
+[already supports ExtraMounts](https://github.com/openstack-k8s-operators/openstack-ansibleee-operator/blob/main/api/v1alpha1/openstack_ansibleee_types.go#L62)
+
+Instad add `extraMounts` to `OpenStackDataPlaneNode`
+
+```yaml
+ extraMounts:
       extraVol:
-        - propagation:
-          - Glance
+        - extraVolType: Ceph
           volumes:
           - name: ceph
             projected:
               sources:
               - secret:
-                  name: ceph-client-conf
+                  name: ceph-conf-files
           mounts:
           - name: ceph
             mountPath: "/etc/ceph"
             readOnly: true
 ```
-The dataplane node CR would be more powerful but perhaps it would
-expose too much?
+
+Then in the ansible execution I can do this:
+
+```
+ansible.Spec.ExtraMounts = OpenStackDataPlaneNode.Spec.Node.ExtraMounts
+```
+

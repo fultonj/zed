@@ -11,7 +11,18 @@ spec:
     - fixedIP: 192.168.122.100
       network: ctlplane
     ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
-    cephSecrets:
-      - ceph-conf-files
+    extraMounts:
+         extraVol:
+           - extraVolType: Ceph
+             volumes:
+             - name: ceph
+               projected:
+                 sources:
+                 - secret:
+                     name: ceph-conf-files
+             mounts:
+             - name: ceph
+               mountPath: "/etc/ceph"
+               readOnly: true
   deployStrategy:
     deploy: true
