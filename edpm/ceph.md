@@ -100,19 +100,16 @@ using
 Instad add `extraMounts` to `OpenStackDataPlaneNode`
 
 ```yaml
- extraMounts:
-      extraVol:
-        - extraVolType: Ceph
-          volumes:
-          - name: ceph
-            projected:
-              sources:
-              - secret:
-                  name: ceph-conf-files
-          mounts:
-          - name: ceph
-            mountPath: "/etc/ceph"
-            readOnly: true
+    extraMounts:
+    - extraVolType: Ceph
+      volumes:
+      - name: ceph
+        secret:
+          secretName: ceph-client-conf
+      mounts:
+      - name: ceph
+        mountPath: "/etc/ceph"
+        readOnly: true
 ```
 
 Then in the ansible execution I can do this:
