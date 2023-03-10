@@ -66,6 +66,7 @@ OpenStack CRDs.
 pushd ~/install_yamls/devsetup
 make crc_attach_default_interface
 make edpm_compute
+make edpm_compute_repos
 popd
 ```
 The above creates a CentOS Stream 9 VM and stores an SSH key to access
@@ -77,17 +78,6 @@ Confirm SSH access to EDPM VM
 ```
 IP=$( sudo virsh -q domifaddr edpm-compute-0 | awk 'NF>1{print $NF}' | cut -d/ -f1 )
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP
-```
-Use the SSH connection to run the commands below to configure RDO
-repos on the EDPM VM
-```
-rpm -q git || sudo yum -y install git
-sudo yum -y install python-setuptools python-requests python3-pip
-git clone https://git.openstack.org/openstack/tripleo-repos
-pushd tripleo-repos
-sudo python3 setup.py install
-popd
-sudo /usr/local/bin/tripleo-repos current-tripleo-dev
 ```
 
 ## Run Ansible by creating DataPlane CRs
