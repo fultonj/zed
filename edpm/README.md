@@ -20,7 +20,9 @@ to run OpenShift and one to run RHEL.
 
 ----------------------------------
 
-## Assumptions
+## Environment Up
+
+### Assumptions
 
 The following are checked out in my home directory on my RHEL8
 [hypervisor](https://pcpartpicker.com/user/fultonj/saved/v9KLD3)
@@ -28,8 +30,6 @@ The following are checked out in my home directory on my RHEL8
 - [dataplane-operator](https://github.com/openstack-k8s-operators/dataplane-operator)
 - [install_yamls](https://github.com/openstack-k8s-operators/install_yamls)
 - [pull-secret.txt](https://console.redhat.com/openshift/create/local)
-
-## Environment Up
 
 ### CRC VM
 
