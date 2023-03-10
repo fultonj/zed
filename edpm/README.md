@@ -11,6 +11,15 @@ to configure RHEL systems as OpenStack Data Plane nodes.
 You can observe this behavior on a single hypervisor with two VMs: one
 to run OpenShift and one to run RHEL.
 
+## Outline
+
+1. [Environment Up](#environment-up)
+2. [Run Ansible by creating DataPlane CRs](#run-ansible-by-creating-dataplane-crs)
+3. [Run your own operator for development](#run-your-own-operator-for-development)
+4. [Environment Down](#environment-down)
+
+----------------------------------
+
 ## Assumptions
 
 The following are checked out in my home directory on my RHEL8
@@ -207,7 +216,7 @@ Leave the above running in a separate terminal.
 
 Path the AEE or DPO accordingly and restart them locally.
 Create a test CR and observe the outcome as described in
-"Run Ansible by creating DataPlane CRs".
+[Run Ansible by creating DataPlane CRs](#run-ansible-by-creating-dataplane-crs).
 
 ## Environment Down
 Use the following to cleanly remove the environment so it can be
