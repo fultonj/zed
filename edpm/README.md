@@ -150,7 +150,47 @@ oc delete -f edpm-role-0.yaml
 ```
 [create_node.sh](create_node.sh) is a wrapper to run commands like the above
 
-## Run a local copy of the openstack-ansibleee-operator
+## Run your own operator for development
+
+### Scale Down Deployed Operators which will be run locally
+
+`make openstack` deploys operators including the DPO
+([Data Plane Operator](https://github.com/openstack-k8s-operators/dataplane-operator))
+and AEE
+([Ansible Execution Environment (Operator)](https://github.com/openstack-k8s-operators/openstack-ansibleee-operator)).
+
+If you prefer to run a local copy of the DPO or AEE (as described in
+the next section), then scale down those operators to ensure there are
+no conflicts.
+```
+oc scale deploy dataplane-operator-controller-manager --replicas=0
+```
+For example:
+```
+[fultonj@hamfast cr]$ oc scale deploy dataplane-operator-controller-manager --replicas=0
+deployment.apps/dataplane-operator-controller-manager scaled
+[fultonj@hamfast cr]$
+```
+Then observe that there are zero copies of the DPO and one of the AEE.
+```
+[fultonj@hamfast cr]$ oc get deploy | egrep "ansible|dataplane"
+dataplane-operator-controller-manager             0/0     0            0           133m
+openstack-ansibleee-operator-controller-manager   1/1     1            1           133m
+[fultonj@hamfast cr]$
+```
+Repeat for the AEE if necessary.
+
+### Run a local copy of the dataplane-operator
+
+Check out a branch to work on and run it
+```
+cd ~/dataplane-operator
+make generate && make manifests && make build
+OPERATOR_TEMPLATES=$PWD/templates ./bin/manager -metrics-bind-address ":6666"
+```
+Leave the above running in a separate terminal
+
+### Run a local copy of the openstack-ansibleee-operator
 
 Running a local [openstack-ansibleee-operator](https://github.com/openstack-k8s-operators/openstack-ansibleee-operator)
 is only necessary if you need a change which is not yet available in the
@@ -163,24 +203,11 @@ OPERATOR_TEMPLATES=$PWD/templates ./bin/manager -metrics-bind-address ":6667" -h
 ```
 Leave the above running in a separate terminal.
 
-Be careful that your local copy does not conflict with the one
-deployed by the openstack operator.
+### Test your patch
 
-```
-[fultonj@hamfast dataplane-operator]$ oc get pods | grep ansibleee-operator
-openstack-ansibleee-operator-controller-manager-8448cf9f49sltnt   2/2     Running     1 (9m30s ago)   142m
-[fultonj@hamfast dataplane-operator]$
-```
-
-## Run a local copy of the dataplane-operator
-
-Check out a branch to work on and run it
-```
-cd ~/dataplane-operator
-make generate && make manifests && make build
-OPERATOR_TEMPLATES=$PWD/templates ./bin/manager -metrics-bind-address ":6666"
-```
-Leave the above running in a separate terminal
+Path the AEE or DPO accordingly and restart them locally.
+Create a test CR and observe the outcome as described in
+"Run Ansible by creating DataPlane CRs".
 
 ## Environment Down
 Use the following to cleanly remove the environment so it can be
