@@ -168,9 +168,9 @@ oc delete -f edpm-role-0.yaml
 and AEE
 ([Ansible Execution Environment (Operator)](https://github.com/openstack-k8s-operators/openstack-ansibleee-operator)).
 
-If you prefer to run a local copy of the DPO or AEE (as described in
-the next section), then scale down those operators to ensure there are
-no conflicts.
+Before running a local copy of the DPO or AEE (as described in
+the next section), scale down the DPO or AEE operator deployed by
+`make openstack` to ensure they do not conflict.
 ```
 oc scale deploy dataplane-operator-controller-manager --replicas=0
 ```
