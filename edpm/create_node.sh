@@ -9,14 +9,6 @@ LOGS=0
 CLEAN=0
 KILLPODS=0
 
-NODE_CR=edpm-compute-0.yaml
-ROLE_CR=edpm-role-0.yaml
-# NODE_CR=dataplane_v1beta1_openstackdataplanenode_deployment.yaml
-# ROLE_CR=dataplane_v1beta1_openstackdataplanerole.yaml
-
-NODE_NAME=$(grep " name" $NODE_CR | awk {'print $2'})
-ROLE_NAME=$(grep " name" $ROLE_CR | awk {'print $2'})
-
 pushd /home/fultonj/zed/edpm
 
 eval $(crc oc-env)
@@ -28,8 +20,8 @@ if [ $SSH_TEST -eq 1 ]; then
 fi
 
 # Ensure the CR has been updated with the correct IP
-if [[ ! $(grep $IP $NODE_CR | wc -l) -gt 1 ]]; then
-    echo "$IP not in $NODE_CR"
+if [[ ! $(grep $IP edpm-compute-0.yaml | wc -l) -gt 1 ]]; then
+    echo "$IP not in edpm-compute-0.yaml"
     exit 1
 fi
 
@@ -38,23 +30,23 @@ if [ $CLEAN -eq 1 ]; then
 fi
 
 if [ $CREATE_ROLE -eq 1 ]; then
-    oc create -f $ROLE_CR
+    oc create -f edpm-role-0.yaml
 fi
 
 echo -e "\nCR\n"
-oc get OpenStackDataPlaneRole $ROLE_NAME -o yaml
+oc get OpenStackDataPlaneRole edpm-role-0 -o yaml
 
 if [ $CREATE_NODE -eq 1 ]; then
-    oc create -f $NODE_CR
+    oc create -f edpm-compute-0.yaml
 fi
 
 # read
 echo -e "\nCR\n"
-oc get OpenStackDataPlaneNode $NODE_NAME -o yaml
+oc get OpenStackDataPlaneNode edpm-compute-0 -o yaml
 
 if [ $INV -eq 1 ]; then
     echo -e "\nInventory\n"
-    oc get configmap dataplanenode-${NODE_NAME}-inventory -o yaml
+    oc get configmap dataplanenode-edpm-compute-0-inventory -o yaml
 fi
 
 if [ $LOGS -eq 1 ]; then
