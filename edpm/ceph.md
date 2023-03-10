@@ -4,7 +4,6 @@
 
 - EDPM environment as described in [README](README.md)
 - A running local copy of the [ceph_client branch](https://github.com/fultonj/dataplane-operator/tree/ceph_client) of the dataplane-operator
-  (which is based on the [extra_mounts branch](https://github.com/fultonj/dataplane-operator/tree/extra_mounts))
 
 ## Create a Ceph Secret
 
@@ -56,11 +55,15 @@ The [edpm-compute-0.yaml](edpm-compute-0.yaml) CR has an `extraMounts` field.
         mountPath: "/etc/ceph"
         readOnly: true
 ```
-When [PR79](https://github.com/openstack-k8s-operators/dataplane-operator/pull/79) merges
+Because of
+[PR79](https://github.com/openstack-k8s-operators/dataplane-operator/pull/79)
 the Ansible Execution Pod will mount the ceph conf files in `/etc/ceph`.
 
-The [pkg/deployment](https://github.com/openstack-k8s-operators/dataplane-operator/tree/main/pkg/deployment)
-deployment.go could get check if `extraVolType: Ceph` and then a new
-`ceph_client.go` could include the
+In
+[pkg/deployment](https://github.com/openstack-k8s-operators/dataplane-operator/tree/main/pkg/deployment)
+`deployment.go` has been updated to call a `ConfigureCephClient`
+function defined in `ceph_client.go`.
+
+`ceph_client.go` checks if `extraVolType: Ceph` and then calls the
 [edpm_ceph_client_files role](https://github.com/openstack-k8s-operators/edpm-ansible/tree/main/edpm_ansible/roles/edpm_ceph_client_files)
 like the POC [edpm-play.yaml](../crc/cr/edpm-play.yaml)
