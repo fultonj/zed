@@ -214,7 +214,7 @@ Leave the above running in a separate terminal.
 
 ### Test your patch
 
-Path the AEE or DPO accordingly and restart them locally.
+Patch the AEE or DPO accordingly and restart them locally.
 Create a test CR and observe the outcome as described in
 [Run Ansible by creating DataPlane CRs](#run-ansible-by-creating-dataplane-crs).
 
