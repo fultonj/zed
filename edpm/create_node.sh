@@ -2,6 +2,7 @@
 # Executing Ansible with DataPlaneNode CRs
 
 SSH_TEST=0
+CHANGE_IP=1
 CREATE_ROLE=1
 CREATE_NODE=1
 INV=1
@@ -22,7 +23,11 @@ fi
 # Ensure the CR has been updated with the correct IP
 if [[ ! $(grep $IP edpm-compute-0.yaml | wc -l) -gt 1 ]]; then
     echo "$IP not in edpm-compute-0.yaml"
-    exit 1
+    if [[ $CHANGE_IP -eq 1 ]]; then
+        sed -i edpm-compute-0.yaml -e s/192.168.122.100/$IP/g
+    else
+        exit 1
+    fi
 fi
 
 if [ $CLEAN -eq 1 ]; then
