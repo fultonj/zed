@@ -16,7 +16,7 @@ spec:
       volumes:
       - name: ceph
         secret:
-          secretName: ceph-client-conf
+          secretName: ceph-conf-files
       mounts:
       - name: ceph
         mountPath: "/etc/ceph"
