@@ -6,6 +6,8 @@ metadata:
 spec:
   ansibleHost: 192.168.122.100
   role: edpm-role-0
+  deployStrategy:
+    deploy: true
   node:
     networks:
     - fixedIP: 192.168.122.100
@@ -21,5 +23,3 @@ spec:
       - name: ceph
         mountPath: "/etc/ceph"
         readOnly: true
-  deployStrategy:
-    deploy: true
