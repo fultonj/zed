@@ -55,20 +55,16 @@ ssh -i ~/.crc/machines/crc/id_ecdsa core@192.168.130.11 "cat /etc/redhat-release
 
 ### Control Plane
 
-Deploy openstack operator.
+Deploy openstack operators.
 ```
 pushd ~/install_yamls
 make openstack
-make openstack_deploy
 popd
 ```
-Optionally, after it's running, delete the OpenStack services:
-```
-oc delete -f ~/install_yamls/out/openstack/openstack/cr/core_v1beta1_openstackcontrolplane.yaml
-```
-This has a side effect of defining CRDs the next step would otherwise
-complain about. Use `oc get crds | grep openstack` to show the
-OpenStack CRDs.
+
+Optionally, run `make openstack_deploy` to have the openstack
+operators deploy a control plane. This step is not strictly
+necessary to to run EDPM Ansible.
 
 ### Data Plane VM
 ```
@@ -188,6 +184,15 @@ openstack-ansibleee-operator-controller-manager   1/1     1            1        
 [fultonj@hamfast cr]$
 ```
 Repeat for the AEE if necessary.
+
+Note:
+running [delete_node.sh](delete_node.sh) and
+then [create_node.sh](create_node.sh) can result
+in the `dataplane-operator-controller-manager`
+deployed by the meta operator restarting. A
+crude workaround is to use
+[scale_down.sh](scale_down.sh) to ensure
+it never comes back to create a conflict.
 
 ### Run a local copy of the dataplane-operator
 
