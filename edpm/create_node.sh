@@ -59,7 +59,9 @@ oc get OpenStackDataPlaneNode edpm-compute-0 -o yaml
 if [ $INV -eq 1 ]; then
     sleep 2
     echo -e "\nInventory\n"
-    oc get configmap dataplanerole-edpm-role-0-inventory -o yaml
+    for I in $(oc get configmap -o name | grep dataplane | grep inventory); do
+        oc get -o yaml $I
+    done
 fi
 
 if [ $LOGS -eq 1 ]; then
