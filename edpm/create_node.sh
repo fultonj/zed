@@ -3,6 +3,7 @@
 
 SSH_TEST=0
 CHANGE_IP=1
+CEPH_TEST=1
 CREATE_ROLE=1
 CREATE_NODE=1
 INV=1
@@ -18,6 +19,12 @@ oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
 IP=$( sudo virsh -q domifaddr edpm-compute-0 | awk 'NF>1{print $NF}' | cut -d/ -f1 )
 if [ $SSH_TEST -eq 1 ]; then
     ssh -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa root@$IP "uname"
+fi
+
+if [ $CEPH_TEST -eq 1 ]; then
+    if [[ $(oc get secret ceph-conf-files --no-headers=true | wc -l) -eq 0 ]]; then
+        oc create -f ceph-conf-files.yaml
+    fi
 fi
 
 # Ensure the CR has been updated with the correct IP
