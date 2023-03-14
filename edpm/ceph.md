@@ -69,7 +69,7 @@ In
 `deployment.go` has been updated to call a `ConfigureCephClient`
 function defined in `ceph_client.go`.
 
-`ceph_client.go` checks if `extraVolType: Ceph` and then calls the
+`deployment.go` checks if `extraVolType: Ceph` and then calls the
 [edpm_ceph_client_files role](https://github.com/openstack-k8s-operators/edpm-ansible/tree/main/edpm_ansible/roles/edpm_ceph_client_files)
 like the POC [edpm-play.yaml](../crc/cr/edpm-play.yaml)
 
@@ -82,6 +82,9 @@ Input:
   like [ceph-conf-files.yaml](ceph-conf-files.yaml)
 - A [edpm-compute-0.yaml](edpm-compute-0.yaml) CR with an
   `extraMounts` field referencing the ceph secret.
+- A [edpm-role-0.yaml](edpm-role-0.yaml) CR with `ansibleVars` 
+  `edpm_ceph_client_files_config_home` and
+  `edpm_ceph_client_files_source`.
 
 We see that the `dataplane-deployment-configure-ceph-clients` pod ran
 with the other pods.
