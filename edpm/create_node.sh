@@ -57,8 +57,9 @@ echo -e "\nCR\n"
 oc get OpenStackDataPlaneNode edpm-compute-0 -o yaml
 
 if [ $INV -eq 1 ]; then
+    sleep 2
     echo -e "\nInventory\n"
-    oc get configmap dataplanenode-edpm-compute-0-inventory -o yaml
+    oc get configmap dataplanerole-edpm-role-0-inventory -o yaml
 fi
 
 if [ $LOGS -eq 1 ]; then
