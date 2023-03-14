@@ -23,6 +23,11 @@ and doesn't contain information for a real ceph cluster
 This file is provided to save time since it's not necessary to run
 Ceph to test this feature.
 
+Optionally create a second ceph secret to test multiple ceph client support.
+```
+oc create -f ceph-conf-files2.yaml
+```
+
 ## Testing
 
 The [edpm-compute-0.yaml](edpm-compute-0.yaml) CR has an `extraMounts` field.
