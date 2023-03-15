@@ -1,23 +1,29 @@
 #!/bin/bash
 
-eval $(crc oc-env)
-oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
+if [ -z "$1" ]; then
+    OPERATOR=dataplane-operator-controller-manager
+else
+    OPERATOR=$1
+fi
 
 VERBOSE=1
 INTERVAL=1
 
+eval $(crc oc-env)
+oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
+
 if [[ $VERBOSE > 0 ]]; then
-    oc get deploy dataplane-operator-controller-manager
-    echo "Check every $INTERVAL second to ensure dataplane-operator-controller-manager is not running"
+    oc get deploy $OPERATOR
+    echo "Check every $INTERVAL second to ensure $OPERATOR is not running"
 fi
     
 while [ 1 ]; do
-    COUNT=$(oc get deploy dataplane-operator-controller-manager --no-headers=true \
+    COUNT=$(oc get deploy $OPERATOR --no-headers=true \
                 | awk {'print $3'})
     if [[ $COUNT > 0 ]]; then
-        oc scale deploy dataplane-operator-controller-manager --replicas=0
+        oc scale deploy $OPERATOR --replicas=0
         sleep 1
-        oc get deploy dataplane-operator-controller-manager
+        oc get deploy $OPERATOR
     fi
     if [[ $VERBOSE > 0 ]]; then
         echo -n "."
