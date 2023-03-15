@@ -55,16 +55,42 @@ ssh -i ~/.crc/machines/crc/id_ecdsa core@192.168.130.11 "cat /etc/redhat-release
 
 ### Control Plane
 
-Deploy openstack operators.
+Deploy openstack control plane.
 ```
 pushd ~/install_yamls
+make ceph TIMEOUT=90
 make openstack
+make openstack_deploy
 popd
 ```
-
-Optionally, run `make openstack_deploy` to have the openstack
-operators deploy a control plane. This step is not strictly
-necessary to to run EDPM Ansible.
+The above includes an optional step to deploy a toy ceph cluster with
+`make ceph` before deploying openstack. This also creates a Ceph
+secret to access the ceph cluster.
+```
+oc get secret | grep ceph
+oc get secret ceph-conf-files -o json | jq -r '.data."ceph.conf"' | base64 -d
+```
+#### Optional Storage Tests
+Update the cinder and glance pods with
+[kustomize/kustomization.yaml](kustomize/kustomization.yaml)
+to use the toy ceph cluster.
+```
+pushd ~/zed/edpm
+cp ~/install_yamls/out/openstack/openstack/cr/core_v1beta1_openstackcontrolplane.yaml kustomize/
+oc kustomize kustomize/ | oc apply -f -
+popd
+```
+Confirm keystone is working and that cinder can create a volume.
+```
+oc exec openstackclient -- openstack service list
+oc exec openstackclient -- openstack volume create test --size 1
+oc exec openstackclient -- openstack volume list
+```
+Confirm the ceph cluster volumes pool has the same cinder volume UUID.
+```
+oc exec ceph -- ceph df
+oc exec ceph -- rbd ls -l -p volumes
+```
 
 ### Data Plane VM
 ```
