@@ -5,6 +5,16 @@ metadata:
   name: edpm-role-0
 spec:
   nodeTemplate:
+    extraMounts:
+    - extraVolType: Ceph
+      volumes:
+      - name: ceph
+        secret:
+          secretName: ceph-conf-files
+      mounts:
+      - name: ceph
+        mountPath: "/etc/ceph"
+        readOnly: true
     ansibleUser: root
     ansiblePort: 22
     managementNetwork: ctlplane

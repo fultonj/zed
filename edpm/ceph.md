@@ -157,3 +157,10 @@ of Ceph.	{"controller": "openstackdataplanenode",
 "openstack", "name": "edpm-compute-0", "reconcileID":
 "32db4f9f-e16f-4c36-8f9a-dbb38daba5ea"}
 ```
+
+### extraMounts in Role Testing
+
+If extra `extraMounts` is moved
+from [edpm-compute-0.yaml](edpm-compute-0.yaml) to
+[edpm-role-0.yaml](edpm-role-0.yaml), then the same
+behavior described above should happen.
