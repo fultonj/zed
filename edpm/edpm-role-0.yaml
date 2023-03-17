@@ -23,5 +23,3 @@ spec:
         - clock2.redhat.com
       edpm_ceph_client_files_source: /etc/ceph
       edpm_ceph_client_files_config_home: /etc/ceph
-  deployStrategy:
-    deploy: true

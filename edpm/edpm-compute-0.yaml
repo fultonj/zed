@@ -19,3 +19,5 @@ spec:
       - name: ceph
         mountPath: "/etc/ceph"
         readOnly: true
+  deployStrategy:
+    deploy: true
