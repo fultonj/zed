@@ -1,16 +1,14 @@
----
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneRole
 metadata:
-  name: edpm-role-0
+  name: edpm-role-0  
 spec:
   nodeTemplate:
+    managed: false
+    managementNetwork: ctlplane
     ansibleUser: root
     ansiblePort: 22
-    managementNetwork: ctlplane
-    networkConfig:
-      template: templates/net_config_bridge.j2
-    managed: false
+    ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
     ansibleVars: |
       edpm_network_config_template: templates/net_config_bridge.j2
       edpm_network_config_hide_sensitive_logs: false
@@ -19,7 +17,11 @@ spec:
       ctlplane_dns_nameservers:
       - 192.168.122.1
       dns_search_domains: []
-      tenant_ip: 192.168.24.100
       edpm_ovn_dbs: 192.168.24.1
+      edpm_chrony_ntp_servers:
+        - clock.redhat.com
+        - clock2.redhat.com
       edpm_ceph_client_files_source: /etc/ceph
       edpm_ceph_client_files_config_home: /etc/ceph
+  deployStrategy:
+    deploy: true

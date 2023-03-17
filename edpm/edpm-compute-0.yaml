@@ -1,18 +1,14 @@
----
 apiVersion: dataplane.openstack.org/v1beta1
 kind: OpenStackDataPlaneNode
 metadata:
   name: edpm-compute-0
 spec:
+  role: edpm-role-0  
+  hostName: edpm-compute-0
   ansibleHost: 192.168.122.100
-  role: edpm-role-0
-  deployStrategy:
-    deploy: true
   node:
-    networks:
-    - fixedIP: 192.168.122.100
-      network: ctlplane
-    ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
+    ansibleVars: |
+      tenant_ip: 192.168.24.100
     extraMounts:
     - extraVolType: Ceph
       volumes:
