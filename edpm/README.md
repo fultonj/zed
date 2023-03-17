@@ -238,7 +238,7 @@ is only necessary if you need a change which is not yet available in the
 
 ```
 cd ~/openstack-ansibleee-operator/
-make generate && make manifests && make build
+make manifests generate build
 OPERATOR_TEMPLATES=$PWD/templates ./bin/manager -metrics-bind-address ":6667" -health-probe-bind-address ":8082"
 ```
 Leave the above running in a separate terminal.
