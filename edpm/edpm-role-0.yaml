@@ -9,6 +9,16 @@ spec:
     ansibleUser: root
     ansiblePort: 22
     ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
+    extraMounts:
+    - extraVolType: Ceph
+      volumes:
+      - name: ceph
+        secret:
+          secretName: ceph-conf-files
+      mounts:
+      - name: ceph
+        mountPath: "/etc/ceph"
+        readOnly: true
     ansibleVars: |
       edpm_network_config_template: templates/net_config_bridge.j2
       edpm_network_config_hide_sensitive_logs: false

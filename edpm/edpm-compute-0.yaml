@@ -9,15 +9,5 @@ spec:
   node:
     ansibleVars: |
       tenant_ip: 192.168.24.100
-    extraMounts:
-    - extraVolType: Ceph
-      volumes:
-      - name: ceph
-        secret:
-          secretName: ceph-conf-files
-      mounts:
-      - name: ceph
-        mountPath: "/etc/ceph"
-        readOnly: true
   deployStrategy:
     deploy: true
