@@ -38,7 +38,7 @@ Install [CRC](https://developers.redhat.com/products/openshift-local/overview)
 pushd ~/install_yamls/devsetup
 cp ~/pull-secret.txt pull-secret.txt
 make download_tools
-make CPUS=8 MEMORY=32768 crc
+make CPUS=12 MEMORY=49152 crc
 cd ..
 make crc_storage
 popd
