@@ -219,6 +219,9 @@ deployed by the meta operator restarting. A
 crude workaround is to use
 [scale_down.sh](scale_down.sh) to ensure
 it never comes back to create a conflict.
+I learned the right way to do it is to
+edit the [CSV](csv_scale_down.md) but I
+have not yet done it that way.
 
 ### Run a local copy of the dataplane-operator
 
