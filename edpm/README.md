@@ -219,9 +219,8 @@ deployed by the meta operator restarting. A
 crude workaround is to use
 [scale_down.sh](scale_down.sh) to ensure
 it never comes back to create a conflict.
-I learned the right way to do it is to
-edit the [CSV](csv_scale_down.md) but I
-have not yet done it that way.
+A better way to do this is to
+[delete it from the CSV](https://github.com/openstack-k8s-operators/docs/pull/18).
 
 ### Run a local copy of the dataplane-operator
 
