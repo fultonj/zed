@@ -1,9 +1,9 @@
 #!/bin/bash
 
-DPJOBS=1
-EDPM=1
+DPJOBS=0
+EDPM=0
 CONTROL=1
-CEPH=1
+CEPH=0
 CRC=0
 
 NODES=2
@@ -34,6 +34,9 @@ if [ $CONTROL -eq 1 ]; then
         sleep 1;
     done
     make openstack_cleanup
+    # side effect of the new approach we're trying with
+    # OpenStack operator to reduce bundle size.  
+    make manila_cleanup
     popd
 fi
 
