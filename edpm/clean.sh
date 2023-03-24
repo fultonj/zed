@@ -1,12 +1,13 @@
 #!/bin/bash
 
-DPJOBS=0
-EDPM=0
-CONTROL=1
+DPJOBS=1
+EDPM=1
+CONTROL=0
 CEPH=0
 CRC=0
 
-NODES=2
+# 0 and 1
+NODES=1
 WAIT=50
 
 if [ $DPJOBS -eq 1 ]; then
@@ -16,7 +17,7 @@ if [ $DPJOBS -eq 1 ]; then
 fi
 
 if [ $EDPM -eq 1 ]; then
-    cd ~/install_yamls/devsetup
+    pushd ~/install_yamls/devsetup
     for I in $(seq 0 $NODES); do
         make edpm_compute_cleanup EDPM_COMPUTE_SUFFIX=$I;
     done
