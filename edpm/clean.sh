@@ -41,6 +41,10 @@ if [ $CEPH -eq 1 ]; then
     pushd ~/install_yamls
     make ceph_cleanup
     popd
+    eval $(crc oc-env)
+    oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
+    oc delete secret ceph-conf-files
+    oc get secret | grep ceph
 fi
 
 if [ $CRC -eq 1 ]; then
