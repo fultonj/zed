@@ -53,3 +53,6 @@ if [ $CRC -eq 1 ]; then
     crc cleanup
     popd
 fi
+
+unset OPENSTACK_CTLPLANE
+env | grep -i openstack
