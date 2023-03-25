@@ -10,6 +10,8 @@ if [[ $IP0 != "192.168.122.100" ]]; then
         echo "edpm-compute-0 already has the right IP"
     fi
     $SSH 192.168.122.100 "echo good"
+else
+    echo "edpm-compute-0 already has $IP0"
 fi
 
 IP1=$( sudo virsh -q domifaddr edpm-compute-1 | awk 'NF>1{print $NF}' | cut -d/ -f1 )
@@ -20,4 +22,6 @@ if [[ $IP1 != "192.168.122.101" ]]; then
         echo "edpm-compute-1 already has the the right IP"
     fi
     $SSH 192.168.122.101 "echo good"
+else
+    echo "edpm-compute-1 already has $IP1"
 fi
