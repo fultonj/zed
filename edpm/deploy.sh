@@ -1,8 +1,10 @@
 #!/bin/bash
 
-ATTACH=1
+ATTACH=0
 EDPM_NODE=0
+EDPM_NODE_REPOS=0
 FORCE_IPS=0
+CRC_STORAGE=0
 DEPS=0
 OPER=0
 CONTROL=0
@@ -22,7 +24,7 @@ if [[ ! -d ~/install_yamls ]]; then
     echo "Error: ~/install_yamls is missing"
     exit 1
 fi
-pushd ~/install_yamls
+pushd ~/install_yamls/devsetup
 
 eval $(crc oc-env)
 oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
@@ -31,28 +33,52 @@ if [[ $? -gt 0 ]]; then
     exit 1
 fi
 
+function edpm_ready() {
+    # Determine IP based on EDPM_COMPUTE_SUFFIX
+    # sleep until that IP answers pings
+    IP=$( sudo virsh -q domifaddr edpm-compute-$1 \
+              | awk 'NF>1{print $NF}' | cut -d/ -f1 )
+    while [ 1 ]; do
+        ping -c 1 $IP
+        if [[ $? -eq 0 ]]; then
+            break
+        fi
+        sleep 1
+    done
+}
+
 if [ $ATTACH -eq 1 ]; then
     make crc_attach_default_interface
 fi
 
 if [ $EDPM_NODE -eq 1 ]; then
-    pushd ~/install_yamls/devsetup
     for I in $(seq 0 $NODES); do
         make edpm_compute EDPM_COMPUTE_SUFFIX=$I;
+    done
+fi
+
+if [ $EDPM_NODE_REPOS -eq 1 ]; then
+    for I in $(seq 0 $NODES); do
+        edpm_ready $I
         make edpm_compute_repos EDPM_COMPUTE_SUFFIX=$I;
     done
-    popd
 fi
 
 if [ $FORCE_IPS -eq 1 ]; then
-    # update this script so handle more than 2 nodes
+    for I in $(seq 0 $NODES); do
+        edpm_ready $I
+    done
+    # update this script to handle variable number of nodes
     bash ~/zed/edpm/force_ips.sh
 fi
 
 cd ..
 
-if [ $DEPS -eq 1 ]; then
+if [ $CRC_STORAGE -eq 1 ]; then
     make crc_storage
+fi
+
+if [ $DEPS -eq 1 ]; then
     make input
 fi
 
@@ -92,11 +118,19 @@ if [ $SCHED -eq 1 ]; then
     # we need to restart nova-scheduler to pick up cell1, this is a known issue
     oc get pods | grep nova | grep scheduler
     echo -e "\n\nThere should be at least one Running nova-scheduler pod above."
-    echo -e "(This script will wait indefinitely for it and then have it pick up cell1)"
+    echo -e "(This script will wait indefinitely for it)"
     while [[ $(oc get pods | grep nova | grep scheduler | grep Running | wc -l) -lt 1 ]]; do
         echo -n .
         sleep 1
     done
+    oc get pods | grep cell1 | grep Running
+    echo -e "\n\nThere should be two Running cell1 pods above."
+    echo -e "(This script will wait indefinitely for them and then bouce scheduler)"
+    while [[ $(oc get pods | grep cell1 | grep Running | wc  -l) -ne 2 ]]; do
+        echo -n .
+        sleep 1
+    done
+    echo -e "\n"
     echo "Deleting pods for service nova-scheduler so they will pick up cell1 when they restart"
     oc delete pod -l service=nova-scheduler
     sleep 1
@@ -116,8 +150,12 @@ if [ $EDPM_DEPLOY -eq 1 ]; then
         sleep 1
     done
     DATAPLANE_SINGLE_NODE=false make edpm_deploy
-fi
 
-echo -e "\n\nDone. Use watch_ansible.sh or test.sh\n\n"
+    echo -e "\n\nShould be running now. Run the following next...\n"
+    echo 'watch -n 1 "oc get pods | grep edpm"'
+    echo "./watch_ansible.sh"
+    echo "./test.sh"
+    echo -e "\n"
+fi
 
 popd
