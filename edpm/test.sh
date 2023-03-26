@@ -3,15 +3,19 @@
 OVERVIEW=1
 CINDER=0
 GLANCE=0
-PRINET=0
 NOVA_CONTROL_LOGS=0
 NOVA_COMPUTE_LOGS=0
+PRINET=0
 VM=0
 CONSOLE=0
+NOVA_INSTANCE_LOGS=0
 PUBNET=0
 FLOAT=0
 SEC=0
 SSH=0
+
+# 0 and 1
+NODES=1
 
 export OS_CLOUD=default
 export OS_PASSWORD=12345678
@@ -82,11 +86,6 @@ if [ $GLANCE -eq 1 ]; then
     openstack image list
 fi
 
-if [ $PRINET -eq 1 ]; then
-    openstack network create private --share
-    openstack subnet create priv_sub --subnet-range 192.168.0.0/24 --network private
-fi
-
 if [ $NOVA_CONTROL_LOGS -eq 1 ]; then
     eval $(crc oc-env)
     oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
@@ -109,6 +108,10 @@ if [ $NOVA_COMPUTE_LOGS -eq 1 ]; then
     $SSH_CMD "date"
 fi
 
+if [ $PRINET -eq 1 ]; then
+    openstack network create private --share
+    openstack subnet create priv_sub --subnet-range 192.168.0.0/24 --network private
+fi
 
 if [ $VM -eq 1 ]; then
     FLAV_ID=$(openstack flavor show c1 -f value -c id)
@@ -125,9 +128,36 @@ if [ $VM -eq 1 ]; then
         sleep 30
         openstack server list
     fi
-    if [ $CONSOLE -eq 1 ]; then
-        openstack console log show vm1
+fi
+
+if [ $CONSOLE -eq 1 ]; then
+    openstack console log show vm1
+fi
+
+if [ $NOVA_INSTANCE_LOGS -eq 1 ]; then
+    eval $(crc oc-env)
+    oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
+    if [[ $? -gt 0 ]]; then
+        echo "Error: Unable to authenticate to OpenShift"
+        exit 1
     fi
+    openstack server show vm1
+    ID=(openstack server show vm1 -f value -c id)
+    oc get pods | grep nova | grep -v controller
+    for POD in $(oc get pods | grep nova | grep -v controller | awk {'print $1'}); do
+        echo $POD
+        echo "~~~"
+        # oc logs $POD | grep $ID
+        echo "~~~"
+    done
+    for I in $(seq 0 $NODES); do
+        echo "edpm-compute-$I"
+        echo "~~~"
+        SSH_CMD=$(bash ssh_node.sh $I)
+        $SSH_CMD "grep $ID /var/log/containers/nova/nova-compute.log"
+        $SSH_CMD "date"
+        echo "~~~"
+    done
 fi
 
 if [ $PUBNET -eq 1 ]; then
@@ -147,15 +177,16 @@ if [ $FLOAT -eq 1 ]; then
     else
         echo $IP
     fi
-    if [[ -z $IP ]]; then
+    if [[ ! -z $IP ]]; then
         openstack server add floating ip vm1 $IP
     fi
     openstack server show vm1
+    openstack server list
 fi
 
 if [ $SEC -eq 1 ]; then
     PROJECT_ID=$(openstack server show vm1 -c project_id -f value)
-    if [[ -z $PROJECT_ID ]]; then
+    if [[ ! -z $PROJECT_ID ]]; then
         SEC_ID=$(openstack security group list --project $PROJECT_ID -f value -c ID)
         openstack security group rule create \
                   --protocol tcp --ingress --dst-port 22 $SEC_ID
