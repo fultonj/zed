@@ -1,30 +1,67 @@
 #!/bin/bash
 
+#META TAGS
+INFRA=0
+OPERATOR=0
+CONTROL_PLANE=0
+DATA_PLANE=0
+
+#TAGS
+#INFRA
+CRC=0
 ATTACH=0
 EDPM_NODE=0
 EDPM_NODE_REPOS=0
 FORCE_IPS=0
 CRC_STORAGE=0
-DEPS=0
+
+#OPERATOR
 OPER=0
+DEPS=0
+
+#CONTROL_PLANE
 CONTROL=0
 MARIA=0
 SCHED=0
-EDPM_DEPLOY=0
+
+#DATA_PLANE
+EDPM_DEPLOY=1
+
+# META TAGS
+if [ $INFRA -eq 1 ]; then
+    CRC=1
+    ATTACH=1
+    EDPM_NODE=1
+    EDPM_NODE_REPOS=1
+    FORCE_IPS=1
+    CRC_STORAGE=1
+fi
+if [ $OPERATOR -eq 1 ]; then
+    OPER=1
+    DEPS=1
+fi
+if [ $CONTROL_PLANE -eq 1 ]; then
+    CONTROL=1
+    MARIA=1
+    SCHED=1
+fi
+if [ $DATA_PLANE -eq 1 ]; then
+    EDPM_DEPLOY=1
+fi
 
 # 0 and 1
 NODES=1
 CONTROL_PODS=16
-
-
-# Run after you have deployed CRC with something like this:
-# make CPUS=56 MEMORY=262144 DISK=200 crc
 
 if [[ ! -d ~/install_yamls ]]; then
     echo "Error: ~/install_yamls is missing"
     exit 1
 fi
 pushd ~/install_yamls/devsetup
+
+if [ $CRC -eq 1 ]; then
+    make CPUS=56 MEMORY=262144 DISK=200 crc
+fi
 
 eval $(crc oc-env)
 oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
@@ -78,12 +115,12 @@ if [ $CRC_STORAGE -eq 1 ]; then
     make crc_storage
 fi
 
-if [ $DEPS -eq 1 ]; then
-    make input
-fi
-
 if [ $OPER -eq 1 ]; then
     make openstack
+fi
+
+if [ $DEPS -eq 1 ]; then
+    make input
 fi
 
 if [ $CONTROL -eq 1 ]; then
