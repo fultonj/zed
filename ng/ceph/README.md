@@ -117,5 +117,5 @@ Export files useful for clients
 From edpm-compute-0
 ```
 FSID=$(ls /var/lib/ceph/ | tail -1)
-./cephadm rm-cluster --force --zap-osds --fsid 
+./cephadm rm-cluster --force --zap-osds --fsid $FSID
 ```
