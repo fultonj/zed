@@ -2,7 +2,8 @@
 
 DPJOBS=1
 EDPM=1
-CONTROL=0
+DATAPLANE=1
+CONTROL=1
 CEPH=0
 CRC=0
 
@@ -23,6 +24,10 @@ if [ $EDPM -eq 1 ]; then
         make edpm_compute_cleanup EDPM_COMPUTE_SUFFIX=$I;
     done
     popd
+fi
+
+if [ $DATAPLANE -eq 1 ]; then
+    bash data_plane_cr.sh DELETE
 fi
 
 if [ $CONTROL -eq 1 ]; then
