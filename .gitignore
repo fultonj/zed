@@ -2,6 +2,7 @@
 */08-ceph
 */get-pip.py
 */cirros-*.img
+*/cirros-*.raw
 */standalone_parameters.yaml
 */glance_v1beta1_glance_ceph.yaml
 */cr/core_v1beta1_openstackcontrolplane_ceph_backend.yaml
