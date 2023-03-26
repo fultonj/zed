@@ -4,6 +4,8 @@ OVERVIEW=1
 CINDER=0
 GLANCE=0
 PRINET=0
+NOVA_CONTROL_LOGS=0
+NOVA_COMPUTE_LOGS=0
 VM=0
 CONSOLE=0
 PUBNET=0
@@ -81,6 +83,29 @@ if [ $PRINET -eq 1 ]; then
     openstack network create private --share
     openstack subnet create priv_sub --subnet-range 192.168.0.0/24 --network private
 fi
+
+if [ $NOVA_CONTROL_LOGS -eq 1 ]; then
+    eval $(crc oc-env)
+    oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
+    if [[ $? -gt 0 ]]; then
+        echo "Error: Unable to authenticate to OpenShift"
+        exit 1
+    fi
+    oc get pods | grep nova | grep -v controller
+    for POD in $(oc get pods | grep nova | grep -v controller | awk {'print $1'}); do
+        echo $POD
+        echo "~~~"
+        oc logs $POD | grep ERROR | grep -v ERROR_FOR_DIVISION_BY_ZERO
+        echo "~~~"
+    done
+fi
+
+if [ $NOVA_COMPUTE_LOGS -eq 1 ]; then
+    SSH_CMD=$(bash ssh_node.sh)
+    $SSH_CMD "grep ERROR /var/log/containers/nova/nova-compute.log"
+    $SSH_CMD "date"
+fi
+
 
 if [ $VM -eq 1 ]; then
     FLAV_ID=$(openstack flavor show c1 -f value -c id)
