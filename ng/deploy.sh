@@ -42,8 +42,8 @@ if [ $DATA_PLANE -eq 1 ]; then
     EDPM_DEPLOY=1
 fi
 
-# 0 and 1
-NODES=1
+# node0 node1 node2
+NODES=2
 CONTROL_PODS=16
 
 if [[ ! -d ~/install_yamls ]]; then

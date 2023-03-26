@@ -5,7 +5,8 @@ OPT="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 RSA="~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa"
 SSH="ssh $OPT -i $RSA -l root"
 
-NODES=1
+# node0 node1 node2
+NODES=2
 
 for I in $(seq 0 $NODES); do
     WANT_IP="192.168.122.10${I}"

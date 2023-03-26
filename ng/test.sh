@@ -14,8 +14,8 @@ FLOAT=0
 SEC=0
 SSH=0
 
-# 0 and 1
-NODES=1
+# node0 node1 node2
+NODES=2
 
 export OS_CLOUD=default
 export OS_PASSWORD=12345678

@@ -7,8 +7,8 @@ CONTROL=1
 CEPH=0
 CRC=0
 
-# 0 and 1
-NODES=1
+# node0 node1 node2
+NODES=2
 WAIT=50
 
 if [ $DPJOBS -eq 1 ]; then
