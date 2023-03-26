@@ -8,6 +8,10 @@ if [ ! -z "$1" ]; then
 fi
 
 IP=$( sudo virsh -q domifaddr edpm-compute-$SUFFIX | awk 'NF>1{print $NF}' | cut -d/ -f1 )
+
+if [[ -z $IP ]]; then
+    IP="192.168.122.10"$SUFFIX
+fi
 SSH="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa"
 
 echo "$SSH root@$IP"
