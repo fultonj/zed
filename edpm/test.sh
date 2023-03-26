@@ -13,6 +13,9 @@ FLOAT=0
 SEC=0
 SSH=0
 
+export OS_CLOUD=default
+export OS_PASSWORD=12345678
+
 if [ $OVERVIEW -eq 1 ]; then
    openstack endpoint list
    openstack hypervisor list
