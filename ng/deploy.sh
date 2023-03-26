@@ -99,7 +99,7 @@ if [ $FORCE_IPS -eq 1 ]; then
         edpm_ready $I
     done
     # update this script to handle variable number of nodes
-    bash ~/zed/edpm/force_ips.sh
+    bash ~/zed/ng/force_ips.sh
 fi
 
 cd ..
