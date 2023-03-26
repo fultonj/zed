@@ -10,6 +10,7 @@ DATA_PLANE=0
 CRC=0
 ATTACH=0
 EDPM_NODE=0
+EDPM_NODE_DISKS=1
 EDPM_NODE_REPOS=0
 FORCE_IPS=0
 CRC_STORAGE=0
@@ -25,6 +26,7 @@ if [ $INFRA -eq 1 ]; then
     CRC=1
     ATTACH=1
     EDPM_NODE=1
+    EDPM_NODE_DISKS=1
     EDPM_NODE_REPOS=1
     FORCE_IPS=1
     CRC_STORAGE=1
@@ -85,6 +87,14 @@ if [ $EDPM_NODE -eq 1 ]; then
     for I in $(seq 0 $NODES); do
         make edpm_compute EDPM_COMPUTE_SUFFIX=$I;
     done
+fi
+
+if [ $EDPM_NODE_DISKS -eq 1 ]; then
+    pushd ~/zed/ng/ceph/
+    for I in $(seq 0 $NODES); do
+        bash edpm-compute-disk.sh $I
+    done
+    popd
 fi
 
 if [ $EDPM_NODE_REPOS -eq 1 ]; then
