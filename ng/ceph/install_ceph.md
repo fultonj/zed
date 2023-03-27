@@ -41,7 +41,8 @@ mkdir -p /etc/ceph
 
 ## Distribute cephadm's SSH key
 
-
+From hypervisor
+```
 IP=192.168.122.100
 RSA="~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa"
 
