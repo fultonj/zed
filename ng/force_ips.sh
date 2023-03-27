@@ -22,7 +22,8 @@ for I in $(seq 0 $NODES); do
     else
         ping -c 1 $DOM_IP > /dev/null
         if [[ $? -gt 0 ]]; then
-            echo "DOM_IP $IP does not respond to ping"
+            echo "DOM_IP for edpm-compute-$I does not respond to ping"
+            echo "sudo virsh destroy edpm-compute-$I; sudo virsh start edpm-compute-$I"
         else
             if [[ $DOM_IP == $WANT_IP ]]; then
                 echo "edpm-compute-$I already has $WANT_IP (same as DOM_IP)"
@@ -41,4 +42,5 @@ for I in $(seq 0 $NODES); do
             fi
         fi
     fi
+    echo "~~~"
 done
