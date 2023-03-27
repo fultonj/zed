@@ -10,7 +10,7 @@ DATA_PLANE=0
 CRC=0
 ATTACH=0
 EDPM_NODE=0
-EDPM_NODE_DISKS=1
+EDPM_NODE_DISKS=0
 EDPM_NODE_REPOS=0
 FORCE_IPS=0
 CRC_STORAGE=0
@@ -85,7 +85,7 @@ fi
 
 if [ $EDPM_NODE -eq 1 ]; then
     for I in $(seq 0 $NODES); do
-        make edpm_compute EDPM_COMPUTE_SUFFIX=$I;
+        make edpm_compute EDPM_COMPUTE_SUFFIX=$I EDPM_COMPUTE_VCPUS=8 EDPM_COMPUTE_RAM=8
     done
 fi
 
