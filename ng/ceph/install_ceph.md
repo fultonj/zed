@@ -21,6 +21,7 @@ for I in $(seq 0 2); do
     IP="192.168.122.10${I}"
     scp -i $RSA hosts root@$IP:/etc/hosts
     scp -i $RSA ceph_spec.yml root@$IP:/root/ceph_spec.yml
+    scp -i $RSA initial_ceph.conf root@$IP:/root/initial_ceph.conf
     ssh -i $RSA $OPT root@$IP "curl --silent --remote-name --location $URL"
     ssh -i $RSA $OPT root@$IP "chmod +x cephadm"
     ssh -i $RSA $OPT root@$IP "dnf install podman lvm2 jq -y"
@@ -34,7 +35,7 @@ From edpm-compute-0
 IP=192.168.122.100
 mkdir -p /etc/ceph
 
-./cephadm bootstrap --single-host-defaults --skip-monitoring-stack --skip-dashboard --skip-mon-network --mon-ip $IP
+./cephadm bootstrap --config initial_ceph.conf --single-host-defaults --skip-monitoring-stack --skip-dashboard --skip-mon-network --mon-ip $IP
 
 ./cephadm shell -- ceph -s
 ```
