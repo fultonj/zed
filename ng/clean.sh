@@ -1,9 +1,10 @@
 #!/bin/bash
 
-DPJOBS=1
-EDPM=1
-DATAPLANE=1
-CONTROL=1
+DPJOBS=0
+EDPM=0
+DATAPLANE=0
+CONTROL=0
+OPERATORS=0
 CEPH=0
 CRC=0
 
@@ -34,6 +35,9 @@ if [ $CONTROL -eq 1 ]; then
     pushd ~/install_yamls
     make openstack_deploy_cleanup
     echo "Deleted control plane pods"
+fi
+
+if [ $OPERATORS -eq 1 ]; then
     date
     echo "Waiting $WAIT seconds before deleting openstack operators"
     for I in $(seq 0 $WAIT); do
