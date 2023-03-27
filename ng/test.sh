@@ -1,6 +1,7 @@
 #!/bin/bash
 
 OVERVIEW=1
+CEPH=0
 CINDER=0
 GLANCE=0
 NOVA_CONTROL_LOGS=0
@@ -27,9 +28,13 @@ if [ $OVERVIEW -eq 1 ]; then
    openstack compute service list
 fi
 
+function run_on_mon {
+    $(bash ssh_node.sh) "./cephadm shell -- $1" 2> /dev/null
+}
+
 if [ $CINDER -eq 1 ]; then
-    # echo " --------- Ceph cinder volumes pool --------- "
-    # run_on_mon "rbd -p volumes ls -l"
+    echo " --------- Ceph cinder volumes pool --------- "
+    run_on_mon "rbd -p volumes ls -l"
     openstack volume list
 
     echo "Creating 1 GB Cinder volume"
@@ -38,7 +43,7 @@ if [ $CINDER -eq 1 ]; then
 
     echo "Listing Cinder Ceph Pool and Volume List"
     openstack volume list
-    # run_on_mon "rbd -p volumes ls -l"
+    run_on_mon "rbd -p volumes ls -l"
 fi
 
 if [ $GLANCE -eq 1 ]; then
@@ -64,25 +69,25 @@ if [ $GLANCE -eq 1 ]; then
         fi
 	qemu-img convert -f qcow2 -O raw $IMG $RAW
     fi
-
-    # echo " --------- Ceph images pool --------- "
-    # echo "Listing Glance Ceph Pool and Image List"
-    # run_on_mon "rbd -p images ls -l"
     openstack image list
-    
-    # echo "Importing $RAW image into Glance"
-    # openstack image create cirros --disk-format=raw --container-format=bare < $RAW
-    
-    # Not using raw for now (no ceph)
-    echo "Importing $IMG image into Glance"
-    openstack image create cirros --disk-format=qcow2 --container-format=bare < $IMG
+    if [ $CEPH -eq 1 ]; then
+        echo " --------- Ceph images pool --------- "
+        run_on_mon "rbd -p images ls -l"
+	echo "Importing $RAW image into Glance in format raw"
+	openstack image create cirros --disk-format=raw --container-format=bare < $RAW
+    else
+        openstack image list
+	echo "Importing $IMG image into Glance in format qcow2"
+	openstack image create cirros --disk-format=qcow2 --container-format=bare < $IMG
+    fi
     if [ ! $? -eq 0 ]; then 
         echo "Could not import image. Aborting"; 
         exit 1;
     fi
-
-    echo "Listing Glance Ceph Pool and Image List"
-    # run_on_mon "rbd -p images ls -l"
+    if [ $CEPH -eq 1 ]; then
+        echo "Listing Glance Ceph Pool and Image List"
+        run_on_mon "rbd -p images ls -l"
+    fi
     openstack image list
 fi
 
