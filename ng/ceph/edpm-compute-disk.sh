@@ -3,7 +3,7 @@
 # Add $COUNT disks to EDPM compute by suffix
 # If no suffix is provided then it assumes the suffix 0
 
-COUNT=5
+COUNT=2
 if [ $# -eq 0 ]; then
     SUFFIX=0
 else
