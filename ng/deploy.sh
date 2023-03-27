@@ -33,9 +33,9 @@ if [ $INFRA -eq 1 ]; then
 fi
 if [ $OPERATOR -eq 1 ]; then
     OPER=1
-    DEPS=1
 fi
 if [ $CONTROL_PLANE -eq 1 ]; then
+    DEPS=1
     CONTROL=1
     MARIA=1
     SCHED=1
