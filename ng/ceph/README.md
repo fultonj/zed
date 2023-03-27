@@ -5,6 +5,7 @@ The steps below install Ceph on three edpm nodes.
 
 ## Assumptions
 
+- `ansible-galaxy collection install ansible.posix` has been run on hypervisor
 - Three EDPM nodes exist with disks from [edpm-compute-disk.sh](edpm-compute-disk.sh)
 
 Note that my [deploy.sh](../deploy.sh) has an `EDPM_NODE_DISKS` tag.
@@ -19,7 +20,8 @@ RSA="~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa"
 for I in $(seq 0 2); do
     IP="192.168.122.10${I}"
     scp -i $RSA hosts root@$IP:/etc/hosts
-    ssh -i $RSA $OPT root@$IP "dnf install podman lvm2 -y"
+    scp -i $RSA ceph_spec.yml  root@$IP:/root/ceph_spec.yml
+    ssh -i $RSA $OPT root@$IP "dnf install podman lvm2 jq -y"
 done
 
 ```
@@ -50,12 +52,11 @@ RSA="~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa"
 scp -i $RSA root@$IP:/etc/ceph/ceph.pub .
 URL=$(cat ceph.pub | curl -F 'sprunge=<-' http://sprunge.us)
 
-ansible-galaxy collection install ansible.posix
-
 ansible -i 192.168.122.101,192.168.122.102 all -u root -b \
     --private-key $RSA -m ansible.posix.authorized_key -a "user=root key=$URL"
 ```
-## Add other hosts
+
+## Add other hosts to cluster
 
 From edpm-compute-0
 
@@ -69,22 +70,23 @@ ssh -F ssh_config -i key root@edpm-compute-1
 ssh -F ssh_config -i key root@edpm-compute-2
 ```
 
-Add hosts
+Copy spec and keyring into current mon container
 ```
-./cephadm shell -- ceph orch host add edpm-compute-1
-./cephadm shell -- ceph orch host add edpm-compute-2
-./cephadm shell -- ceph orch daemon add mon edpm-compute-1
-./cephadm shell -- ceph orch daemon add mon edpm-compute-2
-
+CID=$(./cephadm ls | jq '.[]' | jq 'select(.name | test("^mon*")).container_id' | sed s/\"//g);
+podman cp /root/ceph_spec.yml $CID:/tmp/ceph_spec.yml
+podman cp /etc/ceph/ceph.client.admin.keyring $CID:/etc/ceph/ceph.client.admin.keyring
 ```
 
-Use their disks as OSDs
+Apply spec (and clean up temporary files)
 ```
-./cephadm shell -- ceph orch device ls
-./cephadm shell -- ceph orch apply osd --all-available-devices
+NAME=$(./cephadm ls | jq '.[]' | jq 'select(.name | test("^mon*")).name' | sed s/\"//g);
+./cephadm enter --name $NAME -- ceph orch apply --in-file /tmp/ceph_spec.yml
+./cephadm enter --name $NAME -- rm /tmp/ceph.client.admin.keyring /tmp/ceph_spec.yml
 ```
 
 ## Create key/pools for openstack
+
+From edpm-compute-0
 
 Create pools/key
 ```
@@ -112,6 +114,10 @@ Export files useful for clients
 ./cephadm shell -- ceph auth get client.openstack > /etc/ceph/ceph.client.openstack.keyring
 ./cephadm shell -- ceph config generate-minimal-conf > /etc/ceph/ceph.conf
 ```
+
+## Create Ceph Secret
+
+(todo)
 
 ## Delete Ceph (Skip unless you want to start over)
 From edpm-compute-0
