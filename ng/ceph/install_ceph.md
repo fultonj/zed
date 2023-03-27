@@ -1,6 +1,6 @@
 # Install Ceph on EDPM Nodes
 
-The steps below install Ceph on three edpm nodes.
+The steps below install Ceph on three edpm nodes for use with [NG and Ceph](README.md)
 
 ## Assumptions
 
@@ -41,8 +41,7 @@ mkdir -p /etc/ceph
 
 ## Distribute cephadm's SSH key
 
-From hypervisor
-```
+
 IP=192.168.122.100
 RSA="~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa"
 
@@ -117,6 +116,8 @@ Export files useful for clients
 ./cephadm shell -- ceph auth get client.openstack > /etc/ceph/ceph.client.openstack.keyring
 ./cephadm shell -- ceph config generate-minimal-conf > /etc/ceph/ceph.conf
 ```
+The [ceph_secret.sh](ceph_secret.sh) script expects to find the above
+files on edpm-comptue-0.
 
 ## Delete Ceph (Skip unless you want to start over)
 From hypervisor
