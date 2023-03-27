@@ -16,12 +16,15 @@ From hypervisor
 ```
 OPT="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 RSA="~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa"
+URL=https://raw.githubusercontent.com/ceph/ceph/quincy/src/cephadm/cephadm
 
 for I in $(seq 0 2); do
     IP="192.168.122.10${I}"
     scp -i $RSA hosts root@$IP:/etc/hosts
     scp -i $RSA ceph_spec.yml  root@$IP:/root/ceph_spec.yml
     ssh -i $RSA $OPT root@$IP "dnf install podman lvm2 jq -y"
+    ssh -i $RSA $OPT root@$IP "curl --silent --remote-name --location $URL"
+    ssh -i $RSA $OPT root@$IP "chmod +x cephadm"
 done
 
 ```
@@ -32,25 +35,25 @@ From edpm-compute-0
 ```
 IP=192.168.122.100
 
-curl --silent --remote-name --location https://raw.githubusercontent.com/ceph/ceph/quincy/src/cephadm/cephadm
+
 chmod +x cephadm
 mkdir -p /etc/ceph
 
-./cephadm bootstrap --skip-monitoring-stack --skip-dashboard --skip-mon-network --mon-ip $IP
+./cephadm bootstrap --single-host-defaults --skip-monitoring-stack --skip-dashboard --skip-mon-network --mon-ip $IP
 
 ./cephadm shell -- ceph -s
 ```
 
-## Distribute Ceph's SSH key
+## Distribute cephadm's SSH key
 
 From hypervisor
 ```
 IP=192.168.122.100
-OPT="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 RSA="~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa"
 
 scp -i $RSA root@$IP:/etc/ceph/ceph.pub .
 URL=$(cat ceph.pub | curl -F 'sprunge=<-' http://sprunge.us)
+rm ceph.pub
 
 ansible -i 192.168.122.101,192.168.122.102 all -u root -b \
     --private-key $RSA -m ansible.posix.authorized_key -a "user=root key=$URL"
@@ -81,7 +84,7 @@ Apply spec (and clean up temporary files)
 ```
 NAME=$(./cephadm ls | jq '.[]' | jq 'select(.name | test("^mon*")).name' | sed s/\"//g);
 ./cephadm enter --name $NAME -- ceph orch apply --in-file /tmp/ceph_spec.yml
-./cephadm enter --name $NAME -- rm /tmp/ceph.client.admin.keyring /tmp/ceph_spec.yml
+./cephadm enter --name $NAME -- rm /etc/ceph/ceph.client.admin.keyring /tmp/ceph_spec.yml
 ```
 
 ## Create key/pools for openstack
@@ -120,8 +123,15 @@ Export files useful for clients
 (todo)
 
 ## Delete Ceph (Skip unless you want to start over)
-From edpm-compute-0
+From hypervisor
 ```
-FSID=$(ls /var/lib/ceph/ | tail -1)
-./cephadm rm-cluster --force --zap-osds --fsid $FSID
+CMD="/root/cephadm rm-cluster --force --zap-osds --fsid"
+OPT="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+RSA="~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa"
+
+for I in $(seq 0 2); do
+    IP="192.168.122.10${I}"
+    FSID=$(ssh -i $RSA $OPT root@$IP "ls /var/lib/ceph/ | tail -1")
+    ssh -i $RSA $OPT root@$IP "$CMD $FSID"
+done
 ```
