@@ -9,6 +9,7 @@ NOVA_COMPUTE_LOGS=0
 PRINET=0
 VM=0
 CONSOLE=0
+VOL_ATTACH=0
 NOVA_INSTANCE_LOGS=0
 PUBNET=0
 FLOAT=0
@@ -137,6 +138,15 @@ fi
 
 if [ $CONSOLE -eq 1 ]; then
     openstack console log show vm1
+fi
+
+if [ $VOL_ATTACH -eq 1 ]; then
+    VM_ID=$(openstack server show vm1 -f value -c id)
+    VOL_ID=$(openstack volume show test-volume -f value -c id)
+    openstack server add volume $VM_ID $VOL_ID  --device /dev/vdb
+    sleep 2
+    openstack volume list
+    # openstack server remove volume $VM_ID $VOL_ID
 fi
 
 if [ $NOVA_INSTANCE_LOGS -eq 1 ]; then
