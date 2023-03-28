@@ -24,15 +24,15 @@ EDPM_DEPLOY=0
 if [ $INFRA -eq 1 ]; then
     CRC=1
     ATTACH=1
+    CRC_STORAGE=1
+    DEPS=1
     OPER=1
     EDPM_NODE=1
-    EDPM_NODE_REPOS=1
     EDPM_NODE_DISKS=1
     FORCE_IPS=1
-    CRC_STORAGE=1
+    EDPM_NODE_REPOS=1
 fi
 if [ $CONTROL_PLANE -eq 1 ]; then
-    DEPS=1
     CONTROL=1
     MARIA=1
     SCHED=1
