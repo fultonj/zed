@@ -2,20 +2,19 @@
 
 #META-TAGS
 INFRA=0
-OPERATOR=0
 CONTROL_PLANE=0
 DATA_PLANE=0
 
 #TAGS
 CRC=0
 ATTACH=0
-EDPM_NODE=0
-EDPM_NODE_DISKS=0
+CRC_STORAGE=0
+DEPS=0
+OPER=0
+EDPM_NODE=1
+EDPM_NODE_DISKS=1
 FORCE_IPS=0
 EDPM_NODE_REPOS=0
-CRC_STORAGE=0
-OPER=0
-DEPS=0
 CONTROL=0
 MARIA=0
 SCHED=0
@@ -25,14 +24,12 @@ EDPM_DEPLOY=0
 if [ $INFRA -eq 1 ]; then
     CRC=1
     ATTACH=1
+    OPER=1
     EDPM_NODE=1
     EDPM_NODE_REPOS=1
     EDPM_NODE_DISKS=1
     FORCE_IPS=1
     CRC_STORAGE=1
-fi
-if [ $OPERATOR -eq 1 ]; then
-    OPER=1
 fi
 if [ $CONTROL_PLANE -eq 1 ]; then
     DEPS=1
@@ -83,6 +80,22 @@ if [ $ATTACH -eq 1 ]; then
     make crc_attach_default_interface
 fi
 
+cd ..
+
+if [ $CRC_STORAGE -eq 1 ]; then
+    make crc_storage
+fi
+
+if [ $DEPS -eq 1 ]; then
+    make input
+fi
+
+if [ $OPER -eq 1 ]; then
+    make openstack
+fi
+
+cd devsetup
+
 if [ $EDPM_NODE -eq 1 ]; then
     for I in $(seq 0 $NODES); do
         make edpm_compute EDPM_COMPUTE_SUFFIX=$I EDPM_COMPUTE_VCPUS=8 EDPM_COMPUTE_RAM=8
@@ -113,18 +126,6 @@ if [ $EDPM_NODE_REPOS -eq 1 ]; then
 fi
 
 cd ..
-
-if [ $CRC_STORAGE -eq 1 ]; then
-    make crc_storage
-fi
-
-if [ $OPER -eq 1 ]; then
-    make openstack
-fi
-
-if [ $DEPS -eq 1 ]; then
-    make input
-fi
 
 if [ $CONTROL -eq 1 ]; then
     oc get pods | grep controller
