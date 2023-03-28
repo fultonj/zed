@@ -11,8 +11,8 @@ ATTACH=0
 CRC_STORAGE=0
 DEPS=0
 OPER=0
-EDPM_NODE=1
-EDPM_NODE_DISKS=1
+EDPM_NODE=0
+EDPM_NODE_DISKS=0
 FORCE_IPS=0
 EDPM_NODE_REPOS=0
 CONTROL=0
@@ -111,10 +111,6 @@ if [ $EDPM_NODE_DISKS -eq 1 ]; then
 fi
 
 if [ $FORCE_IPS -eq 1 ]; then
-    for I in $(seq 0 $NODES); do
-        edpm_ready $I
-    done
-    # update this script to handle variable number of nodes
     bash ~/zed/ng/force_ips.sh
 fi
 
