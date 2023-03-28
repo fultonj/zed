@@ -11,8 +11,8 @@ CRC=0
 ATTACH=0
 EDPM_NODE=0
 EDPM_NODE_DISKS=0
-EDPM_NODE_REPOS=0
 FORCE_IPS=0
+EDPM_NODE_REPOS=0
 CRC_STORAGE=0
 OPER=0
 DEPS=0
@@ -26,8 +26,8 @@ if [ $INFRA -eq 1 ]; then
     CRC=1
     ATTACH=1
     EDPM_NODE=1
-    EDPM_NODE_DISKS=1
     EDPM_NODE_REPOS=1
+    EDPM_NODE_DISKS=1
     FORCE_IPS=1
     CRC_STORAGE=1
 fi
@@ -97,19 +97,19 @@ if [ $EDPM_NODE_DISKS -eq 1 ]; then
     popd
 fi
 
-if [ $EDPM_NODE_REPOS -eq 1 ]; then
-    for I in $(seq 0 $NODES); do
-        edpm_ready $I
-        make edpm_compute_repos EDPM_COMPUTE_SUFFIX=$I;
-    done
-fi
-
 if [ $FORCE_IPS -eq 1 ]; then
     for I in $(seq 0 $NODES); do
         edpm_ready $I
     done
     # update this script to handle variable number of nodes
     bash ~/zed/ng/force_ips.sh
+fi
+
+if [ $EDPM_NODE_REPOS -eq 1 ]; then
+    for I in $(seq 0 $NODES); do
+        edpm_ready $I
+        make edpm_compute_repos EDPM_COMPUTE_SUFFIX=$I;
+    done
 fi
 
 cd ..
