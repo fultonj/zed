@@ -37,9 +37,11 @@ if [ $CONTROL -eq 1 ]; then
     pushd ~/install_yamls
     make openstack_deploy_cleanup
     echo "Deleted control plane pods"
+    popd
 fi
 
 if [ $OPERATORS -eq 1 ]; then
+    pushd ~/install_yamls
     date
     echo "Waiting $WAIT seconds before deleting openstack operators"
     for I in $(seq 0 $WAIT); do
