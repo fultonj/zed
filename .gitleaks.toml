@@ -12,4 +12,8 @@
     '''^\.?crc/cr\/cinder_v1beta1_cinder.yaml$''',
     '''^\.?crc\/cr/cinder_v1beta1_cinder.yaml$''',
     '''^\.?crc\/cr\/cinder_v1beta1_cinder.yaml$''',
+    '''^\.?ng/ceph/dataplane_cr.yaml$''',
+    '''^\.?ng/ceph\/dataplane_cr.yaml$''',
+    '''^\.?ng\/ceph/dataplane_cr.yaml$''',
+    '''^\.?ng\/ceph\/dataplane_cr.yaml$''',
   ]
