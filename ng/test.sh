@@ -19,6 +19,9 @@ SSH=0
 # node0 node1 node2
 NODES=2
 
+VOL_NAME=vol1
+VM_NAME=vm1
+
 export OS_CLOUD=default
 export OS_PASSWORD=12345678
 
@@ -39,7 +42,7 @@ if [ $CINDER -eq 1 ]; then
     openstack volume list
 
     echo "Creating 1 GB Cinder volume"
-    openstack volume create --size 1 test-volume
+    openstack volume create --size 1 $VOL_NAME
     sleep 10
 
     echo "Listing Cinder Ceph Pool and Volume List"
@@ -124,9 +127,9 @@ if [ $VM -eq 1 ]; then
     if [[ -z $FLAV_ID ]]; then
         openstack flavor create c1 --vcpus 1 --ram 256
     fi
-    NOVA_ID=$(openstack server show vm1 -f value -c id)
+    NOVA_ID=$(openstack server show $VM_NAME -f value -c id)
     if [[ -z $NOVA_ID ]]; then
-        openstack server create --flavor c1 --image cirros --nic net-id=private vm1
+        openstack server create --flavor c1 --image cirros --nic net-id=private $VM_NAME
     fi
     openstack server list
     if [[ $(openstack server list -c Status -f value) == "BUILD" ]]; then
@@ -137,13 +140,13 @@ if [ $VM -eq 1 ]; then
 fi
 
 if [ $CONSOLE -eq 1 ]; then
-    openstack console log show vm1
+    openstack console log show $VM_NAME
 fi
 
 if [ $VOL_ATTACH -eq 1 ]; then
-    VM_ID=$(openstack server show vm1 -f value -c id)
-    VOL_ID=$(openstack volume show test-volume -f value -c id)
-    openstack server add volume $VM_ID $VOL_ID  --device /dev/vdb
+    VM_ID=$(openstack server show $VM_NAME -f value -c id)
+    VOL_ID=$(openstack volume show $VOL_NAME -f value -c id)
+    openstack server add volume $VM_ID $VOL_ID
     sleep 2
     openstack volume list
     # openstack server remove volume $VM_ID $VOL_ID
@@ -156,8 +159,8 @@ if [ $NOVA_INSTANCE_LOGS -eq 1 ]; then
         echo "Error: Unable to authenticate to OpenShift"
         exit 1
     fi
-    openstack server show vm1
-    ID=(openstack server show vm1 -f value -c id)
+    openstack server show $VM_NAME
+    ID=(openstack server show $VM_NAME -f value -c id)
     oc get pods | grep nova | grep -v controller
     for POD in $(oc get pods | grep nova | grep -v controller | awk {'print $1'}); do
         echo $POD
@@ -193,14 +196,14 @@ if [ $FLOAT -eq 1 ]; then
         echo $IP
     fi
     if [[ ! -z $IP ]]; then
-        openstack server add floating ip vm1 $IP
+        openstack server add floating ip $VM_NAME $IP
     fi
-    openstack server show vm1
+    openstack server show $VM_NAME
     openstack server list
 fi
 
 if [ $SEC -eq 1 ]; then
-    PROJECT_ID=$(openstack server show vm1 -c project_id -f value)
+    PROJECT_ID=$(openstack server show $VM_NAME -c project_id -f value)
     if [[ ! -z $PROJECT_ID ]]; then
         SEC_ID=$(openstack security group list --project $PROJECT_ID -f value -c ID)
         openstack security group rule create \
