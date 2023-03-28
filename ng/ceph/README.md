@@ -12,8 +12,7 @@ Use [deploy.sh](../deploy.sh) only with the `INFRA` meta-tag and then:
 
 ## Control Plane
 
-- Use [deploy.sh](../deploy.sh) only with the `OPERATOR` and
-  `CONTROL_PLANE` meta-tags.
+- Use [deploy.sh](../deploy.sh) only with the `CONTROL_PLANE` meta-tag
 
 - Run [control_plane_to_ceph.sh](control_plane_to_ceph.sh) which will
   configure the existing Glance pods to use Ceph and create a
