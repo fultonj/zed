@@ -18,6 +18,7 @@ if [ $DPJOBS -eq 1 ]; then
     oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
     oc get pods -o name | grep dataplane | xargs oc delete
     oc get pods -o name | grep nova-edpm  | xargs oc delete
+    oc get openstackansibleees.ansibleee.openstack.org -o name | xargs oc delete
 fi
 
 if [ $EDPM -eq 1 ]; then
