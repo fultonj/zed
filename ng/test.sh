@@ -93,6 +93,11 @@ if [ $GLANCE -eq 1 ]; then
         run_on_mon "rbd -p images ls -l"
     fi
     openstack image list
+    if [ $CEPH -eq 1 ]; then
+        # https://bugzilla.redhat.com/show_bug.cgi?id=1672680
+        GLANCE_ID=$(openstack image show cirros -f value -c id)
+        openstack image set $GLANCE_ID --property hw_disk_bus=scsi
+    fi
 fi
 
 if [ $NOVA_CONTROL_LOGS -eq 1 ]; then
