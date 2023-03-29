@@ -41,5 +41,6 @@ I can then easily create and delete the CR to
 Use `watch "oc get pods | grep edpm"` and
 [watch_ansible.sh](../watch_ansible.sh) to watch ansible run.
 
-Use [test.sh](../test.sh) to boot an instance.
+Use the PET option in [test.sh](../test.sh) to boot an instance from a volume.
 
+[![asciicast](https://asciinema.org/a/571558.svg)](https://asciinema.org/a/571558)
