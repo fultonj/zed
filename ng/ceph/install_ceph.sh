@@ -4,7 +4,7 @@ PRE=0
 BOOT=0
 SSH_KEYS=0
 SPEC=0
-CEPHX=1
+CEPHX=0
 
 RSA="~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa"
 
