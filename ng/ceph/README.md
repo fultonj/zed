@@ -7,6 +7,7 @@ This subdirectory of [ng](..) contains variations to use HCI Ceph.
 Use [deploy.sh](../deploy.sh) only with the `INFRA` meta-tag and then:
 
 - Follow [install_ceph](install_ceph.md) to install Ceph on EDPM nodes
+  (or use [install_ceph.sh](install_ceph.sh))
 - Run [ceph_secret.sh](ceph_secret.sh) to create a secret viewable via
   `oc get secret ceph-conf-files -o json | jq -r '.data."ceph.conf"' | base64 -d`
 
