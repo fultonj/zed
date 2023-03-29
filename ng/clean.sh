@@ -4,9 +4,9 @@ DPJOBS=0
 EDPM=0
 DATAPLANE=0
 CONTROL=0
+CEPH_CLI=0
 OPERATORS=0
 CEPH_K8S=0
-CEPH_CLI=0
 CRC=0
 
 # node0 node1 node2
@@ -40,6 +40,14 @@ if [ $CONTROL -eq 1 ]; then
     popd
 fi
 
+if [ $CEPH_CLI -eq 1 ]; then
+    eval $(crc oc-env)
+    oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
+    oc get secret | grep ceph
+    oc delete secret ceph-conf-files
+    oc get secret | grep ceph
+fi
+
 if [ $OPERATORS -eq 1 ]; then
     pushd ~/install_yamls
     date
@@ -59,14 +67,6 @@ if [ $CEPH_K8S -eq 1 ]; then
     pushd ~/install_yamls
     make ceph_cleanup
     popd
-fi
-
-if [ $CEPH_CLI -eq 1 ]; then
-    eval $(crc oc-env)
-    oc login -u kubeadmin -p 12345678 https://api.crc.testing:6443
-    oc get secret | grep ceph
-    oc delete secret ceph-conf-files
-    oc get secret | grep ceph
 fi
 
 if [ $CRC -eq 1 ]; then
