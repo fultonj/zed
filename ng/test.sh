@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OVERVIEW=1
+OVERVIEW=0
 CEPH=0
 CINDER=0
 GLANCE=0
@@ -15,6 +15,7 @@ PUBNET=0
 FLOAT=0
 SEC=0
 SSH=0
+PET=0
 
 # node0 node1 node2
 NODES=2
@@ -223,4 +224,19 @@ if [ $SSH -eq 1 ]; then
     IP=$(openstack floating ip list -f value -c "Floating IP Address")
     sshpass -p gocubsgo ssh cirros@$IP "uname -a"
     sshpass -p gocubsgo ssh cirros@$IP "lsblk"
+fi
+
+if [ $PET -eq 1 ]; then
+    echo "The following Glance image is backed by Ceph"
+    openstack image list
+    IMG_ID=$(openstack image show cirros -c id -f value)
+    run_on_mon "rbd -p images ls -l"
+
+    echo "Creating a volume based on $IMG_ID"
+    openstack volume create --size 8 cirros-volume --image $IMG_ID
+    run_on_mon "rbd -p volumes ls -l"
+
+    VOL_ID=$(openstack volume show -f value -c id cirros-volume)
+    openstack server create --flavor c1 --volume $VOL_ID --nic net-id=private pet-vm
+    openstack server list
 fi
