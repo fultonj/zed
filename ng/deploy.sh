@@ -62,20 +62,6 @@ if [[ $? -gt 0 ]]; then
     exit 1
 fi
 
-function edpm_ready() {
-    # Determine IP based on EDPM_COMPUTE_SUFFIX
-    # sleep until that IP answers pings
-    IP=$( sudo virsh -q domifaddr edpm-compute-$1 \
-              | awk 'NF>1{print $NF}' | cut -d/ -f1 )
-    while [ 1 ]; do
-        ping -c 1 $IP
-        if [[ $? -eq 0 ]]; then
-            break
-        fi
-        sleep 1
-    done
-}
-
 if [ $ATTACH -eq 1 ]; then
     make crc_attach_default_interface
 fi
@@ -104,7 +90,6 @@ fi
 
 if [ $EDPM_NODE_REPOS -eq 1 ]; then
     for I in $(seq 0 $NODES); do
-        edpm_ready $I
         make edpm_compute_repos EDPM_COMPUTE_SUFFIX=$I;
     done
 fi
