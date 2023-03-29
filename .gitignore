@@ -8,3 +8,5 @@
 */cr/core_v1beta1_openstackcontrolplane_ceph_backend.yaml
 */cr/core_v1beta1_openstackcontrolplane_extra_vols.yaml
 */kustomize-*/core_v1beta1_openstackcontrolplane.yaml
+*/ceph/ceph_secret.yaml
+*/ceph/dataplane_cr.yaml
