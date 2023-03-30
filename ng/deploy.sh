@@ -52,7 +52,11 @@ fi
 pushd ~/install_yamls/devsetup
 
 if [ $CRC -eq 1 ]; then
-    make CPUS=56 MEMORY=262144 DISK=200 crc
+    if [[ $HOSTNAME == hamfast.examle.com ]]; then
+        make CPUS=12 MEMORY=49152 DISK=100 crc
+    else
+        make CPUS=56 MEMORY=262144 DISK=200 crc
+    fi
 fi
 
 eval $(crc oc-env)
