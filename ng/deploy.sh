@@ -11,10 +11,9 @@ ATTACH=0
 CRC_STORAGE=0
 DEPS=0
 OPER=0
-EDPM_NODE=0
+EDPM_NODE=1
 EDPM_NODE_REPOS=0
 EDPM_NODE_DISKS=0
-FORCE_IPS=0
 CONTROL=0
 MARIA=0
 SCHED=0
@@ -30,7 +29,6 @@ if [ $INFRA -eq 1 ]; then
     EDPM_NODE=1
     EDPM_NODE_REPOS=1
     EDPM_NODE_DISKS=1
-    FORCE_IPS=1
 fi
 if [ $CONTROL_PLANE -eq 1 ]; then
     CONTROL=1
@@ -104,10 +102,6 @@ if [ $EDPM_NODE_DISKS -eq 1 ]; then
         bash edpm-compute-disk.sh $I
     done
     popd
-fi
-
-if [ $FORCE_IPS -eq 1 ]; then
-    bash ~/zed/ng/force_ips.sh
 fi
 
 cd ..

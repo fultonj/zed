@@ -6,8 +6,6 @@
 
 Helpers:
 - [ssh_node.sh](ssh_node.sh): Gets command to SSH into an EDPM node
-- [force_ips.sh](force_ips.sh): force IPs to 192.168.122.100,
-  192.168.122.101 if necessary
 - [watch_ansible.sh](watch_ansible.sh): Watch running ansible logs
 
 ## Use
