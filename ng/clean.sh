@@ -2,7 +2,7 @@
 
 DPJOBS=0
 EDPM=0
-DATAPLANE=0
+DATAPLANE_CR=0
 CONTROL=0
 CEPH_CLI=0
 OPERATORS=0
@@ -29,7 +29,7 @@ if [ $EDPM -eq 1 ]; then
     popd
 fi
 
-if [ $DATAPLANE -eq 1 ]; then
+if [ $DATAPLANE_CR -eq 1 ]; then
     bash data_plane_cr.sh DELETE
 fi
 
