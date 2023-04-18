@@ -18,13 +18,16 @@ OpenStack to the one which will run on k8s.
 Use [deploy.sh](../ng/deploy.sh) with nearly all tasks under INFRA=1
 to get an edpm-compute-0 node with a potential isolated network
 connection, CRC, and OpenStack operators but no control-plane and
-data-plane. Do not `make edpm_compute_repos` since we will configure
-repos for TripleO Wallaby instead later.
+data-plane.
 
 ## Configure Isolated Networks with EDPM Ansible
 
 Run the edpm-ansible role to configure and verify the network
 but not run other edpm-ansible roles.
+
+### Option 1: DeployFalse at the right time
+
+### Option 2: StopAfter patch
 
 Use
 [Running a local copy of an operator for development without conflicts](https://github.com/openstack-k8s-operators/docs/blob/main/running_local_operator.md)
