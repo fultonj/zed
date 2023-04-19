@@ -16,4 +16,8 @@
     '''^\.?ng/ceph\/dataplane_cr.yaml$''',
     '''^\.?ng\/ceph/dataplane_cr.yaml$''',
     '''^\.?ng\/ceph\/dataplane_cr.yaml$''',
+    '''^\.?ng/adopt/dataplane_cr.yaml$''',
+    '''^\.?ng/adopt\/dataplane_cr.yaml$''',
+    '''^\.?ng\/adopt/dataplane_cr.yaml$''',
+    '''^\.?ng\/adopt\/dataplane_cr.yaml$''',
   ]
