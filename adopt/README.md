@@ -3,7 +3,7 @@
 Use
 [install_yamls/devsetup](https://github.com/openstack-k8s-operators/install_yamls/tree/master/devsetup)
 to configure edpm-compute-0 with isolated networks
-which can acceess the new control plane on k8s.
+which can access the new control plane on k8s.
 
 Install OpenStack Wallaby using
 [TripleO
@@ -15,51 +15,35 @@ OpenStack to the one which will run on k8s.
 
 ## Deploy CRC and edpm-compute
 
-Use [deploy.sh](../ng/deploy.sh) with nearly all tasks under INFRA=1
-to get an edpm-compute-0 node with a potential isolated network
-connection, CRC, and OpenStack operators but no control-plane and
-data-plane.
+Use [deploy.sh](../ng/deploy.sh) with all tasks under `INFRA=1`
+and `CONTROL_PLANE=1`.
+
+An empty control plane will be deployed which you will migrate to.
+It is necessary to do this in order to establish the isolated
+networks before installing the wallaby overcloud.
 
 ## Configure Isolated Networks with EDPM Ansible
 
-Run the edpm-ansible role to configure and verify the network
-but not run other edpm-ansible roles.
+Run the edpm-ansible role to configure the network 
+but not run other edpm-ansible roles. E.g. have it stop before
+`InstallOS` in [deployment.go](https://github.com/openstack-k8s-operators/dataplane-operator/blob/main/pkg/deployment/deployment.go#L122).
 
-### Option 1: DeployFalse at the right time
-
-### Option 2: StopAfter patch
-
-Use
-[Running a local copy of an operator for development without conflicts](https://github.com/openstack-k8s-operators/docs/blob/main/running_local_operator.md)
-to run a local copy of the
-[stop_after patch](https://github.com/fultonj/dataplane-operator/tree/stop_after)
-(TODO).
-
-Use [dataplane_cr.sh](../ng/dataplane_cr.sh) to create
-an OpenStackDataPlane CR.
-```
-./dataplane_cr.sh > dataplane_cr.yaml
-```
-Modify `dataplane_cr.yaml` to stop after the after
-`ConfigureNetwork` and `ValidateNetwork` from
-[deployment.go](https://github.com/openstack-k8s-operators/dataplane-operator/blob/main/pkg/deployment/deployment.go)
-```
-StopAfter: ValidateNetwork
-```
-Set `Deploy: false` for all nodes except edpm-compute-0.
-
-Create the partial dataplane CR
+For now we'll do this by creating [dataplane_cr.yaml](dataplane_cr.yaml)
+but deleting it while the network validation is running as indicated
+by [watch_ansible.sh](../ng/watch_ansible.sh). A better method can be
+used later.
 ```
 oc create -f dataplane_cr.yaml
+./watch_ansible.sh
 ```
-
-After the validate network job has completed successfully
-and the operator has reported it has suceeded because of
-the `stop_after` patch, set `Deploy: False` for edpm-compute-0
-and re-apply the spec. We do this because we don't want our operators
-modifying edpm-compute-0 further since it will be managed by TripleO.
-When other edpm-compute nodes are added later, set `Deploy: True` for
-them at that time.
+When `PLAY [osp.edpm.edpm_nodes_validation]` starts run the following:
+```
+oc delete -f dataplane_cr.yaml
+```
+SSH into the node 
+```
+$(bash ../ng/ssh_node.sh)
+```
 
 ## Install TripleO
 
