@@ -40,16 +40,16 @@ When `PLAY [osp.edpm.edpm_nodes_validation]` starts run the following:
 ```
 oc delete -f dataplane_cr.yaml
 ```
-SSH into the node 
+SSH into the edpm-compute-0 node.
 ```
 $(bash ../ng/ssh_node.sh)
 ```
 
 ## Install TripleO
 
-Follow
+Use the scripts of the [standalone](standalone) directory to install
 [TripleO Standalone](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/deployment/standalone.html)
-on edpm-compute-0 but make the following modifications.
+on edpm-compute-0.
 
 ### Network Isolation
 
