@@ -1,41 +1,27 @@
 #!/bin/bash
 
-NET=0
 POD=1
 REPO=1
-CEPH=1
+CEPH=0
 INSTALL=1
 CONTAINERS=1
 HOSTNAME=1
 EXTRAS=0
-TMATE=1
-
-if [[ $NET -eq 1 ]]; then
-    GW=192.168.122.1
-    ping -c 1 $GW > /dev/null
-    if [[ $? -ne 0 ]]; then
-        echo "Cannot ping $GW. Aborting."
-        exit 1
-    fi
-    if [[ $(grep $GW /etc/resolv.conf | wc -l) -eq 0 ]]; then
-        sudo sh -c "echo nameserver $GW > /etc/resolv.conf"
-    fi
-fi
+TMATE=0
 
 if [[ $POD -eq 1 ]]; then
-    sudo dnf module enable -y container-tools:3.0
     sudo dnf install -y podman 
 fi
 
 if [[ $REPO -eq 1 ]]; then
     if [[ ! -d ~/rpms ]]; then mkdir ~/rpms; fi
-    url=https://trunk.rdoproject.org/centos8/component/tripleo/current/
+    url=https://trunk.rdoproject.org/centos9/component/tripleo/current/
     rpm_name=$(curl $url | grep python3-tripleo-repos | sed -e 's/<[^>]*>//g' | awk 'BEGIN { FS = ".rpm" } ; { print $1 }')
     rpm=$rpm_name.rpm
     curl -f $url/$rpm -o ~/rpms/$rpm
     if [[ -f ~/rpms/$rpm ]]; then
 	sudo yum install -y ~/rpms/$rpm
-	sudo -E tripleo-repos current-tripleo-dev ceph --stream
+        sudo -E tripleo-repos current-tripleo -b wallaby -d centos9
 	sudo yum repolist
 	sudo yum update -y
     else
