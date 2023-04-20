@@ -40,10 +40,8 @@ When `PLAY [osp.edpm.edpm_nodes_validation]` starts run the following:
 ```
 oc delete -f dataplane_cr.yaml
 ```
-SSH into the edpm-compute-0 node.
-```
-$(bash ../ng/ssh_node.sh)
-```
+Use [account.sh](account.sh) to create a stack user on edpm-compute0.
+Use this account on the edpm-compute0 host in the next section.
 
 ## Install TripleO
 
