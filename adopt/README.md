@@ -49,6 +49,7 @@ Use the scripts of the [standalone](standalone) directory to install
 [TripleO Standalone](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/deployment/standalone.html)
 on edpm-compute-0.
 
+<!--
 ### Network Isolation
 
 In the following example:
@@ -61,3 +62,4 @@ TripleO Standalone CI uses a Heat environment file containing
 an already provisioned storage network. It should be possible to
 expand this example so that all of the pre provisioned networks
 are used by OpenStack.
+-->
