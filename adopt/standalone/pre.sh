@@ -1,6 +1,5 @@
 #!/bin/bash
 
-POD=1
 REPO=1
 CEPH=0
 INSTALL=1
@@ -8,10 +7,6 @@ CONTAINERS=1
 HOSTNAME=1
 EXTRAS=0
 TMATE=0
-
-if [[ $POD -eq 1 ]]; then
-    sudo dnf install -y podman 
-fi
 
 if [[ $REPO -eq 1 ]]; then
     if [[ ! -d ~/rpms ]]; then mkdir ~/rpms; fi
@@ -21,7 +16,7 @@ if [[ $REPO -eq 1 ]]; then
     curl -f $url/$rpm -o ~/rpms/$rpm
     if [[ -f ~/rpms/$rpm ]]; then
 	sudo yum install -y ~/rpms/$rpm
-        sudo -E tripleo-repos current-tripleo -b wallaby -d centos9
+        sudo -E tripleo-repos -b wallaby current-tripleo-dev ceph --stream
 	sudo yum repolist
 	sudo yum update -y
     else
@@ -46,7 +41,7 @@ if [[ $CEPH -eq 1 ]]; then
 fi
 
 if [[ $INSTALL -eq 1 ]]; then
-    sudo yum install -y python3-tripleoclient
+    sudo dnf install -y podman python3-tripleoclient
 fi
 
 if [[ $CONTAINERS -eq 1 ]]; then
