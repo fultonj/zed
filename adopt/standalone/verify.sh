@@ -46,12 +46,12 @@ if [[ $CINDER -eq 1 ]]; then
 fi
 
 if [[ $NOVA -eq 1 ]]; then
-    export GATEWAY=192.168.24.1
-    export STANDALONE_HOST=192.168.24.2
-    export PUBLIC_NETWORK_CIDR=192.168.24.0/24
+    export GATEWAY=192.168.122.1
+    export STANDALONE_HOST=192.168.122.2
+    export PUBLIC_NETWORK_CIDR=192.168.122.0/24
     export PRIVATE_NETWORK_CIDR=192.168.100.0/24
-    export PUBLIC_NET_START=192.168.24.4
-    export PUBLIC_NET_END=192.168.24.5
+    export PUBLIC_NET_START=192.168.122.4
+    export PUBLIC_NET_END=192.168.122.5
     export DNS_SERVER=1.1.1.1
     KEYS=1
     SEC=1
