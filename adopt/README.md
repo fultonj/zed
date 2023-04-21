@@ -34,7 +34,7 @@ by [watch_ansible.sh](../ng/watch_ansible.sh). A better method can be
 used later.
 ```
 oc create -f dataplane_cr.yaml
-./watch_ansible.sh
+bash ../ng/watch_ansible.sh
 ```
 When `PLAY [osp.edpm.edpm_nodes_validation]` starts run the following:
 ```
