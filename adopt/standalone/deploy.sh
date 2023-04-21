@@ -6,11 +6,15 @@ export VIP=192.168.122.108
 export NETMASK=24
 export DNS_SERVERS=192.168.122.1
 export NTP_SERVERS=pool.ntp.org
+export GATEWAY=192.168.122.1
 
 cat <<EOF > standalone_parameters.yaml
 parameter_defaults:
   CloudName: $IP
-  ControlPlaneStaticRoutes: []
+  ControlPlaneStaticRoutes:
+    - ip_netmask: 0.0.0.0/0
+      next_hop: $GATEWAY
+      default: true
   Debug: true
   DeploymentUser: $USER
   DnsServers: $DNS_SERVERS
