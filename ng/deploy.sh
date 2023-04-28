@@ -169,8 +169,11 @@ if [ $EDPM_DEPLOY -eq 1 ]; then
         echo -n .
         sleep 1
     done
-    DATAPLANE_SINGLE_NODE=false make edpm_deploy
-
+    if [[ $HOSTNAME == hamfast.examle.com ]]; then
+        DATAPLANE_CHRONY_NTP_SERVER=pool.ntp.org DATAPLANE_SINGLE_NODE=false make edpm_deploy
+    else
+        DATAPLANE_CHRONY_NTP_SERVER=clock.redhat.com DATAPLANE_SINGLE_NODE=false make edpm_deploy
+    fi
     echo -e "\n\nShould be running now. Run the following next...\n"
     echo 'watch -n 1 "oc get pods | grep edpm"'
     echo "./watch_ansible.sh"
