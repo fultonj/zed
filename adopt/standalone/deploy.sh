@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 
-export INTERFACE=eth0
-export IP=192.168.122.100
-export VIP=192.168.122.108
+export NEUTRON_INTERFACE=vlan44
+export CTLPLANE_IP=192.168.122.100
+export CTLPLANE_VIP=192.168.122.99
 export NETMASK=24
 export DNS_SERVERS=192.168.122.1
 export NTP_SERVERS=pool.ntp.org
+#export NTP_SERVER=clock.corp.redhat.com
 export GATEWAY=192.168.122.1
 
 cat <<EOF > standalone_parameters.yaml
 parameter_defaults:
-  CloudName: $IP
+  CloudName: $CTLPLANE_IP
   ControlPlaneStaticRoutes:
     - ip_netmask: 0.0.0.0/0
       next_hop: $GATEWAY
@@ -22,8 +23,8 @@ parameter_defaults:
   # needed for vip & pacemaker
   KernelIpNonLocalBind: 1
   DockerInsecureRegistryAddress:
-  - $IP:8787
-  NeutronPublicInterface: $INTERFACE
+  - $CTLPLANE_IP:8787
+  NeutronPublicInterface: $NEUTRON_INTERFACE
   # domain name used by the host
   NeutronDnsDomain: localdomain
   # re-use ctlplane bridge for public net
@@ -44,11 +45,10 @@ fi
 
 sudo openstack tripleo deploy \
   --templates ~/templates \
-  --local-ip=$IP/$NETMASK \
-  --control-virtual-ip $VIP \
+  --local-ip=$CTLPLANE_IP/$NETMASK \
+  --control-virtual-ip=$CTLPLANE_VIP \
   -r ~/templates/roles/Standalone.yaml \
   -e ~/templates/environments/standalone/standalone-tripleo.yaml \
   -e ~/containers-prepare-parameters.yaml \
   -e standalone_parameters.yaml \
-  --output-dir $HOME \
-  --standalone $@
+  --output-dir $HOME $@
