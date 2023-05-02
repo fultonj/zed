@@ -64,8 +64,8 @@ popd
 
 The [dataplane_cr.sh](dataplane_cr.sh) script will extract variables
 from the k8s environment and use kustomize to create a dataplane CR
-with `deployStrategy: false` for edpm-compute-0 so it is not
-configured as an EDPM node and remains a standalone tripleo node.
+with edpm-compute-1 but not edpm-compute-0 so it is not configured as
+an EDPM node and remains a standalone tripleo node.
 
 ```
 ./dataplane_cr.sh > dataplane_cr.yaml
