@@ -16,7 +16,8 @@ OpenStack to the one which will run on k8s.
 ## Deploy CRC and edpm-compute
 
 Use [deploy.sh](../ng/deploy.sh) with all tasks under `INFRA=1`
-and `CONTROL_PLANE=1`.
+and `CONTROL_PLANE=1` but don't run `EDPM_NODE_REPOS` for
+`EDPM_COMPUTE_SUFFIX=0`.
 
 An empty control plane will be deployed which you will migrate to.
 It is necessary to do this in order to establish the isolated
@@ -30,6 +31,9 @@ Use this account on the edpm-compute-0 host in the next section.
 Use the scripts of the [standalone](standalone) directory to install
 [TripleO Standalone](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/deployment/standalone.html)
 on edpm-compute-0.
+
+Ensure edpm-compute-0 has NOT been had it's repos configured with
+`make edpm_compute_repos`.
 
 <!--
 ### Network Isolation
@@ -50,6 +54,13 @@ are used by OpenStack.
 
 In this step edpm-compute-1 is configured as a compute node with
 network isolation.
+
+Ensure edpm-compute-1 has its repos configured
+```
+pushd ~/install_yamls/devsetup/
+make edpm_compute_repos EDPM_COMPUTE_SUFFIX=1
+popd
+```
 
 The [dataplane_cr.sh](dataplane_cr.sh) script will extract variables
 from the k8s environment and use kustomize to create a dataplane CR
