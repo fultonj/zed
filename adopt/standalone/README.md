@@ -6,4 +6,5 @@ Clone this directory to the edpm node and run the following scripts.
 - [pre.sh](pre.sh)
 - [network.sh](network.sh)
 - [deploy.sh](deploy.sh)
+- [ping_test.sh](ping_test.sh)
 - [verify.sh](verify.sh)
