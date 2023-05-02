@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-export NEUTRON_INTERFACE=vlan44
+export NEUTRON_INTERFACE=eth0
+# export NEUTRON_INTERFACE=vlan44
 export CTLPLANE_IP=192.168.122.100
 export CTLPLANE_VIP=192.168.122.99
 export NETMASK=24
