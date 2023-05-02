@@ -22,26 +22,8 @@ An empty control plane will be deployed which you will migrate to.
 It is necessary to do this in order to establish the isolated
 networks before installing the wallaby overcloud.
 
-## Configure Isolated Networks with EDPM Ansible
-
-Run the edpm-ansible role to configure the network 
-but not run other edpm-ansible roles. E.g. have it stop before
-`InstallOS` in [deployment.go](https://github.com/openstack-k8s-operators/dataplane-operator/blob/main/pkg/deployment/deployment.go#L122).
-
-For now we'll do this by creating [dataplane_cr.yaml](dataplane_cr.yaml)
-but deleting it while the network validation is running as indicated
-by [watch_ansible.sh](../ng/watch_ansible.sh). A better method can be
-used later.
-```
-oc create -f dataplane_cr.yaml
-bash ../ng/watch_ansible.sh
-```
-When `PLAY [osp.edpm.edpm_nodes_validation]` starts run the following:
-```
-oc delete -f dataplane_cr.yaml
-```
 Use [account.sh](account.sh) to create a stack user on edpm-compute0.
-Use this account on the edpm-compute0 host in the next section.
+Use this account on the edpm-compute-0 host in the next section.
 
 ## Install TripleO
 
@@ -63,3 +45,18 @@ an already provisioned storage network. It should be possible to
 expand this example so that all of the pre provisioned networks
 are used by OpenStack.
 -->
+
+## Configure EDPM Compute node
+
+In this step edpm-compute-1 is configured as a compute node with
+network isolation.
+
+The [dataplane_cr.sh](dataplane_cr.sh) script will extract variables
+from the k8s environment and use kustomize to create a dataplane CR
+with `deployStrategy: false` for edpm-compute-0 so it is not
+configured as an EDPM node and remains a standalone tripleo node.
+
+```
+./dataplane_cr.sh > dataplane_cr.yaml
+oc create -f dataplane_cr.yaml
+```
