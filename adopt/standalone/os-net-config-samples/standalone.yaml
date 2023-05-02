@@ -1,0 +1,20 @@
+---
+network_config:
+- type: ovs_bridge
+  name: br-ctlplane
+  use_dhcp: false
+  mtu: 1500
+  ovs_extra:
+  - br-set-external-id br-ctlplane bridge-id br-ctlplane
+  addresses:
+  - ip_netmask: 192.168.122.100/24
+  - ip_netmask: 192.168.122.99/32
+  - ip_netmask: 192.168.122.100/32
+  routes: [{'default': True, 'ip_netmask': '0.0.0.0/0', 'next_hop': '192.168.122.1'}]
+  dns_servers: ['192.168.122.1']
+  domain: []
+  members:
+    - type: interface
+      name: eth0
+      primary: true
+      mtu: 1500
