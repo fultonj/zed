@@ -4,7 +4,7 @@ metadata:
   name: openstack-edpm
 spec:
   deployStrategy:
-      deploy: false
+      deploy: true
   nodes:
     edpm-compute-0:
       role: edpm-compute
@@ -152,4 +152,4 @@ spec:
           hosts_entries: []
           hosts_entry: []
       deployStrategy:
-        deploy: false
+        deploy: true
