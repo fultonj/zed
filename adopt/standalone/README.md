@@ -26,7 +26,8 @@ If we let edpm-ansible run on edpm-compute-0 we would have
 
 [deploy.sh](deploy.sh) will effectively create
 [os-net-config-samples/standalone.yaml](os-net-config-samples/standalone.yaml)
-and `os-net-config -c` it.
+and `os-net-config -c` it (removing the vlans if they were
+pre-configured with os-net-config).
 
 We need a network configuration on edpm-compute-0 which
 is compatible with both; i.e. produces a working standalone
@@ -35,3 +36,18 @@ overcloud but survives the [ping_test.sh](ping_test.sh).
 Afer that the standalone deployment can be modified with a
 [DeployedNetworkEnvironment](https://review.opendev.org/c/openstack/tripleo-quickstart-extras/+/834352/81/roles/standalone/tasks/storage-network.yml)
 and actually use the isolated networks.
+
+### Update standalone.j2 template
+
+[standalone.j2](https://opendev.org/openstack/tripleo-ansible/src/branch/master/tripleo_ansible/roles/tripleo_network_config/templates/standalone.j2)
+is installed in the following path after [pre.sh](pre.sh) runs:
+```
+/usr/share/ansible/roles/tripleo_network_config/templates/standalone.j2
+```
+Replace it with a modifed copy of [standalone.j2](standalone.j2)
+before running [deploy.sh](deploy.sh) so the exteranl networks
+survive the standalone deployment.
+```
+sudo cp ~/zed/adopt/standalone/standalone.j2 /usr/share/ansible/roles/tripleo_network_config/templates/standalone.j2
+./deploy.sh
+```

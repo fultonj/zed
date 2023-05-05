@@ -9,6 +9,8 @@ export DNS_SERVERS=192.168.122.1
 export NTP_SERVERS=pool.ntp.org
 #export NTP_SERVER=clock.corp.redhat.com
 export GATEWAY=192.168.122.1
+export BRIDGE="br-ctlplane"
+# export BRIDGE="br-ex"
 
 cat <<EOF > standalone_parameters.yaml
 parameter_defaults:
@@ -29,8 +31,8 @@ parameter_defaults:
   # domain name used by the host
   NeutronDnsDomain: localdomain
   # re-use ctlplane bridge for public net
-  NeutronBridgeMappings: datacentre:br-ctlplane
-  NeutronPhysicalBridge: br-ctlplane
+  NeutronBridgeMappings: datacentre:$BRIDGE
+  NeutronPhysicalBridge: $BRIDGE
   # enable to force metadata for public net
   #NeutronEnableForceMetadata: true
   StandaloneEnableRoutedNetworks: false
