@@ -13,6 +13,11 @@ export BRIDGE="br-ctlplane"
 # export BRIDGE="br-ex"
 
 cat <<EOF > standalone_parameters.yaml
+resource_registry:
+  OS::TripleO::Services::SwiftProxy: OS::Heat::None
+  OS::TripleO::Services::SwiftStorage: OS::Heat::None
+  OS::TripleO::Services::SwiftRingBuilder: OS::Heat::None
+
 parameter_defaults:
   CloudName: $CTLPLANE_IP
   ControlPlaneStaticRoutes:
