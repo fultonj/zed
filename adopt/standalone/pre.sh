@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REPO=1
-CEPH=0
+CEPH=1
 INSTALL=1
 CONTAINERS=1
 HOSTNAME=1
@@ -26,7 +26,7 @@ if [[ $REPO -eq 1 ]]; then
 fi
 
 if [[ $CEPH -eq 1 ]]; then
-    sudo dnf install -y cephadm ceph-ansible util-linux lvm2
+    sudo dnf install -y cephadm util-linux lvm2
     CEPHADMSRC=0
     if [[ $CEPHADMSRC -eq 1 ]]; then
         CEPHADM_PATH=/usr/sbin/cephadm
