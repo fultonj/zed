@@ -20,19 +20,6 @@ spec:
         ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
       deployStrategy:
         deploy: true
-    edpm-compute-2:
-      ansibleHost: 192.168.122.102
-      deployStrategy:
-        deploy: true
-      hostName: edpm-compute-2
-      node:
-        ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
-        ansibleVars: |
-          ctlplane_ip: 192.168.122.102
-          internal_api_ip: 172.17.0.102
-          storage_ip: 172.18.0.102
-          tenant_ip: 172.10.0.102
-          fqdn_internal_api: '{{ ansible_fqdn }}'
       role: edpm-compute
   roles:
     edpm-compute:
