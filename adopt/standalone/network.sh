@@ -3,6 +3,7 @@
 VERBOSE=1
 FILES=1
 EXECUTE=1
+PATCH_ANSIBLE_TEMPLATE=1
 
 export GATEWAY=192.168.122.1
 export CTLPLANE_IP=192.168.122.100
@@ -91,4 +92,9 @@ if [[ $VERBOSE -eq 1 ]]; then
     sudo ovs-vsctl show
     ip route
     ip a
+fi
+
+if [[ PATCH_ANSIBLE_TEMPLATE -eq 1 ]]; then
+    sudo cp /usr/share/ansible/roles/tripleo_network_config/templates/standalone.j2 /root/
+    sudo cp ~/zed/adopt/standalone/standalone.j2 /usr/share/ansible/roles/tripleo_network_config/templates/standalone.j2
 fi
