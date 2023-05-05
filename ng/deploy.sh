@@ -13,6 +13,7 @@ DEPS=0
 OPER=0
 EDPM_NODE=0
 EDPM_NODE_REPOS=0
+SKIP_REPOS_0=0
 EDPM_NODE_DISKS=0
 CONTROL=0
 MARIA=0
@@ -91,7 +92,11 @@ if [ $EDPM_NODE -eq 1 ]; then
 fi
 
 if [ $EDPM_NODE_REPOS -eq 1 ]; then
-    for I in $(seq 0 $NODES); do
+    START=0
+    if [ $SKIP_REPOS_0 -eq 1 ]; then
+        START=1
+    fi
+    for I in $(seq $START $NODES); do
         make edpm_compute_repos EDPM_COMPUTE_SUFFIX=$I;
     done
 fi
