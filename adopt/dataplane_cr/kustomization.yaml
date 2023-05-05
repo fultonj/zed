@@ -25,20 +25,6 @@ patches:
       path: /spec/deployStrategy/deploy
       value: true
     - op: replace
-      path: /spec/nodes/edpm-compute-0/ansibleHost
-      value: 192.168.122.100
-    - op: replace
-      path: /spec/nodes/edpm-compute-0/openStackAnsibleEERunnerImage
-      value: quay.io/openstack-k8s-operators/openstack-ansibleee-runner:latest
-    - op: replace
-      path: /spec/nodes/edpm-compute-0/node/ansibleVars
-      value: |
-        ctlplane_ip: 192.168.122.100
-        internal_api_ip: 172.17.0.100
-        storage_ip: 172.18.0.100
-        tenant_ip: 172.10.0.100
-        fqdn_internal_api: '{{ ansible_fqdn }}'
-    - op: replace
       path: /spec/nodes/edpm-compute-0/node/ansibleSSHPrivateKeySecret
       value: dataplane-ansible-ssh-private-key-secret
     - op: replace
