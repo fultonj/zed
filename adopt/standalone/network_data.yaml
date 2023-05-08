@@ -1,0 +1,10 @@
+- name: Storage
+  mtu: 1350
+  vip: true
+  name_lower: storage
+  dns_domain: storage.mydomain.tld.
+  service_net_map_replace: storage
+  subnets:
+    storage_subnet:
+      ip_subnet: '172.18.0.0/24'
+      allocation_pools: [{'start': '172.18.0.4', 'end': '172.18.0.250'}]
