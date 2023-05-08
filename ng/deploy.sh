@@ -80,7 +80,7 @@ if [ $DEPS -eq 1 ]; then
 fi
 
 if [ $OPER -eq 1 ]; then
-    make openstack
+    make BMO_SETUP=false openstack
 fi
 
 cd devsetup
@@ -123,7 +123,7 @@ if [ $CONTROL -eq 1 ]; then
     # unset OPENSTACK_CTLPLANE
     # change repo or branch from explicit defaults as needed
     OPENSTACK_REPO=https://github.com/openstack-k8s-operators/openstack-operator.git \
-        OPENSTACK_BRANCH=master \
+        OPENSTACK_BRANCH=master BMO_SETUP=false \
         make openstack_deploy
 fi
 
