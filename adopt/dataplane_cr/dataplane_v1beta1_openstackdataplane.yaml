@@ -20,7 +20,6 @@ spec:
         ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
       deployStrategy:
         deploy: true
-      role: edpm-compute
   roles:
     edpm-compute:
       env:
