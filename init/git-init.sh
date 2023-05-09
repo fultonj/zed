@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Clones the repos that I am interested in.
 # -------------------------------------------------------
+WALLABY=1
+# -------------------------------------------------------
 if [[ $1 == 'k8s' ]]; then
     pushd ~
     if [[ ! -d glance-operator ]]; then
@@ -84,6 +86,10 @@ for repo in "${repos[@]}"; do
             echo "Attempting to workaround scp error"
             cp ~/xena/workarounds/git_review/commit-msg .git/hooks/commit-msg
             chmod u+x .git/hooks/commit-msg
+        fi
+        if [[ $WALLABY -eq 1 ]] then
+           git fetch origin
+           git checkout -b wallaby_stable remotes/origin/stable/wallaby
         fi
 	popd
     else
