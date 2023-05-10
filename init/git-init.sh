@@ -87,7 +87,7 @@ for repo in "${repos[@]}"; do
             cp ~/xena/workarounds/git_review/commit-msg .git/hooks/commit-msg
             chmod u+x .git/hooks/commit-msg
         fi
-        if [[ $WALLABY -eq 1 ]] then
+        if [[ $WALLABY -eq 1 ]]; then
            git fetch origin
            git checkout -b wallaby_stable remotes/origin/stable/wallaby
         fi
