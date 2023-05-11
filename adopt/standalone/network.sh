@@ -3,6 +3,7 @@
 VERBOSE=1
 FILES=1
 EXECUTE=1
+VIPS=1
 PATCH_ANSIBLE_TEMPLATE=1
 
 export GATEWAY=192.168.122.1
@@ -95,6 +96,16 @@ fi
 if [[ $EXECUTE -eq 1 ]]; then
     sudo systemctl enable network
     sudo os-net-config -c /etc/os-net-config/config.yaml
+fi
+
+if [[ $VIPS -eq 1 ]]; then
+    # Add VIPs to manually configured networks
+    sudo ip addr add 172.20.0.2/32 dev vlan23
+    sudo ip addr add 172.17.0.2/32 dev vlan20
+    sudo ip addr add 172.18.0.2/32 dev vlan21
+    sudo ip addr add 172.19.0.2/32 dev vlan44
+    # sudo ip addr add 172.10.0.2/32 dev vlan22
+    ip a | grep /32
 fi
 
 if [[ $VERBOSE -eq 1 ]]; then
