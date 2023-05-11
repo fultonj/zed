@@ -53,15 +53,16 @@ fi
 
 sudo openstack tripleo deploy \
   --templates ~/templates \
-  --local-ip=$CTLPLANE_IP/$NETMASK \
-  --control-virtual-ip=$CTLPLANE_VIP \
-  -r ~/templates/roles/Standalone.yaml \
-  -n network_data.yaml \
+  --standalone-role Standalone \
   -e ~/templates/environments/standalone/standalone-tripleo.yaml \
   -e ~/containers-prepare-parameters.yaml \
+  -e standalone_parameters.yaml \
   -e ~/templates/environments/cephadm/cephadm-rbd-only.yaml \
   -e ~/deployed_ceph.yaml \
   -e ~/templates/environments/deployed-network-environment.yaml \
   -e deployed_network.yaml \
-  -e standalone_parameters.yaml \
+  -r ~/templates/roles/Standalone.yaml \
+  -n network_data.yaml \
+  --local-ip=$CTLPLANE_IP/$NETMASK \
+  --control-virtual-ip=$CTLPLANE_VIP \
   --output-dir $HOME $@

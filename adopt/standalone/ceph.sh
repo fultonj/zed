@@ -5,7 +5,6 @@ CEPH_USER=1
 CEPH=1
 
 export CEPH_IP=172.18.0.100
-export CLUSTER_NETWORK_NAME=storage
 
 ping -c 1 $CEPH_IP > /dev/null
 if [[ $? -gt 0 ]]; then
@@ -46,6 +45,5 @@ if [[ $CEPH -eq 1 ]]; then
          --skip-container-registry-config \
          --skip-user-create \
          --network-data network_data.yaml \
-         --cluster-network-name $CLUSTER_NETWORK_NAME \
          --output $HOME/deployed_ceph.yaml
 fi

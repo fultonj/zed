@@ -10,6 +10,7 @@ export CTLPLANE_IP=192.168.122.100
 export CTLPLANE_VIP=192.168.122.99
 export INTERNAL_IP=$(sed -e 's/192.168.122/172.17.0/' <<<"$CTLPLANE_IP")
 export STORAGE_IP=$(sed -e 's/192.168.122/172.18.0/' <<<"$CTLPLANE_IP")
+export STORAGE_MGMT_IP=$(sed -e 's/192.168.122/172.20.0/' <<<"$CTLPLANE_IP")
 export TENANT_IP=$(sed -e 's/192.168.122/172.10.0/' <<<"$CTLPLANE_IP")
 export EXTERNAL_IP=$(sed -e 's/192.168.122/172.19.0/' <<<"$CTLPLANE_IP")
 export NEUTRON_INTERFACE=vlan44
@@ -66,6 +67,14 @@ network_config:
     vlan_id: 21
     addresses:
     - ip_netmask: $STORAGE_IP/24
+    routes: []
+
+  # storage_mgmt
+  - type: vlan
+    mtu: 1500
+    vlan_id: 23
+    addresses:
+    - ip_netmask: $STORAGE_MGMT_IP/24
     routes: []
 
   # tenant
