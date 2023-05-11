@@ -36,7 +36,7 @@ parameter_defaults:
         ip_address_uri: 172.19.0.1
   ControlPlaneVipData:
     fixed_ips:
-    - ip_address: 192.168.122.3
+    - ip_address: 192.168.122.99
     name: control_virtual_ip
     network:
       tags:
