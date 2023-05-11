@@ -45,6 +45,8 @@ parameter_defaults:
   InterfaceLocalMtu: 1500
   # Needed if running in a VM
   NovaComputeLibvirtType: qemu
+  ValidateGatewaysIcmp: false
+  ValidateControllersIcmp: false
 EOF
 
 if [[ ! -d ~/templates ]]; then
