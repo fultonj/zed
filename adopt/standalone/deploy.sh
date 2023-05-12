@@ -57,6 +57,7 @@ sudo openstack tripleo deploy \
   --templates ~/templates \
   --standalone-role Standalone \
   -e ~/templates/environments/standalone/standalone-tripleo.yaml \
+  -e ~/templates/environments/low-memory-usage.yaml \
   -e ~/containers-prepare-parameters.yaml \
   -e standalone_parameters.yaml \
   -e ~/templates/environments/cephadm/cephadm-rbd-only.yaml \
