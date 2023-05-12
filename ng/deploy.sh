@@ -11,10 +11,10 @@ ATTACH=0
 CRC_STORAGE=0
 DEPS=0
 OPER=0
-EDPM_NODE=0
-EDPM_NODE_REPOS=0
-SKIP_REPOS_0=0
-EDPM_NODE_DISKS=0
+EDPM_NODE=1
+EDPM_NODE_REPOS=1
+SKIP_REPOS_0=1
+EDPM_NODE_DISKS=1
 CONTROL=0
 MARIA=0
 SCHED=0
@@ -87,7 +87,12 @@ cd devsetup
 
 if [ $EDPM_NODE -eq 1 ]; then
     for I in $(seq 0 $NODES); do
-        make edpm_compute EDPM_COMPUTE_SUFFIX=$I EDPM_COMPUTE_VCPUS=8 EDPM_COMPUTE_RAM=8
+        if [[ $I -eq 0 ]]; then
+            RAM=16
+        else
+            RAM=8
+        fi
+        make edpm_compute EDPM_COMPUTE_SUFFIX=$I EDPM_COMPUTE_VCPUS=8 EDPM_COMPUTE_RAM=$RAM
     done
 fi
 
