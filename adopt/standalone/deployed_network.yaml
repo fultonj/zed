@@ -11,29 +11,29 @@ parameter_defaults:
   NodePortMap:
     standalone:
       ctlplane:
-        ip_address: 192.168.122.1
+        ip_address: 192.168.122.100
         ip_subnet: 192.168.122.1/24
-        ip_address_uri: 192.168.122.1
+        ip_address_uri: 192.168.122.100
       storage:
-        ip_address: 172.18.0.1
+        ip_address: 172.18.0.100
         ip_subnet: 172.18.0.1/24
-        ip_address_uri: 172.18.0.1
+        ip_address_uri: 172.18.0.100
       storage_mgmt:
-        ip_address: 172.20.0.1
+        ip_address: 172.20.0.100
         ip_subnet: 172.20.0.1/24
-        ip_address_uri: 172.20.0.1
+        ip_address_uri: 172.20.0.100
       internal_api:
-        ip_address: 172.17.0.1
+        ip_address: 172.17.0.100
         ip_subnet: 172.17.0.1/24
-        ip_address_uri: 172.17.0.1
+        ip_address_uri: 172.17.0.100
       tenant:
-        ip_address: 172.10.0.1
+        ip_address: 172.10.0.100
         ip_subnet: 172.10.0.1/24
-        ip_address_uri: 172.10.0.1
+        ip_address_uri: 172.10.0.100
       external:
-        ip_address: 172.19.0.1
+        ip_address: 172.19.0.100
         ip_subnet: 172.19.0.1/24
-        ip_address_uri: 172.19.0.1
+        ip_address_uri: 172.19.0.100
   ControlPlaneVipData:
     fixed_ips:
     - ip_address: 192.168.122.99
