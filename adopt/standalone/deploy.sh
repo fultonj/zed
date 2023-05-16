@@ -13,11 +13,6 @@ export BRIDGE="br-ctlplane"
 # export BRIDGE="br-ex"
 
 cat <<EOF > standalone_parameters.yaml
-resource_registry:
-  OS::TripleO::Services::SwiftProxy: OS::Heat::None
-  OS::TripleO::Services::SwiftStorage: OS::Heat::None
-  OS::TripleO::Services::SwiftRingBuilder: OS::Heat::None
-
 parameter_defaults:
   CloudName: $CTLPLANE_IP
   ControlPlaneStaticRoutes:
@@ -60,7 +55,7 @@ sudo openstack tripleo deploy \
   -e ~/templates/environments/low-memory-usage.yaml \
   -e ~/containers-prepare-parameters.yaml \
   -e standalone_parameters.yaml \
-  -e ~/templates/environments/cephadm/cephadm-rbd-only.yaml \
+  -e ~/templates/environments/cephadm/cephadm.yaml \
   -e ~/deployed_ceph.yaml \
   -e ~/templates/environments/deployed-network-environment.yaml \
   -e deployed_network.yaml \
