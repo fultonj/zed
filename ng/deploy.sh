@@ -128,7 +128,7 @@ if [ $CONTROL -eq 1 ]; then
     # unset OPENSTACK_CTLPLANE
     # change repo or branch from explicit defaults as needed
     OPENSTACK_REPO=https://github.com/openstack-k8s-operators/openstack-operator.git \
-        OPENSTACK_BRANCH=master BMO_SETUP=false \
+        OPENSTACK_BRANCH=main BMO_SETUP=false \
         make openstack_deploy
 fi
 
