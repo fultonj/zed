@@ -27,6 +27,8 @@ fi
 
 if [[ $CEPH -eq 1 ]]; then
     sudo dnf install -y cephadm util-linux lvm2
+    # zed/ng/test.sh assumes "./cephadm" as root works
+    sudo ln -s $(which cephadm) /root/cephadm
     CEPHADMSRC=0
     if [[ $CEPHADMSRC -eq 1 ]]; then
         CEPHADM_PATH=/usr/sbin/cephadm
