@@ -51,6 +51,9 @@ Run [control_plane_to_ceph.sh]](../ng/ceph/control_plane_to_ceph.sh)
 to configure the empty control plane to connect to the Ceph cluster
 running on the standalone wallaby system.
 
+Use [test.sh](../ng/test.sh) to confirm that Glance on the NG system
+is using the ceph cluster.
+
 ## Configure EDPM Compute node
 
 In this step edpm-compute-1 is configured as a compute node with
@@ -58,8 +61,10 @@ network isolation.
 
 The [dataplane_cr.sh](dataplane_cr.sh) script will extract variables
 from the k8s environment and use kustomize to create a dataplane CR
-with edpm-compute-1 but not edpm-compute-0 so it is not configured as
-an EDPM node and remains a standalone tripleo node.
+with edpm-compute-1 but not edpm-compute-0 since it should not be
+configured as an EDPM node and remains a standalone tripleo node.
+edpm-compute-1 should also be configured to use the Ceph cluster
+on edpm-compute-0.
 
 ```
 ./dataplane_cr.sh > dataplane_cr.yaml

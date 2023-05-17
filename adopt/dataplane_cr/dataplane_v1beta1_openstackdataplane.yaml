@@ -33,6 +33,16 @@ spec:
         managed: false
         managementNetwork: ctlplane
         ansibleUser: root
+        extraMounts:
+        - extraVolType: Ceph
+          volumes:
+          - name: ceph
+            secret:
+              secretName: ceph-conf-files
+          mounts:
+          - name: ceph
+            mountPath: "/etc/ceph"
+            readOnly: true
         ansiblePort: 22
         ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
         ansibleVars: |
