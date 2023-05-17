@@ -47,7 +47,7 @@ Run [ceph_secret.sh](../ng/ceph/ceph_secret.sh) to extract the Ceph
 configuration from `edpm-compute-0` and store it as a secret in the
 `openstack` namespace.
 
-Run [control_plane_to_ceph.sh]](../ng/ceph/control_plane_to_ceph.sh)
+Run [control_plane_to_ceph.sh](../ng/ceph/control_plane_to_ceph.sh)
 to configure the empty control plane to connect to the Ceph cluster
 running on the standalone wallaby system.
 
