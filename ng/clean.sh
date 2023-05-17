@@ -9,8 +9,8 @@ OPERATORS=0
 CEPH_K8S=0
 CRC=0
 
-# node0 node1 node2
-NODES=2
+# node0 node1
+NODES=1
 WAIT=50
 
 if [ $DPJOBS -eq 1 ]; then
@@ -72,7 +72,8 @@ fi
 if [ $CRC -eq 1 ]; then
     pushd ~/install_yamls
     make crc_storage_cleanup
-    crc cleanup
+    cd devsetup
+    make crc_cleanup
     popd
 fi
 
