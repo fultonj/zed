@@ -27,9 +27,29 @@ Use this account on the edpm-compute-0 host in the next section.
 
 ## Install TripleO
 
+The commands in this section should be run on the edpm-compute-0 node.
+
 Use the scripts of the [standalone](standalone) directory to install
 [TripleO Standalone](https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/deployment/standalone.html)
-on edpm-compute-0.
+on edpm-compute-0 with Ceph.
+
+The [verify.sh](standalone/verify.sh) script creates a small workload
+on the standalone Wallaby to migrate.
+
+## Configure the Control Plane to use Ceph
+
+The commands in this section should be run on the hypervisor.
+
+In a migration scenario the internal Ceph cluster is left running and
+the NG system is configured to use it externally.
+
+Run [ceph_secret.sh](../ng/ceph/ceph_secret.sh) to extract the Ceph
+configuration from `edpm-compute-0` and store it as a secret in the
+`openstack` namespace.
+
+Run [control_plane_to_ceph.sh]](../ng/ceph/control_plane_to_ceph.sh)
+to configure the empty control plane to connect to the Ceph cluster
+running on the standalone wallaby system.
 
 ## Configure EDPM Compute node
 
