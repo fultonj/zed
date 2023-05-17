@@ -70,3 +70,9 @@ on edpm-compute-0.
 ./dataplane_cr.sh > dataplane_cr.yaml
 oc create -f dataplane_cr.yaml
 ```
+
+## Begin Migration
+
+At this point you'd migrate your workload running on wallaby.
+E.g. try 
+[Glance adoption](https://openstack-k8s-operators.github.io/data-plane-adoption/openstack/glance_adoption/)
