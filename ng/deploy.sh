@@ -13,7 +13,7 @@ DEPS=0
 OPER=0
 EDPM_NODE=0
 EDPM_NODE_REPOS=0
-SKIP_REPOS_0=0
+ADOPT=0
 EDPM_NODE_DISKS=0
 CONTROL=0
 MARIA=0
@@ -89,7 +89,7 @@ cd devsetup
 
 if [ $EDPM_NODE -eq 1 ]; then
     for I in $(seq 0 $NODES); do
-        if [[ $I -eq 0 ]]; then
+        if [[ $I -eq 0 && $ADOPT -eq 1 ]]; then
             RAM=16
         else
             RAM=8
@@ -100,7 +100,7 @@ fi
 
 if [ $EDPM_NODE_REPOS -eq 1 ]; then
     START=0
-    if [ $SKIP_REPOS_0 -eq 1 ]; then
+    if [ $ADOPT -eq 1 ]; then
         START=1
     fi
     for I in $(seq $START $NODES); do
