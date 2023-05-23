@@ -29,7 +29,10 @@ Use
 to run a local copy of
 [nova-operator PR301](https://github.com/openstack-k8s-operators/nova-operator/pull/301).
 
-Create a dataplane CR: 
+Create a single OpenStackDataPlane CR or create a
+OpenStackDataPlaneRole CR with multiple OpenStackDataPlaneNode CRs.
+
+### Create a single OpenStackDataPlane CR
 ```
 ./dataplane_cr.sh > dataplane_cr.yaml
 oc create -f dataplane_cr.yaml
@@ -39,7 +42,29 @@ a OpenStackDataPlane CR with necessary the Ceph properties.
 I can then easily create and delete the CR to
 [re-run ansible](../rerun_ansible.md).
 
-Use `watch "oc get pods | grep edpm"` and
+This option was used for the asciinema demo below but does not
+configure Nova to use the `vms` pool.
+
+### Create a OpenStackDataPlaneRole and multiple OpenStackDataPlaneNodes
+
+This option uses the
+[novaTemplate](https://openstack-k8s-operators.github.io/dataplane-operator/openstack_dataplanerole/#novatemplate)
+feature so that nova is configured to use the `vms` pool. Becuase the
+`novaTemplate` is not supported for OpenStackDataPlane (which contains
+both nodes and roles) a role is created with the `novaTemplate` and
+then nodes are created under that role.
+```
+./dataplane_role_cr.sh > dataplane_role_cr.yaml
+oc create -f dataplane_role_cr.yaml
+oc create -f edpm-compute-0.yaml
+oc create -f edpm-compute-1.yaml
+oc create -f edpm-compute-2.yaml
+```
+
+## Deploy EDPM
+
+The `oc create` commands from either of last sections should have
+launched Ansible. Use `watch "oc get pods | grep edpm"` and
 [watch_ansible.sh](../watch_ansible.sh) to watch ansible run.
 
 Use the PET option in [test.sh](../test.sh) to boot an instance from a volume.

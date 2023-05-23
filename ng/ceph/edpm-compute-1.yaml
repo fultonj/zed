@@ -1,0 +1,18 @@
+apiVersion: dataplane.openstack.org/v1beta1
+kind: OpenStackDataPlaneNode
+metadata:
+  name: edpm-compute-1
+spec:
+  deployStrategy:
+    deploy: true
+  role: openstack-edpm-role
+  hostName: edpm-compute-1
+  ansibleHost: 192.168.122.101
+  node:
+    ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
+    ansibleVars: |
+      ctlplane_ip: 192.168.122.101
+      internal_api_ip: 172.17.0.101
+      storage_ip: 172.18.0.101
+      tenant_ip: 172.10.0.101
+      fqdn_internal_api: '{{ ansible_fqdn }}'
