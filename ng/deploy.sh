@@ -51,6 +51,9 @@ fi
 pushd ~/install_yamls/devsetup
 
 if [ $CRC -eq 1 ]; then
+    if [[ ! -e pull-secret.txt ]]; then
+        cp ~/pull-secret.txt .
+    fi
     if [[ $HOSTNAME == hamfast.examle.com ]]; then
         make CPUS=12 MEMORY=49152 DISK=100 crc
     else
