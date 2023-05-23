@@ -11,13 +11,12 @@ ATTACH=0
 CRC_STORAGE=0
 DEPS=0
 OPER=0
-EDPM_NODE=1
-EDPM_NODE_REPOS=1
-SKIP_REPOS_0=1
-EDPM_NODE_DISKS=1
+EDPM_NODE=0
+EDPM_NODE_REPOS=0
+SKIP_REPOS_0=0
+EDPM_NODE_DISKS=0
 CONTROL=0
 MARIA=0
-SCHED=0
 EDPM_DEPLOY=0
 
 # META-TAGS
@@ -145,32 +144,6 @@ if [ $MARIA -eq 1 ]; then
     done
     oc exec -it pod/mariadb-openstack -- mysql -uroot -p12345678 -e "set global max_connections = 4000;"
     oc exec -it  pod/mariadb-openstack -- mysql -uroot -p12345678 -e "show variables like \"max_connections\";"
-fi
-
-if [ $SCHED -eq 1 ]; then
-    # we need to restart nova-scheduler to pick up cell1, this is a known issue
-    oc get pods | grep nova | grep scheduler
-    echo -e "\n\nThere should be at least one Running nova-scheduler pod above."
-    echo -e "(This script will wait indefinitely for it)"
-    while [[ $(oc get pods | grep nova | grep scheduler | grep Running | wc -l) -lt 1 ]]; do
-        echo -n .
-        sleep 1
-    done
-    oc get pods | grep cell1 | grep Running
-    echo -e "\n\nThere should be two Running cell1 pods above."
-    echo -e "(This script will wait indefinitely for them and then bouce scheduler)"
-    while [[ $(oc get pods | grep cell1 | grep Running | wc  -l) -ne 2 ]]; do
-        echo -n .
-        sleep 1
-    done
-    echo -e "\n"
-    echo "Deleting pods for service nova-scheduler so they will pick up cell1 when they restart"
-    oc delete pod -l service=nova-scheduler
-    sleep 1
-    oc get pods | grep nova | grep scheduler
-    echo "Waiting 5 seconds before checking again if it's running"
-    sleep 5
-    oc get pods | grep nova | grep scheduler
 fi
 
 if [ $EDPM_DEPLOY -eq 1 ]; then
