@@ -15,4 +15,7 @@ sed -i -e "s|TRANSPORT_URL|$TRANSPORT_URL|g" $TARGET
 sed -i -e "s|SB_CONNECTION|$SB_CONNECTION|g" $TARGET 
 sed -i -e "s|OVN_DBS|$OVN_DBS|g" $TARGET 
 
+FSID=$(oc get secret ceph-conf-files -o json | jq -r '.data."ceph.conf"' | base64 -d | grep fsid | sed -e 's/fsid = //' | xargs)
+sed -i "s/_FSID_/${FSID}/" dataplane_cr/dataplane_v1beta1_openstackdataplane.yaml
+
 oc kustomize dataplane_cr/
