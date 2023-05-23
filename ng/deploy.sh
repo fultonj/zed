@@ -33,7 +33,6 @@ fi
 if [ $CONTROL_PLANE -eq 1 ]; then
     CONTROL=1
     MARIA=1
-    SCHED=1
 fi
 if [ $DATA_PLANE -eq 1 ]; then
     EDPM_DEPLOY=1
