@@ -51,6 +51,15 @@ spec:
       role: edpm-compute
   roles:
     edpm-compute:
+      services:
+        - configure-network
+      env:
+        - name: ANSIBLE_FORCE_COLOR
+          value: "True"
+        - name: ANSIBLE_ENABLE_TASK_DEBUGGER
+          value: "True"
+        - name: ANSIBLE_VERBOSITY
+          value: "2"
       nodeTemplate:
         nova:
           novaInstance: nova
