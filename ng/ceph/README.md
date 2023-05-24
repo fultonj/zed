@@ -87,6 +87,8 @@ NODE_START=1
 
 - Use [deploy.sh](../deploy.sh) only with the `CONTROL_PLANE` meta-tag
 
+- `oc edit csv/openstack-operator.v0.0.1` and set replicas of `openstack-baremetal-operator-controller-manager` to `0`.
+
 - Run [control_plane_to_ceph.sh](control_plane_to_ceph.sh) which will
   configure the existing Glance pods to use Ceph and create a
   `cinder-volume-ceph` pod.
