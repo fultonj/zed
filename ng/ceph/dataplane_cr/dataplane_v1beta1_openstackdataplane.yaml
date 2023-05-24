@@ -6,20 +6,6 @@ spec:
   deployStrategy:
       deploy: false
   nodes:
-    edpm-compute-0:
-      role: edpm-compute
-      hostName: edpm-compute-0
-      ansibleHost: 192.168.122.100
-      node:
-        ansibleVars: |
-          ctlplane_ip: 192.168.122.100
-          internal_api_ip: 172.17.0.100
-          storage_ip: 172.18.0.100
-          tenant_ip: 172.10.0.100
-          fqdn_internal_api: edpm-compute-0.example.com
-        ansibleSSHPrivateKeySecret: dataplane-ansible-ssh-private-key-secret
-      deployStrategy:
-        deploy: false
     edpm-compute-1:
       role: edpm-compute
       hostName: edpm-compute-1
