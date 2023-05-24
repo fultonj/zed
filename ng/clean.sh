@@ -12,6 +12,7 @@ CRC=0
 # node0 node1 node2
 NODES=2
 WAIT=50
+NODE_START=1
 
 if [ $DPJOBS -eq 1 ]; then
     eval $(crc oc-env)
@@ -23,7 +24,7 @@ fi
 
 if [ $EDPM -eq 1 ]; then
     pushd ~/install_yamls/devsetup
-    for I in $(seq 0 $NODES); do
+    for I in $(seq $NODE_START $NODES); do
         make edpm_compute_cleanup EDPM_COMPUTE_SUFFIX=$I;
     done
     popd

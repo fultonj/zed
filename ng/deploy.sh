@@ -40,6 +40,7 @@ fi
 
 # node0 node1 node2
 NODES=2
+NODE_START=1
 CONTROL_PODS=16
 
 if [[ ! -d ~/install_yamls ]]; then
@@ -87,7 +88,7 @@ fi
 cd devsetup
 
 if [ $EDPM_NODE -eq 1 ]; then
-    for I in $(seq 0 $NODES); do
+    for I in $(seq $NODE_START $NODES); do
         if [[ $I -eq 0 && $ADOPT -eq 1 ]]; then
             RAM=16
         else
