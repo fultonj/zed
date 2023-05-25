@@ -17,6 +17,7 @@ ADOPT=0
 EDPM_NODE_DISKS=0
 CONTROL=0
 MARIA=0
+EDPM_SVCS=0
 EDPM_DEPLOY=0
 
 # META-TAGS
@@ -144,6 +145,10 @@ if [ $MARIA -eq 1 ]; then
     done
     oc exec -it pod/mariadb-openstack -- mysql -uroot -p12345678 -e "set global max_connections = 4000;"
     oc exec -it  pod/mariadb-openstack -- mysql -uroot -p12345678 -e "show variables like \"max_connections\";"
+fi
+
+if [ $EDPM_SVCS -eq 1 ]; then
+    oc create -f ~/dataplane-operator/config/services/dataplane_v1beta1_openstackdataplaneservice_configurenetwork.yaml
 fi
 
 if [ $EDPM_DEPLOY -eq 1 ]; then
