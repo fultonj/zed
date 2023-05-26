@@ -1,7 +1,7 @@
 #!/bin/bash
 
 OVERVIEW=0
-CEPH=0
+CEPH=1
 CINDER=0
 GLANCE=0
 NOVA_CONTROL_LOGS=0
@@ -118,7 +118,7 @@ if [ $NOVA_CONTROL_LOGS -eq 1 ]; then
 fi
 
 if [ $NOVA_COMPUTE_LOGS -eq 1 ]; then
-    SSH_CMD=$(bash ssh_node.sh)
+    SSH_CMD=$(bash ssh_node.sh 1)
     $SSH_CMD "grep ERROR /var/log/containers/nova/nova-compute.log"
     $SSH_CMD "date"
 fi
