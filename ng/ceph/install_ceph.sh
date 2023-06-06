@@ -8,9 +8,9 @@ SINGLE_OSD=0
 SSH_KEYS=0
 SPEC=0
 CEPHX=0
-NODES=1
+NODES=2
 
-RSA="~/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa"
+RSA="/home/$USER/install_yamls/out/edpm/ansibleee-ssh-key-id_rsa"
 OPT="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 IP=192.168.122.100
 
