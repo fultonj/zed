@@ -148,7 +148,11 @@ if [ $MARIA -eq 1 ]; then
 fi
 
 if [ $EDPM_SVCS -eq 1 ]; then
-    oc create -f ~/dataplane-operator/config/services/dataplane_v1beta1_openstackdataplaneservice_configurenetwork.yaml
+    pushd ~/dataplane-operator/config/services
+    for F in $(ls *.yaml); do
+	oc create -f $F
+    done
+    popd
 fi
 
 if [ $EDPM_DEPLOY -eq 1 ]; then
