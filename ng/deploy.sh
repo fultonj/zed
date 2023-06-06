@@ -41,7 +41,7 @@ fi
 
 # node0 node1 node2
 NODES=2
-NODE_START=1
+NODE_START=0
 CONTROL_PODS=16
 
 if [[ ! -d ~/install_yamls ]]; then
