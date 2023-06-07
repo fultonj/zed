@@ -12,7 +12,7 @@ CRC=0
 # node0 node1 node2
 NODES=2
 WAIT=50
-NODE_START=1
+NODE_START=0
 
 if [ $DPJOBS -eq 1 ]; then
     eval $(crc oc-env)
