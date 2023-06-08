@@ -51,8 +51,10 @@ if [ $SSH_KEYS -eq 1 ]; then
     URL=$(cat ceph.pub | curl -F 'sprunge=<-' http://sprunge.us)
     rm ceph.pub
 
-    ansible -i 192.168.122.101,192.168.122.102 all -u root -b \
-	    --private-key $RSA -m ansible.posix.authorized_key -a "user=root key=$URL"
+    ANSIBLE_HOST_KEY_CHECKING=False ansible \
+            -i 192.168.122.101,192.168.122.102 all \
+            -u root -b --private-key $RSA \
+            -m ansible.posix.authorized_key -a "user=root key=$URL"
 fi
 
 if [ $SPEC -eq 1 ]; then
