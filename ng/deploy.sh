@@ -120,10 +120,10 @@ fi
 cd ..
 
 if [ $CONTROL -eq 1 ]; then
-    oc get pods | grep controller
+    oc get pods -n openstack-operators | grep controller
     echo -e "\n\nThere should be $CONTROL_PODS Running OpenStack operator pods above."
     echo -e "(This script will wait indefinitely for all $CONTROL_PODS of them)"
-    while [[ $(oc get pods | grep controller | grep Running | wc -l) -lt $CONTROL_PODS ]];
+    while [[ $(oc get pods -n openstack-operators | grep controller | grep Running | wc -l) -lt $CONTROL_PODS ]];
     do
         echo -n .
         sleep 1
