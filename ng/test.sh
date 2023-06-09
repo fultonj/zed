@@ -4,6 +4,7 @@ OVERVIEW=0
 CEPH=1
 CINDER=0
 GLANCE=0
+RMIMG=1
 NOVA_CONTROL_LOGS=0
 NOVA_COMPUTE_LOGS=0
 PRINET=0
@@ -98,6 +99,9 @@ if [ $GLANCE -eq 1 ]; then
         # https://bugzilla.redhat.com/show_bug.cgi?id=1672680
         GLANCE_ID=$(openstack image show cirros -f value -c id)
         openstack image set $GLANCE_ID --property hw_disk_bus=scsi
+    fi
+    if [ $RMIMG -eq 1 ]; then
+        rm -f cirros-0.5.2-x86_64-disk.*
     fi
 fi
 
